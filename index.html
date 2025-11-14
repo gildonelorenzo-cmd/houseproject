@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Score Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo-placeholder">School Logo</div>
+        <h1>House Score Tracker</h1>
+
+        <!-- Admin Button -->
+        <button id="adminBtn" class="admin-button" onclick="openAdmin()">Admin</button>
+    </header>
+
+    <!-- Admin Panel Popup -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <h2>Admin Panel</h2>
+
+        <label>Acrobats:</label>
+        <input type="number" id="admin-acrobats" min="0">
+
+        <label>Quicksilver:</label>
+        <input type="number" id="admin-quicksilver" min="0">
+
+        <label>Druids:</label>
+        <input type="number" id="admin-druids" min="0">
+
+        <label>Bravehearts:</label>
+        <input type="number" id="admin-bravehearts" min="0">
+
+        <button onclick="applyManualScores()">Update Scores</button>
+        <button class="close" onclick="closeAdmin()">Close</button>
+    </div>
+
+    <!-- House Scoreboard -->
+    <section class="scoreboard">
+
+        <div class="house-card acrobats">
+            <div class="logo-placeholder">Acrobats Logo</div>
+            <h2>Acrobats</h2>
+            <p class="score" id="score-acrobats">0</p>
+            <div class="controls">
+                <button onclick="updateScore('acrobats', 1)">+1</button>
+                <button onclick="updateScore('acrobats', -1)">-1</button>
+            </div>
+        </div>
+
+        <div class="house-card quicksilver">
+            <div class="logo-placeholder">Quicksilver Logo</div>
+            <h2>Quicksilver</h2>
+            <p class="score" id="score-quicksilver">0</p>
+            <div class="controls">
+                <button onclick="updateScore('quicksilver', 1)">+1</button>
+                <button onclick="updateScore('quicksilver', -1)">-1</button>
+            </div>
+        </div>
+
+        <div class="house-card druids">
+            <div class="logo-placeholder">Druids Logo</div>
+            <h2>Druids</h2>
+            <p class="score" id="score-druids">0</p>
+            <div class="controls">
+                <button onclick="updateScore('druids', 1)">+1</button>
+                <button onclick="updateScore('druids', -1)">-1</button>
+            </div>
+        </div>
+
+        <div class="house-card bravehearts">
+            <div class="logo-placeholder">Bravehearts Logo</div>
+            <h2>Bravehearts</h2>
+            <p class="score" id="score-bravehearts">0</p>
+            <div class="controls">
+                <button onclick="updateScore('bravehearts', 1)">+1</button>
+                <button onclick="updateScore('bravehearts', -1)">-1</button>
+            </div>
+        </div>
+
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
