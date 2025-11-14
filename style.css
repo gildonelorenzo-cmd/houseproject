@@ -105,15 +105,3 @@ header {
 .score {
     font-size: 48px;
 }
-
-.controls button {
-    margin: 5px;
-    padding: 10px 16px;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.controls button:first-child { background: #2ecc71; }
-.controls button:last-child { background: #e74c3c; }
