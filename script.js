@@ -1,14 +1,5 @@
 const ADMIN_PASSWORD = "1234"; // ← change this to your real password
 
-// Score Updating
-function updateScore(house, value) {
-    const scoreElement = document.getElementById(`score-${house}`);
-    let score = parseInt(scoreElement.textContent);
-
-    score = Math.max(0, score + value);
-    scoreElement.textContent = score;
-}
-
 // Open Admin Panel (asks only for password)
 function openAdmin() {
     const entered = prompt("Enter Admin Password:");
