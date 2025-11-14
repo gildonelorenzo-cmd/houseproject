@@ -5,6 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>House Score Tracker</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .school-logo {
+            height: 60px;
+            width: 60px;
+            object-fit: contain;
+        }
+
+        h1 {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .admin-button {
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .admin-panel h2 {
+            margin-bottom: 15px;
+        }
+
+        .admin-panel label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .admin-panel input {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        .admin-panel button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+        }
+
+        .close {
+            background-color: #e74c3c;
+            margin-left: 10px;
+        }
+
+        /* Scoreboard */
+        .scoreboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .house-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .house-logo {
+            width: 100%;
+            height: 150px; /* fixed height for cropping */
+            object-fit: cover; /* auto-crop and fill */
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -13,8 +133,6 @@
         <img src="project/smiling-int-school-logo-1-removebg-preview.png" 
              alt="School Logo" class="school-logo">
         <h1>House Score Tracker</h1>
-
-        <!-- Admin Button -->
         <button id="adminBtn" class="admin-button" onclick="openAdmin()">Admin</button>
     </header>
 
@@ -68,7 +186,20 @@
     </section>
 
     <script src="script.js"></script>
+    <script>
+        function openAdmin() {
+            document.getElementById('adminPanel').classList.remove('hidden');
+        }
+        function closeAdmin() {
+            document.getElementById('adminPanel').classList.add('hidden');
+        }
+        function applyManualScores() {
+            document.getElementById('score-acrobats').textContent = document.getElementById('admin-acrobats').value || 0;
+            document.getElementById('score-quicksilver').textContent = document.getElementById('admin-quicksilver').value || 0;
+            document.getElementById('score-druids').textContent = document.getElementById('admin-druids').value || 0;
+            document.getElementById('score-bravehearts').textContent = document.getElementById('admin-bravehearts').value || 0;
+            closeAdmin();
+        }
+    </script>
 </body>
 </html>
-
-
