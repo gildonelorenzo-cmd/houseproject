@@ -6,7 +6,6 @@
     <title>House Score Tracker</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Basic Reset */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
@@ -158,23 +157,23 @@
         <h2>Admin Panel</h2>
         <p>Enter positive or negative numbers. Example: -5</p>
 
-        <label>Acrobats (+ / -):</label>
+        <label>Acrobats:</label>
         <input type="number" id="admin-acrobats">
 
-        <label>Quicksilver (+ / -):</label>
+        <label>Quicksilver:</label>
         <input type="number" id="admin-quicksilver">
 
-        <label>Druids (+ / -):</label>
+        <label>Druids:</label>
         <input type="number" id="admin-druids">
 
-        <label>Bravehearts (+ / -):</label>
+        <label>Bravehearts:</label>
         <input type="number" id="admin-bravehearts">
 
         <button onclick="applyManualScores()">Apply Changes</button>
         <button class="close" onclick="closeAdmin()">Close</button>
     </div>
 
-    <!-- House Scoreboard -->
+    <!-- Scoreboard -->
     <section class="scoreboard">
 
         <div class="house-card acrobats">
@@ -209,8 +208,31 @@
         <ul class="leaderboard-list" id="leaderboardList"></ul>
     </section>
 
-    <!-- SCORE + LEADERBOARD SCRIPT -->
     <script>
+        // Load saved scores from localStorage
+        function loadScores() {
+            const saved = JSON.parse(localStorage.getItem("houseScores"));
+
+            if (!saved) return;
+
+            document.getElementById('score-acrobats').textContent = saved.acrobats;
+            document.getElementById('score-quicksilver').textContent = saved.quicksilver;
+            document.getElementById('score-druids').textContent = saved.druids;
+            document.getElementById('score-bravehearts').textContent = saved.bravehearts;
+        }
+
+        // Save scores to localStorage
+        function saveScores() {
+            const scores = {
+                acrobats: parseInt(document.getElementById('score-acrobats').textContent),
+                quicksilver: parseInt(document.getElementById('score-quicksilver').textContent),
+                druids: parseInt(document.getElementById('score-druids').textContent),
+                bravehearts: parseInt(document.getElementById('score-bravehearts').textContent)
+            };
+
+            localStorage.setItem("houseScores", JSON.stringify(scores));
+        }
+
         function openAdmin() {
             document.getElementById('adminPanel').classList.remove('hidden');
         }
@@ -220,8 +242,6 @@
         }
 
         function applyManualScores() {
-
-            // Score Elements
             const scores = {
                 acrobats: document.getElementById('score-acrobats'),
                 quicksilver: document.getElementById('score-quicksilver'),
@@ -229,7 +249,6 @@
                 bravehearts: document.getElementById('score-bravehearts')
             };
 
-            // Inputs
             const inputs = {
                 acrobats: document.getElementById('admin-acrobats'),
                 quicksilver: document.getElementById('admin-quicksilver'),
@@ -237,17 +256,15 @@
                 bravehearts: document.getElementById('admin-bravehearts')
             };
 
-            // Apply score changes only if input has value
             for (let team in inputs) {
                 if (inputs[team].value.trim() !== "") {
                     scores[team].textContent =
                         parseInt(scores[team].textContent) + parseInt(inputs[team].value);
                 }
-
-                // Clear input
                 inputs[team].value = "";
             }
 
+            saveScores();
             updateLeaderboard();
             closeAdmin();
         }
@@ -255,7 +272,6 @@
         function updateLeaderboard() {
             const leaderboard = document.getElementById("leaderboardList");
 
-            // Collect team data
             let teams = [
                 { name: "Acrobats", score: parseInt(document.getElementById('score-acrobats').textContent), color: "acrobats-color" },
                 { name: "Quicksilver", score: parseInt(document.getElementById('score-quicksilver').textContent), color: "quicksilver-color" },
@@ -263,10 +279,8 @@
                 { name: "Bravehearts", score: parseInt(document.getElementById('score-bravehearts').textContent), color: "bravehearts-color" }
             ];
 
-            // Sort
             teams.sort((a, b) => b.score - a.score);
 
-            // Rebuild leaderboard
             leaderboard.innerHTML = "";
             teams.forEach(team => {
                 const li = document.createElement("li");
@@ -274,9 +288,12 @@
                 li.innerHTML = `${team.name} <span>${team.score}</span>`;
                 leaderboard.appendChild(li);
             });
+
+            saveScores();
         }
 
-        // Initialize leaderboard on load
+        // Load scores on page start
+        loadScores();
         updateLeaderboard();
     </script>
 
