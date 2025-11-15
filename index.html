@@ -5,134 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>House Score Tracker</title>
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* --- BASIC STYLES --- */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #fafafa;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px;
-            background: #333;
-            color: white;
-            position: relative;
-        }
-
-        .school-logo {
-            width: 80px;
-            margin-bottom: 10px;
-        }
-
-        .admin-button {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            padding: 10px 18px;
-            background: #007bff;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .admin-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            width: 300px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .admin-panel input {
-            width: 100%;
-            margin: 8px 0 15px;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #aaa;
-        }
-
-        .scoreboard {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 30px;
-            flex-wrap: wrap;
-        }
-
-        .house-card {
-            width: 200px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .house-logo {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .score {
-            font-size: 32px;
-            margin-top: 10px;
-        }
-
-        /* --- LEADERBOARD --- */
-        .leaderboard {
-            margin: 40px auto;
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-            background: #f7f7f7;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .leaderboard h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-
-        .leaderboard ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .leaderboard li {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 8px 0;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        /* Correct Colors */
-        .lb-acrobats { background: #59b300; color: white; }
-        .lb-quicksilver { background: #ff4d4d; color: white; }
-        .lb-druids { background: #0073e6; color: white; }
-        .lb-bravehearts { background: #ffcc00; color: #333; }
-
-    </style>
 </head>
 <body>
 
@@ -142,7 +14,10 @@
              alt="School Logo" class="school-logo">
         <h1>House Score Tracker</h1>
 
-        <button id="adminBtn" class="admin-button" onclick="openAdmin()">Admin</button>
+        <div class="header-buttons">
+            <button id="darkModeBtn" class="admin-button" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+            <button id="adminBtn" class="admin-button" onclick="openAdmin()">Admin</button>
+        </div>
     </header>
 
     <!-- Admin Panel Popup -->
@@ -200,90 +75,6 @@
         <ul id="leaderboard-list"></ul>
     </section>
 
-    <script>
-        /* ---------------- ADMIN PANEL ---------------- */
-        function openAdmin() {
-            document.getElementById("adminPanel").classList.remove("hidden");
-        }
-
-        function closeAdmin() {
-            document.getElementById("adminPanel").classList.add("hidden");
-        }
-
-        /* ---------------- SCORE SAVING ---------------- */
-        function saveScores() {
-            const scores = {
-                acrobats: document.getElementById("score-acrobats").textContent,
-                quicksilver: document.getElementById("score-quicksilver").textContent,
-                druids: document.getElementById("score-druids").textContent,
-                bravehearts: document.getElementById("score-bravehearts").textContent
-            };
-            localStorage.setItem("houseScores", JSON.stringify(scores));
-        }
-
-        function loadScores() {
-            const saved = localStorage.getItem("houseScores");
-            if (saved) {
-                const scores = JSON.parse(saved);
-                document.getElementById("score-acrobats").textContent = scores.acrobats;
-                document.getElementById("score-quicksilver").textContent = scores.quicksilver;
-                document.getElementById("score-druids").textContent = scores.druids;
-                document.getElementById("score-bravehearts").textContent = scores.bravehearts;
-            }
-        }
-
-        /* ---------------- MANUAL SCORE UPDATE ---------------- */
-        function applyManualScores() {
-
-            const fields = [
-                { input: "admin-acrobats", score: "score-acrobats" },
-                { input: "admin-quicksilver", score: "score-quicksilver" },
-                { input: "admin-druids", score: "score-druids" },
-                { input: "admin-bravehearts", score: "score-bravehearts" }
-            ];
-
-            fields.forEach(item => {
-                const inputEl = document.getElementById(item.input);
-                if (inputEl.value.trim() !== "") {
-                    const scoreEl = document.getElementById(item.score);
-                    const current = parseInt(scoreEl.textContent);
-                    const change = parseInt(inputEl.value);
-                    scoreEl.textContent = current + change;
-                }
-                inputEl.value = "";
-            });
-
-            saveScores();
-            updateLeaderboard();
-            closeAdmin();
-        }
-
-        /* ---------------- LEADERBOARD ---------------- */
-        function updateLeaderboard() {
-            const scores = [
-                { name: "Acrobats", score: parseInt(document.getElementById("score-acrobats").textContent), class: "lb-acrobats" },
-                { name: "Quicksilver", score: parseInt(document.getElementById("score-quicksilver").textContent), class: "lb-quicksilver" },
-                { name: "Druids", score: parseInt(document.getElementById("score-druids").textContent), class: "lb-druids" },
-                { name: "Bravehearts", score: parseInt(document.getElementById("score-bravehearts").textContent), class: "lb-bravehearts" }
-            ];
-
-            scores.sort((a, b) => b.score - a.score);
-
-            const list = document.getElementById("leaderboard-list");
-            list.innerHTML = "";
-
-            scores.forEach(entry => {
-                const li = document.createElement("li");
-                li.className = entry.class;
-                li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
-                list.appendChild(li);
-            });
-        }
-
-        /* ---------------- INITIALIZE PAGE ---------------- */
-        loadScores();
-        updateLeaderboard();
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
