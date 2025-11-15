@@ -1,33 +1,82 @@
-const ADMIN_PASSWORD = "1234"; // ← change this to your real password
-
-// Open Admin Panel (asks only for password)
+/* ---------------- ADMIN PANEL ---------------- */
 function openAdmin() {
-    const entered = prompt("Enter Admin Password:");
-
-    if (entered === ADMIN_PASSWORD) {
-        document.getElementById("adminPanel").classList.remove("hidden");
-    } else if (entered !== null) {
-        alert("Incorrect password.");
-    }
+    document.getElementById("adminPanel").classList.remove("hidden");
 }
 
 function closeAdmin() {
     document.getElementById("adminPanel").classList.add("hidden");
 }
 
-// Apply Manual Scores
+/* ---------------- SCORE SAVE / LOAD ---------------- */
+function saveScores() {
+    const scores = {
+        acrobats: document.getElementById("score-acrobats").textContent,
+        quicksilver: document.getElementById("score-quicksilver").textContent,
+        druids: document.getElementById("score-druids").textContent,
+        bravehearts: document.getElementById("score-bravehearts").textContent
+    };
+    localStorage.setItem("houseScores", JSON.stringify(scores));
+}
+
+function loadScores() {
+    const saved = localStorage.getItem("houseScores");
+    if (saved) {
+        const scores = JSON.parse(saved);
+        document.getElementById("score-acrobats").textContent = scores.acrobats;
+        document.getElementById("score-quicksilver").textContent = scores.quicksilver;
+        document.getElementById("score-druids").textContent = scores.druids;
+        document.getElementById("score-bravehearts").textContent = scores.bravehearts;
+    }
+}
+
+/* ---------------- MANUAL SCORE CHANGES ---------------- */
 function applyManualScores() {
-    const houses = ["acrobats", "quicksilver", "druids", "bravehearts"];
 
-    houses.forEach(h => {
-        const input = document.getElementById(`admin-${h}`);
-        const score = parseInt(input.value);
+    const fields = [
+        { input: "admin-acrobats", score: "score-acrobats" },
+        { input: "admin-quicksilver", score: "score-quicksilver" },
+        { input: "admin-druids", score: "score-druids" },
+        { input: "admin-bravehearts", score: "score-bravehearts" }
+    ];
 
-        if (!isNaN(score) && score >= 0) {
-            document.getElementById(`score-${h}`).textContent = score;
+    fields.forEach(item => {
+        const inputEl = document.getElementById(item.input);
+        if (inputEl.value.trim() !== "") {
+            const scoreEl = document.getElementById(item.score);
+            const current = parseInt(scoreEl.textContent);
+            const change = parseInt(inputEl.value);
+            scoreEl.textContent = current + change;
         }
+        inputEl.value = "";
     });
 
-    alert("Scores updated successfully!");
+    saveScores();
+    updateLeaderboard();
     closeAdmin();
 }
+
+/* ---------------- LEADERBOARD ---------------- */
+function updateLeaderboard() {
+    const scores = [
+        { name: "Acrobats", score: parseInt(document.getElementById("score-acrobats").textContent), class: "lb-acrobats" },
+        { name: "Quicksilver", score: parseInt(document.getElementById("score-quicksilver").textContent), class: "lb-quicksilver" },
+        { name: "Druids", score: parseInt(document.getElementById("score-druids").textContent), class: "lb-druids" },
+        { name: "Bravehearts", score: parseInt(document.getElementById("score-bravehearts").textContent), class: "lb-bravehearts" }
+    ];
+
+    scores.sort((a, b) => b.score - a.score);
+
+    const list = document.getElementById("leaderboard-list");
+    list.innerHTML = "";
+
+    scores.forEach(entry => {
+        const li = document.createElement("li");
+        li.className = entry.class;
+        li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
+        list.appendChild(li);
+    });
+}
+
+/* ---------------- INITIALIZE ---------------- */
+loadScores();
+updateLeaderboard();
