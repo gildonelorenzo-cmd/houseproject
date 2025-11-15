@@ -113,8 +113,8 @@
 
         .house-logo {
             width: 100%;
-            height: 150px; /* fixed height for cropping */
-            object-fit: cover; /* auto-crop and fill */
+            height: 150px;
+            object-fit: cover;
             border-radius: 10px;
             margin-bottom: 10px;
         }
@@ -140,19 +140,21 @@
     <div id="adminPanel" class="admin-panel hidden">
         <h2>Admin Panel</h2>
 
-        <label>Acrobats:</label>
-        <input type="number" id="admin-acrobats" min="0">
+        <p>Enter a number to add or subtract points (e.g. -5 to remove 5 points).</p>
 
-        <label>Quicksilver:</label>
-        <input type="number" id="admin-quicksilver" min="0">
+        <label>Acrobats (+ / -):</label>
+        <input type="number" id="admin-acrobats">
 
-        <label>Druids:</label>
-        <input type="number" id="admin-druids" min="0">
+        <label>Quicksilver (+ / -):</label>
+        <input type="number" id="admin-quicksilver">
 
-        <label>Bravehearts:</label>
-        <input type="number" id="admin-bravehearts" min="0">
+        <label>Druids (+ / -):</label>
+        <input type="number" id="admin-druids">
 
-        <button onclick="applyManualScores()">Update Scores</button>
+        <label>Bravehearts (+ / -):</label>
+        <input type="number" id="admin-bravehearts">
+
+        <button onclick="applyManualScores()">Apply Changes</button>
         <button class="close" onclick="closeAdmin()">Close</button>
     </div>
 
@@ -185,19 +187,34 @@
 
     </section>
 
-    <script src="script.js"></script>
     <script>
         function openAdmin() {
             document.getElementById('adminPanel').classList.remove('hidden');
         }
+
         function closeAdmin() {
             document.getElementById('adminPanel').classList.add('hidden');
         }
+
         function applyManualScores() {
-            document.getElementById('score-acrobats').textContent = document.getElementById('admin-acrobats').value || 0;
-            document.getElementById('score-quicksilver').textContent = document.getElementById('admin-quicksilver').value || 0;
-            document.getElementById('score-druids').textContent = document.getElementById('admin-druids').value || 0;
-            document.getElementById('score-bravehearts').textContent = document.getElementById('admin-bravehearts').value || 0;
+            // Get current scores
+            let ac = parseInt(document.getElementById('score-acrobats').textContent);
+            let qk = parseInt(document.getElementById('score-quicksilver').textContent);
+            let dr = parseInt(document.getElementById('score-druids').textContent);
+            let bh = parseInt(document.getElementById('score-bravehearts').textContent);
+
+            // Get adjustments
+            let adjAc = parseInt(document.getElementById('admin-acrobats').value) || 0;
+            let adjQk = parseInt(document.getElementById('admin-quicksilver').value) || 0;
+            let adjDr = parseInt(document.getElementById('admin-druids').value) || 0;
+            let adjBh = parseInt(document.getElementById('admin-bravehearts').value) || 0;
+
+            // Update scores
+            document.getElementById('score-acrobats').textContent = ac + adjAc;
+            document.getElementById('score-quicksilver').textContent = qk + adjQk;
+            document.getElementById('score-druids').textContent = dr + adjDr;
+            document.getElementById('score-bravehearts').textContent = bh + adjBh;
+
             closeAdmin();
         }
     </script>
