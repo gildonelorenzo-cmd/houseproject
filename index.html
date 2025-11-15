@@ -5,40 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>House Score Tracker</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Basic Reset */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    <style>
+        /* --- BASIC STYLES --- */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
+            margin: 0;
+            padding: 0;
+            background: #fafafa;
         }
 
         header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            text-align: center;
             padding: 20px;
-            background-color: #4a90e2;
+            background: #333;
             color: white;
+            position: relative;
         }
 
         .school-logo {
-            height: 60px;
-            width: 60px;
-            object-fit: contain;
+            width: 80px;
+            margin-bottom: 10px;
         }
 
-        h1 { flex-grow: 1; text-align: center; }
-
         .admin-button {
-            padding: 10px 20px;
-            background-color: #ffcc00;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            padding: 10px 18px;
+            background: #007bff;
             border: none;
+            border-radius: 8px;
+            color: white;
             cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
+            font-size: 16px;
         }
 
         .admin-panel {
@@ -46,101 +46,92 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: 300px;
         }
 
-        .hidden { display: none; }
-
-        .admin-panel h2 { margin-bottom: 15px; }
-        .admin-panel label { display: block; margin-top: 10px; font-weight: bold; }
-        .admin-panel input { width: 100%; padding: 5px; margin-top: 5px; }
-
-        .admin-panel button {
-            margin-top: 15px;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #4a90e2;
-            color: white;
-            font-weight: bold;
+        .hidden {
+            display: none;
         }
 
-        .close {
-            background-color: #e74c3c;
-            margin-left: 10px;
+        .admin-panel input {
+            width: 100%;
+            margin: 8px 0 15px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
         }
 
-        /* Scoreboard */
         .scoreboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
+            justify-content: center;
             gap: 20px;
-            padding: 20px;
+            padding: 30px;
+            flex-wrap: wrap;
         }
 
         .house-card {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            width: 200px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
         .house-logo {
-            width: 100%;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-bottom: 10px;
         }
 
         .score {
-            font-size: 2em;
-            font-weight: bold;
-            margin-top: 5px;
+            font-size: 32px;
+            margin-top: 10px;
         }
 
-        /* Leaderboard */
+        /* --- LEADERBOARD --- */
         .leaderboard {
-            margin: 30px auto;
+            margin: 40px auto;
+            padding: 20px;
             width: 90%;
             max-width: 600px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            background: #f7f7f7;
+            border-radius: 12px;
+            text-align: center;
         }
 
         .leaderboard h2 {
-            text-align: center;
+            font-size: 28px;
             margin-bottom: 15px;
         }
 
-        .leaderboard-list {
+        .leaderboard ul {
             list-style: none;
             padding: 0;
         }
 
-        .leaderboard-item {
+        .leaderboard li {
             display: flex;
             justify-content: space-between;
-            padding: 10px 15px;
-            margin: 5px 0;
+            padding: 12px 20px;
             border-radius: 8px;
-            font-size: 1.2em;
-            color: white;
+            margin: 8px 0;
+            font-size: 20px;
             font-weight: bold;
         }
 
-        .acrobats-color { background-color: #ff4d4d; }
-        .quicksilver-color { background-color: #00b3b3; }
-        .druids-color { background-color: #59b300; }
-        .bravehearts-color { background-color: #cc00cc; }
+        /* Correct Colors */
+        .lb-acrobats { background: #59b300; color: white; }
+        .lb-quicksilver { background: #ff4d4d; color: white; }
+        .lb-druids { background: #0073e6; color: white; }
+        .lb-bravehearts { background: #ffcc00; color: #333; }
+
     </style>
 </head>
 <body>
@@ -150,27 +141,27 @@
         <img src="project/smiling-int-school-logo-1-removebg-preview.png" 
              alt="School Logo" class="school-logo">
         <h1>House Score Tracker</h1>
+
         <button id="adminBtn" class="admin-button" onclick="openAdmin()">Admin</button>
     </header>
 
     <!-- Admin Panel Popup -->
     <div id="adminPanel" class="admin-panel hidden">
         <h2>Admin Panel</h2>
-        <p>Enter positive or negative numbers. Example: -5</p>
 
-        <label>Acrobats (+ / -):</label>
+        <label>Acrobats:</label>
         <input type="number" id="admin-acrobats">
 
-        <label>Quicksilver (+ / -):</label>
+        <label>Quicksilver:</label>
         <input type="number" id="admin-quicksilver">
 
-        <label>Druids (+ / -):</label>
+        <label>Druids:</label>
         <input type="number" id="admin-druids">
 
-        <label>Bravehearts (+ / -):</label>
+        <label>Bravehearts:</label>
         <input type="number" id="admin-bravehearts">
 
-        <button onclick="applyManualScores()">Apply Changes</button>
+        <button onclick="applyManualScores()">Update Scores</button>
         <button class="close" onclick="closeAdmin()">Close</button>
     </div>
 
@@ -206,77 +197,91 @@
     <!-- LEADERBOARD -->
     <section class="leaderboard">
         <h2>Leaderboard</h2>
-        <ul class="leaderboard-list" id="leaderboardList"></ul>
+        <ul id="leaderboard-list"></ul>
     </section>
 
-    <!-- SCORE + LEADERBOARD SCRIPT -->
     <script>
+        /* ---------------- ADMIN PANEL ---------------- */
         function openAdmin() {
-            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById("adminPanel").classList.remove("hidden");
         }
 
         function closeAdmin() {
-            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById("adminPanel").classList.add("hidden");
         }
 
+        /* ---------------- SCORE SAVING ---------------- */
+        function saveScores() {
+            const scores = {
+                acrobats: document.getElementById("score-acrobats").textContent,
+                quicksilver: document.getElementById("score-quicksilver").textContent,
+                druids: document.getElementById("score-druids").textContent,
+                bravehearts: document.getElementById("score-bravehearts").textContent
+            };
+            localStorage.setItem("houseScores", JSON.stringify(scores));
+        }
+
+        function loadScores() {
+            const saved = localStorage.getItem("houseScores");
+            if (saved) {
+                const scores = JSON.parse(saved);
+                document.getElementById("score-acrobats").textContent = scores.acrobats;
+                document.getElementById("score-quicksilver").textContent = scores.quicksilver;
+                document.getElementById("score-druids").textContent = scores.druids;
+                document.getElementById("score-bravehearts").textContent = scores.bravehearts;
+            }
+        }
+
+        /* ---------------- MANUAL SCORE UPDATE ---------------- */
         function applyManualScores() {
 
-            // Score Elements
-            const scores = {
-                acrobats: document.getElementById('score-acrobats'),
-                quicksilver: document.getElementById('score-quicksilver'),
-                druids: document.getElementById('score-druids'),
-                bravehearts: document.getElementById('score-bravehearts')
-            };
+            const fields = [
+                { input: "admin-acrobats", score: "score-acrobats" },
+                { input: "admin-quicksilver", score: "score-quicksilver" },
+                { input: "admin-druids", score: "score-druids" },
+                { input: "admin-bravehearts", score: "score-bravehearts" }
+            ];
 
-            // Inputs
-            const inputs = {
-                acrobats: document.getElementById('admin-acrobats'),
-                quicksilver: document.getElementById('admin-quicksilver'),
-                druids: document.getElementById('admin-druids'),
-                bravehearts: document.getElementById('admin-bravehearts')
-            };
-
-            // Apply score changes only if input has value
-            for (let team in inputs) {
-                if (inputs[team].value.trim() !== "") {
-                    scores[team].textContent =
-                        parseInt(scores[team].textContent) + parseInt(inputs[team].value);
+            fields.forEach(item => {
+                const inputEl = document.getElementById(item.input);
+                if (inputEl.value.trim() !== "") {
+                    const scoreEl = document.getElementById(item.score);
+                    const current = parseInt(scoreEl.textContent);
+                    const change = parseInt(inputEl.value);
+                    scoreEl.textContent = current + change;
                 }
+                inputEl.value = "";
+            });
 
-                // Clear input
-                inputs[team].value = "";
-            }
-
+            saveScores();
             updateLeaderboard();
             closeAdmin();
         }
 
+        /* ---------------- LEADERBOARD ---------------- */
         function updateLeaderboard() {
-            const leaderboard = document.getElementById("leaderboardList");
-
-            // Collect team data
-            let teams = [
-                { name: "Acrobats", score: parseInt(document.getElementById('score-acrobats').textContent), color: "acrobats-color" },
-                { name: "Quicksilver", score: parseInt(document.getElementById('score-quicksilver').textContent), color: "quicksilver-color" },
-                { name: "Druids", score: parseInt(document.getElementById('score-druids').textContent), color: "druids-color" },
-                { name: "Bravehearts", score: parseInt(document.getElementById('score-bravehearts').textContent), color: "bravehearts-color" }
+            const scores = [
+                { name: "Acrobats", score: parseInt(document.getElementById("score-acrobats").textContent), class: "lb-acrobats" },
+                { name: "Quicksilver", score: parseInt(document.getElementById("score-quicksilver").textContent), class: "lb-quicksilver" },
+                { name: "Druids", score: parseInt(document.getElementById("score-druids").textContent), class: "lb-druids" },
+                { name: "Bravehearts", score: parseInt(document.getElementById("score-bravehearts").textContent), class: "lb-bravehearts" }
             ];
 
-            // Sort
-            teams.sort((a, b) => b.score - a.score);
+            scores.sort((a, b) => b.score - a.score);
 
-            // Rebuild leaderboard
-            leaderboard.innerHTML = "";
-            teams.forEach(team => {
+            const list = document.getElementById("leaderboard-list");
+            list.innerHTML = "";
+
+            scores.forEach(entry => {
                 const li = document.createElement("li");
-                li.className = `leaderboard-item ${team.color}`;
-                li.innerHTML = `${team.name} <span>${team.score}</span>`;
-                leaderboard.appendChild(li);
+                li.className = entry.class;
+                li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
+                list.appendChild(li);
             });
         }
 
-        // Initialize leaderboard on load
+        /* ---------------- INITIALIZE PAGE ---------------- */
+        loadScores();
         updateLeaderboard();
     </script>
 
