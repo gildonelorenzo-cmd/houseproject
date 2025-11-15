@@ -71,6 +71,7 @@
         .admin-panel label {
             display: block;
             margin-top: 10px;
+            font-weight: bold;
         }
 
         .admin-panel input {
@@ -114,7 +115,7 @@
         .house-logo {
             width: 100%;
             height: 150px;
-            object-fit: cover;
+            object-fit: cover; /* auto-crop */
             border-radius: 10px;
             margin-bottom: 10px;
         }
@@ -139,8 +140,7 @@
     <!-- Admin Panel Popup -->
     <div id="adminPanel" class="admin-panel hidden">
         <h2>Admin Panel</h2>
-
-        <p>Enter a number to add or subtract points (e.g. -5 to remove 5 points).</p>
+        <p>Enter a number to add or subtract points. Example: -5</p>
 
         <label>Acrobats (+ / -):</label>
         <input type="number" id="admin-acrobats">
@@ -187,6 +187,7 @@
 
     </section>
 
+    <!-- SCORE SCRIPT -->
     <script>
         function openAdmin() {
             document.getElementById('adminPanel').classList.remove('hidden');
@@ -197,26 +198,45 @@
         }
 
         function applyManualScores() {
-            // Get current scores
-            let ac = parseInt(document.getElementById('score-acrobats').textContent);
-            let qk = parseInt(document.getElementById('score-quicksilver').textContent);
-            let dr = parseInt(document.getElementById('score-druids').textContent);
-            let bh = parseInt(document.getElementById('score-bravehearts').textContent);
 
-            // Get adjustments
-            let adjAc = parseInt(document.getElementById('admin-acrobats').value) || 0;
-            let adjQk = parseInt(document.getElementById('admin-quicksilver').value) || 0;
-            let adjDr = parseInt(document.getElementById('admin-druids').value) || 0;
-            let adjBh = parseInt(document.getElementById('admin-bravehearts').value) || 0;
+            // Score Elements
+            const scoreAc = document.getElementById('score-acrobats');
+            const scoreQk = document.getElementById('score-quicksilver');
+            const scoreDr = document.getElementById('score-druids');
+            const scoreBh = document.getElementById('score-bravehearts');
 
-            // Update scores
-            document.getElementById('score-acrobats').textContent = ac + adjAc;
-            document.getElementById('score-quicksilver').textContent = qk + adjQk;
-            document.getElementById('score-druids').textContent = dr + adjDr;
-            document.getElementById('score-bravehearts').textContent = bh + adjBh;
+            // Inputs
+            const inpAc = document.getElementById('admin-acrobats');
+            const inpQk = document.getElementById('admin-quicksilver');
+            const inpDr = document.getElementById('admin-druids');
+            const inpBh = document.getElementById('admin-bravehearts');
+
+            // Update only if input is not empty
+            if (inpAc.value.trim() !== "") {
+                scoreAc.textContent = parseInt(scoreAc.textContent) + parseInt(inpAc.value);
+            }
+
+            if (inpQk.value.trim() !== "") {
+                scoreQk.textContent = parseInt(scoreQk.textContent) + parseInt(inpQk.value);
+            }
+
+            if (inpDr.value.trim() !== "") {
+                scoreDr.textContent = parseInt(scoreDr.textContent) + parseInt(inpDr.value);
+            }
+
+            if (inpBh.value.trim() !== "") {
+                scoreBh.textContent = parseInt(scoreBh.textContent) + parseInt(inpBh.value);
+            }
+
+            // Clear inputs
+            inpAc.value = "";
+            inpQk.value = "";
+            inpDr.value = "";
+            inpBh.value = "";
 
             closeAdmin();
         }
     </script>
+
 </body>
 </html>
