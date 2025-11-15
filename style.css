@@ -4,6 +4,8 @@ body {
     margin: 0;
     padding: 0;
     background: #fafafa;
+    color: #333;
+    transition: all 0.3s ease;
 }
 
 header {
@@ -14,15 +16,19 @@ header {
     position: relative;
 }
 
+.header-buttons {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
 .school-logo {
     width: 80px;
     margin-bottom: 10px;
 }
 
 .admin-button {
-    position: absolute;
-    right: 20px;
-    top: 20px;
+    margin-left: 10px;
     padding: 10px 18px;
     background: #007bff;
     border: none;
@@ -43,6 +49,7 @@ header {
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     width: 300px;
+    transition: all 0.3s ease;
 }
 
 .hidden {
@@ -73,6 +80,7 @@ header {
     padding: 20px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
 
 .house-logo {
@@ -97,6 +105,7 @@ header {
     background: #f7f7f7;
     border-radius: 12px;
     text-align: center;
+    transition: all 0.3s ease;
 }
 
 .leaderboard h2 {
@@ -124,3 +133,27 @@ header {
 .lb-quicksilver { background: #ff4d4d; color: white; }
 .lb-druids { background: #0073e6; color: white; }
 .lb-bravehearts { background: #ffcc00; color: #333; }
+
+/* --- DARK MODE --- */
+body.dark-mode {
+    background: #121212;
+    color: #f0f0f0;
+}
+
+body.dark-mode header {
+    background: #1f1f1f;
+    color: #f0f0f0;
+}
+
+body.dark-mode .admin-panel {
+    background: #1f1f1f;
+    color: #f0f0f0;
+}
+
+body.dark-mode .house-card {
+    background: #1e1e1e;
+}
+
+body.dark-mode .leaderboard {
+    background: #1e1e1e;
+}
