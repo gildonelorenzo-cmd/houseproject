@@ -77,6 +77,11 @@ function updateLeaderboard() {
     });
 }
 
+/* ---------------- DARK MODE ---------------- */
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+
 /* ---------------- INITIALIZE ---------------- */
 loadScores();
 updateLeaderboard();
