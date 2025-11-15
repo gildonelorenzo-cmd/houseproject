@@ -155,7 +155,7 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
     <h1>House Score Tracker</h1>
     <div class="header-buttons">
         <button class="admin-button" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-        <button class="admin-button" onclick="openAdmin()">Admin</button>
+        <button class="admin-button" onclick="adminLogin()">Admin</button>
     </div>
 </header>
 
@@ -201,6 +201,16 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
 </section>
 
 <script>
+/* --- ADMIN LOGIN --- */
+function adminLogin() {
+    const pwd = prompt("Enter admin password:");
+    if(pwd === "1234"){
+        openAdmin();
+    } else {
+        alert("Wrong password!");
+    }
+}
+
 /* --- ADMIN PANEL --- */
 function openAdmin() { document.getElementById("adminPanel").classList.remove("hidden"); }
 function closeAdmin() { document.getElementById("adminPanel").classList.add("hidden"); }
