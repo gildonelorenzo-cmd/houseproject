@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>House Score Tracker</title>
 
 <style>
@@ -22,7 +22,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #87ceeb;
+    background: #87ceeb; /* Light blue */
     color: #333;
 }
 
@@ -33,7 +33,7 @@ header h1 {
 }
 
 .school-logo {
-    width: 120px;
+    width: 120px; /* Enlarged */
     height: auto;
 }
 
@@ -62,7 +62,7 @@ header h1 {
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    width: 300px;
+    width: 320px;
     z-index: 1000;
     transition: all 0.3s ease;
 }
@@ -87,7 +87,7 @@ header h1 {
 }
 
 .house-card {
-    width: 200px;
+    width: 220px;
     background: white;
     border-radius: 12px;
     padding: 20px;
@@ -161,37 +161,50 @@ body.dark-mode .house-card {
 body.dark-mode .leaderboard { 
     background: #1e1e1e; 
 }
+
+/* small responsive tweaks */
+@media (max-width: 700px) {
+    .scoreboard { padding: 15px; gap: 10px; }
+    .house-card { width: 45%; }
+}
 </style>
 
-<!-- Firebase -->
+<!-- Firebase SDK (module) -->
 <script type="module">
-    import { initializeApp } from 
-        "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from 
-        "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    /* 🔴 REPLACE THIS WITH YOUR FIREBASE SETTINGS */
+    // Your Firebase config (complete)
     const firebaseConfig = {
-        apiKey: "YOUR-KEY",
-        authDomain: "YOUR-PROJECT.firebaseapp.com",
-        databaseURL: "https://YOUR-PROJECT.firebaseio.com",
-        projectId: "YOUR-PROJECT",
-        storageBucket: "YOUR-PROJECT.appspot.com",
-        messagingSenderId: "XXXXXX",
-        appId: "XXXXXX"
+      apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+      authDomain: "housesproject-cb92e.firebaseapp.com",
+      projectId: "housesproject-cb92e",
+      storageBucket: "housesproject-cb92e.firebasestorage.app",
+      messagingSenderId: "643241335908",
+      appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
+      measurementId: "G-Q1Z380QK03",
+      databaseURL: "https://housesproject-cb92e-default-rtdb.firebaseio.com"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    window.db = db;
+    // expose helpers and db reference for the non-module script below
+    window._firebase = {
+        db,
+        ref,
+        set,
+        get,
+        child,
+        onValue
+    };
 </script>
 
 </head>
 <body>
 
 <header>
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="school-logo">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" alt="School Logo" class="school-logo">
     <h1>House Score Tracker</h1>
     <div class="header-buttons">
         <button class="admin-button" onclick="toggleDarkMode()">🌙 Dark Mode</button>
@@ -200,143 +213,233 @@ body.dark-mode .leaderboard {
 </header>
 
 <!-- Admin Panel -->
-<div id="adminPanel" class="admin-panel hidden">
-    <h2>Admin Panel</h2>
-    <label>Acrobats:</label><input type="number" id="admin-acrobats">
-    <label>Quicksilver:</label><input type="number" id="admin-quicksilver">
-    <label>Druids:</label><input type="number" id="admin-druids">
-    <label>Bravehearts:</label><input type="number" id="admin-bravehearts">
-    <button onclick="applyManualScores()">Update Scores</button>
-    <button onclick="closeAdmin()">Close</button>
+<div id="adminPanel" class="admin-panel hidden" role="dialog" aria-modal="true" aria-labelledby="admin-title">
+    <h2 id="admin-title">Admin Panel</h2>
+    <label>Acrobats:</label><input type="number" id="admin-acrobats" min="0">
+    <label>Quicksilver:</label><input type="number" id="admin-quicksilver" min="0">
+    <label>Druids:</label><input type="number" id="admin-druids" min="0">
+    <label>Bravehearts:</label><input type="number" id="admin-bravehearts" min="0">
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="applyManualScores()">Update Scores</button>
+        <button class="close" onclick="closeAdmin()">Close</button>
+    </div>
 </div>
 
 <!-- Scoreboard -->
-<section class="scoreboard">
+<section class="scoreboard" aria-label="Scoreboard">
     <div class="house-card acrobats">
-        <img src="project/acrobats.jpeg" class="house-logo">
+        <img src="project/acrobats.jpeg" alt="Acrobats logo" class="house-logo">
         <h2>Acrobats</h2>
         <p class="score" id="score-acrobats">0</p>
     </div>
-
     <div class="house-card quicksilver">
-        <img src="project/quicksilver.jpeg" class="house-logo">
+        <img src="project/quicksilver.jpeg" alt="Quicksilver logo" class="house-logo">
         <h2>Quicksilver</h2>
         <p class="score" id="score-quicksilver">0</p>
     </div>
-
     <div class="house-card druids">
-        <img src="project/druids.jpeg" class="house-logo">
+        <img src="project/druids.jpeg" alt="Druids logo" class="house-logo">
         <h2>Druids</h2>
         <p class="score" id="score-druids">0</p>
     </div>
-
     <div class="house-card bravehearts">
-        <img src="project/bravehearts.jpeg" class="house-logo">
+        <img src="project/bravehearts.jpeg" alt="Bravehearts logo" class="house-logo">
         <h2>Bravehearts</h2>
         <p class="score" id="score-bravehearts">0</p>
     </div>
 </section>
 
 <!-- Leaderboard -->
-<section class="leaderboard">
+<section class="leaderboard" aria-label="Leaderboard">
     <h2>Leaderboard</h2>
     <ul id="leaderboard-list"></ul>
 </section>
 
 <script>
-// ADMIN LOGIN
-function adminLogin() {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === "1234") openAdmin();
-    else alert("Wrong password!");
-}
+/*
+  Main script (non-module). Uses window._firebase populated by the module script above.
+  Waits for DOMContentLoaded and for firebase to be available.
+*/
 
-function openAdmin() {
-    document.getElementById("adminPanel").classList.remove("hidden");
-}
-function closeAdmin() {
-    document.getElementById("adminPanel").classList.add("hidden");
-}
+(function() {
+    const WAIT_TIMEOUT_MS = 5000; // how long to wait for firebase to appear
+    const POLL_INTERVAL_MS = 50;
+    let waited = 0;
 
-// --- SAVE SCORES ONLINE ---
-function saveScoresOnline() {
-    const scores = {
-        acrobats: parseInt(document.getElementById("score-acrobats").textContent),
-        quicksilver: parseInt(document.getElementById("score-quicksilver").textContent),
-        druids: parseInt(document.getElementById("score-druids").textContent),
-        bravehearts: parseInt(document.getElementById("score-bravehearts").textContent)
-    };
-
-    set(ref(window.db, "houseScores"), scores);
-}
-
-// --- LOAD SCORES FROM ONLINE ---
-function loadScoresOnline() {
-    const dbRef = ref(window.db);
-
-    get(child(dbRef, "houseScores")).then(snapshot => {
-        if (snapshot.exists()) {
-            const saved = snapshot.val();
-            document.getElementById("score-acrobats").textContent = saved.acrobats;
-            document.getElementById("score-quicksilver").textContent = saved.quicksilver;
-            document.getElementById("score-druids").textContent = saved.druids;
-            document.getElementById("score-bravehearts").textContent = saved.bravehearts;
+    function waitForFirebase(cb) {
+        if (window._firebase && window._firebase.db) {
+            return cb(null, window._firebase);
         }
-        updateLeaderboard();
-    });
-}
+        const interval = setInterval(() => {
+            waited += POLL_INTERVAL_MS;
+            if (window._firebase && window._firebase.db) {
+                clearInterval(interval);
+                return cb(null, window._firebase);
+            }
+            if (waited >= WAIT_TIMEOUT_MS) {
+                clearInterval(interval);
+                return cb(new Error("Firebase not available"));
+            }
+        }, POLL_INTERVAL_MS);
+    }
 
-// APPLY SCORE CHANGES
-function applyManualScores() {
-    const fields = [
-        { input:"admin-acrobats", score:"score-acrobats" },
-        { input:"admin-quicksilver", score:"score-quicksilver" },
-        { input:"admin-druids", score:"score-druids" },
-        { input:"admin-bravehearts", score:"score-bravehearts" }
-    ];
-    fields.forEach(item => {
-        const inputEl = document.getElementById(item.input);
-        if (inputEl.value.trim() !== "") {
-            const scoreEl = document.getElementById(item.score);
-            scoreEl.textContent = parseInt(scoreEl.textContent) + parseInt(inputEl.value);
+    document.addEventListener("DOMContentLoaded", () => {
+        waitForFirebase((err, fb) => {
+            if (err) {
+                console.error("Firebase failed to initialize:", err);
+                alert("Firebase failed to initialize. Check console.");
+                // still attempt to initialize leaderboard from defaults
+                updateLeaderboard();
+                return;
+            }
+            initApp(fb);
+        });
+    });
+
+    // ---------- App logic ----------
+    function initApp(fb) {
+        const db = fb.db;
+        const refFn = fb.ref;
+        const setFn = fb.set;
+        const getFn = fb.get;
+        const childFn = fb.child;
+        const onValueFn = fb.onValue;
+
+        const scoresRefPath = 'houseScores';
+
+        // Save to Firebase
+        function saveScoresOnline() {
+            const scores = {
+                acrobats: Number(document.getElementById("score-acrobats").textContent) || 0,
+                quicksilver: Number(document.getElementById("score-quicksilver").textContent) || 0,
+                druids: Number(document.getElementById("score-druids").textContent) || 0,
+                bravehearts: Number(document.getElementById("score-bravehearts").textContent) || 0
+            };
+            try {
+                setFn(refFn(db, scoresRefPath), scores);
+            } catch (e) {
+                console.error("Error saving scores:", e);
+            }
         }
-        inputEl.value = "";
-    });
 
-    saveScoresOnline();
-    updateLeaderboard();
-    closeAdmin();
-}
+        // Load once (used initially)
+        function loadScoresOnce() {
+            const dbRef = refFn(db);
+            getFn(childFn(dbRef, scoresRefPath)).then(snapshot => {
+                if (snapshot.exists()) {
+                    const saved = snapshot.val();
+                    applySavedToDOM(saved);
+                }
+                updateLeaderboard();
+            }).catch(err=>{
+                console.error("Error reading scores:", err);
+                updateLeaderboard();
+            });
+        }
 
-// LEADERBOARD UPDATE
-function updateLeaderboard() {
-    const scores = [
-        { name:"Acrobats", score:parseInt(score-acrobats.textContent), class:"lb-acrobats" },
-        { name:"Quicksilver", score:parseInt(score-quicksilver.textContent), class:"lb-quicksilver" },
-        { name:"Druids", score:parseInt(score-druids.textContent), class:"lb-druids" },
-        { name:"Bravehearts", score:parseInt(score-bravehearts.textContent), class:"lb-bravehearts" }
-    ];
+        // Realtime listener (keeps all devices in sync)
+        function attachRealtimeListener() {
+            try {
+                onValueFn(refFn(db, scoresRefPath), snapshot => {
+                    if (snapshot.exists()) {
+                        const saved = snapshot.val();
+                        applySavedToDOM(saved);
+                        updateLeaderboard();
+                    }
+                });
+            } catch (e) {
+                console.error("Error attaching realtime listener:", e);
+            }
+        }
 
-    scores.sort((a,b)=>b.score - a.score);
+        function applySavedToDOM(saved) {
+            document.getElementById("score-acrobats").textContent = Number(saved.acrobats) || 0;
+            document.getElementById("score-quicksilver").textContent = Number(saved.quicksilver) || 0;
+            document.getElementById("score-druids").textContent = Number(saved.druids) || 0;
+            document.getElementById("score-bravehearts").textContent = Number(saved.bravehearts) || 0;
+        }
 
-    const list = document.getElementById("leaderboard-list");
-    list.innerHTML = "";
+        // Expose core functions to the global scope (used by inline HTML buttons)
+        window.saveScoresOnline = saveScoresOnline;
 
-    scores.forEach(entry => {
-        const li = document.createElement("li");
-        li.className = entry.class;
-        li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
-        list.appendChild(li);
-    });
-}
+        window.changeScore = function(house, delta) {
+            const el = document.getElementById(`score-${house}`);
+            if (!el) return;
+            let current = Number(el.textContent) || 0;
+            current = current + Number(delta);
+            if (current < 0) current = 0;
+            el.textContent = current;
+            saveScoresOnline();
+            updateLeaderboard();
+        };
 
-// DARK MODE
-function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-}
+        window.applyManualScores = function() {
+            const fields = [
+                { input:"admin-acrobats", score:"score-acrobats" },
+                { input:"admin-quicksilver", score:"score-quicksilver" },
+                { input:"admin-druids", score:"score-druids" },
+                { input:"admin-bravehearts", score:"score-bravehearts" }
+            ];
+            fields.forEach(item => {
+                const inputEl = document.getElementById(item.input);
+                if (!inputEl) return;
+                const valueRaw = inputEl.value;
+                if (valueRaw !== "" && valueRaw !== null) {
+                    const add = parseInt(valueRaw, 10);
+                    if (!isNaN(add) && add !== 0) {
+                        const scoreEl = document.getElementById(item.score);
+                        const old = Number(scoreEl.textContent) || 0;
+                        scoreEl.textContent = old + add;
+                    }
+                }
+                inputEl.value = "";
+            });
+            saveScoresOnline();
+            updateLeaderboard();
+            closeAdmin();
+        };
 
-// INITIALIZE
-window.onload = loadScoresOnline;
+        // Leaderboard
+        window.updateLeaderboard = function() {
+            const scores = [
+                {name:"Acrobats", score: Number(document.getElementById("score-acrobats").textContent) || 0, class:"lb-acrobats"},
+                {name:"Quicksilver", score: Number(document.getElementById("score-quicksilver").textContent) || 0, class:"lb-quicksilver"},
+                {name:"Druids", score: Number(document.getElementById("score-druids").textContent) || 0, class:"lb-druids"},
+                {name:"Bravehearts", score: Number(document.getElementById("score-bravehearts").textContent) || 0, class:"lb-bravehearts"}
+            ];
+            scores.sort((a,b)=>b.score - a.score);
+            const list = document.getElementById("leaderboard-list");
+            list.innerHTML = "";
+            scores.forEach(entry=>{
+                const li = document.createElement("li");
+                li.className = entry.class;
+                li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
+                list.appendChild(li);
+            });
+        };
+
+        // Admin / UI helpers
+        window.adminLogin = function() {
+            const pwd = prompt("Enter admin password:");
+            if (pwd === "1234") {
+                openAdmin();
+            } else {
+                alert("Wrong password!");
+            }
+        };
+
+        window.openAdmin = function() { document.getElementById("adminPanel").classList.remove("hidden"); };
+        window.closeAdmin = function() { document.getElementById("adminPanel").classList.add("hidden"); };
+
+        window.toggleDarkMode = function() {
+            document.body.classList.toggle("dark-mode");
+        };
+
+        // Initialize: load once, attach realtime listener
+        loadScoresOnce();
+        attachRealtimeListener();
+    }
+})();
 </script>
 
 </body>
