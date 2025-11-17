@@ -142,10 +142,25 @@ body.dark-mode {
     background: #121212;
     color: #f0f0f0;
 }
-body.dark-mode header { background: #1f1f1f; color: #f0f0f0; }
-body.dark-mode .admin-panel { background: #1f1f1f; color: #f0f0f0; }
-body.dark-mode .house-card { background: #1e1e1e; }
-body.dark-mode .leaderboard { background: #1e1e1e; }
+
+/* ⭐ Updated at your request ⭐ */
+body.dark-mode header {
+    background: #999999;
+    color: #fff;
+}
+
+body.dark-mode .admin-panel { 
+    background: #1f1f1f; 
+    color: #f0f0f0; 
+}
+
+body.dark-mode .house-card { 
+    background: #1e1e1e; 
+}
+
+body.dark-mode .leaderboard { 
+    background: #1e1e1e; 
+}
 </style>
 </head>
 <body>
@@ -276,7 +291,9 @@ function updateLeaderboard() {
 }
 
 /* --- DARK MODE --- */
-function toggleDarkMode() { document.body.classList.toggle("dark-mode"); }
+function toggleDarkMode() { 
+    document.body.classList.toggle("dark-mode"); 
+}
 
 /* --- INITIALIZE --- */
 loadScores();
