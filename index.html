@@ -4,6 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>House Score Tracker</title>
+
+<!-- ⭐ FIREBASE v8 (ADD THIS AT TOP) ⭐ -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+  authDomain: "housesproject-cb92e.firebaseapp.com",
+  databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "housesproject-cb92e",
+  storageBucket: "housesproject-cb92e.firebasestorage.app",
+  messagingSenderId: "643241335908",
+  appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
+  measurementId: "G-Q1Z380QK03"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
 <style>
 /* --- BASIC LAYOUT --- */
 body {
@@ -21,7 +42,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #87ceeb; /* Light blue */
+    background: #87ceeb;
     color: #333;
 }
 
@@ -32,7 +53,7 @@ header h1 {
 }
 
 .school-logo {
-    width: 120px; /* Enlarged */
+    width: 120px;
     height: auto;
 }
 
@@ -62,8 +83,6 @@ header h1 {
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     width: 300px;
-    z-index: 1000;
-    transition: all 0.3s ease;
 }
 
 .hidden { display: none; }
@@ -92,7 +111,6 @@ header h1 {
     padding: 20px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
 }
 
 .house-logo {
@@ -114,11 +132,9 @@ header h1 {
     background: #f7f7f7;
     border-radius: 12px;
     text-align: center;
-    transition: all 0.3s ease;
 }
 
 .leaderboard h2 { font-size: 28px; margin-bottom: 15px; }
-
 .leaderboard ul { list-style: none; padding: 0; }
 
 .leaderboard li {
@@ -138,12 +154,9 @@ header h1 {
 .lb-bravehearts { background: #ffcc00; color: #333; }
 
 /* --- DARK MODE --- */
-body.dark-mode {
-    background: #121212;
-    color: #f0f0f0;
-}
-body.dark-mode header { background: #1f1f1f; color: #f0f0f0; }
-body.dark-mode .admin-panel { background: #1f1f1f; color: #f0f0f0; }
+body.dark-mode { background: #121212; color: #f0f0f0; }
+body.dark-mode header { background: #1f1f1f; }
+body.dark-mode .admin-panel { background: #1f1f1f; }
 body.dark-mode .house-card { background: #1e1e1e; }
 body.dark-mode .leaderboard { background: #1e1e1e; }
 </style>
@@ -151,7 +164,7 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
 <body>
 
 <header>
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" alt="School Logo" class="school-logo">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="school-logo">
     <h1>House Score Tracker</h1>
     <div class="header-buttons">
         <button class="admin-button" onclick="toggleDarkMode()">🌙 Dark Mode</button>
@@ -159,7 +172,6 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
     </div>
 </header>
 
-<!-- Admin Panel -->
 <div id="adminPanel" class="admin-panel hidden">
     <h2>Admin Panel</h2>
     <label>Acrobats:</label><input type="number" id="admin-acrobats">
@@ -167,10 +179,9 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
     <label>Druids:</label><input type="number" id="admin-druids">
     <label>Bravehearts:</label><input type="number" id="admin-bravehearts">
     <button onclick="applyManualScores()">Update Scores</button>
-    <button class="close" onclick="closeAdmin()">Close</button>
+    <button onclick="closeAdmin()">Close</button>
 </div>
 
-<!-- Scoreboard -->
 <section class="scoreboard">
     <div class="house-card acrobats">
         <img src="project/acrobats.jpeg" class="house-logo">
@@ -194,7 +205,6 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
     </div>
 </section>
 
-<!-- Leaderboard -->
 <section class="leaderboard">
     <h2>Leaderboard</h2>
     <ul id="leaderboard-list"></ul>
@@ -204,73 +214,80 @@ body.dark-mode .leaderboard { background: #1e1e1e; }
 /* --- ADMIN LOGIN --- */
 function adminLogin() {
     const pwd = prompt("Enter admin password:");
-    if(pwd === "1234"){
-        openAdmin();
-    } else {
-        alert("Wrong password!");
-    }
+    if (pwd === "1234") openAdmin();
+    else alert("Wrong password!");
 }
 
-/* --- ADMIN PANEL --- */
 function openAdmin() { document.getElementById("adminPanel").classList.remove("hidden"); }
 function closeAdmin() { document.getElementById("adminPanel").classList.add("hidden"); }
 
-/* --- SCORE SAVE / LOAD --- */
-function saveScores() {
-    const scores = {
-        acrobats: document.getElementById("score-acrobats").textContent,
-        quicksilver: document.getElementById("score-quicksilver").textContent,
-        druids: document.getElementById("score-druids").textContent,
-        bravehearts: document.getElementById("score-bravehearts").textContent
-    };
-    localStorage.setItem("houseScores", JSON.stringify(scores));
+/* --- SAVE TO FIREBASE --- */
+function saveScoresToFirebase(scores) {
+    db.ref("houseScores").set(scores);
 }
-function loadScores() {
-    const saved = JSON.parse(localStorage.getItem("houseScores"));
-    if(saved){
-        document.getElementById("score-acrobats").textContent = saved.acrobats;
-        document.getElementById("score-quicksilver").textContent = saved.quicksilver;
-        document.getElementById("score-druids").textContent = saved.druids;
-        document.getElementById("score-bravehearts").textContent = saved.bravehearts;
-    }
+
+/* --- LOAD FROM FIREBASE --- */
+function loadScoresFromFirebase() {
+    db.ref("houseScores").once("value").then(snapshot => {
+        if (snapshot.exists()) {
+            const saved = snapshot.val();
+            document.getElementById("score-acrobats").textContent = saved.acrobats;
+            document.getElementById("score-quicksilver").textContent = saved.quicksilver;
+            document.getElementById("score-druids").textContent = saved.druids;
+            document.getElementById("score-bravehearts").textContent = saved.bravehearts;
+            updateLeaderboard();
+        }
+    });
 }
 
 /* --- APPLY SCORES --- */
 function applyManualScores() {
     const fields = [
-        { input:"admin-acrobats", score:"score-acrobats" },
-        { input:"admin-quicksilver", score:"score-quicksilver" },
-        { input:"admin-druids", score:"score-druids" },
-        { input:"admin-bravehearts", score:"score-bravehearts" }
+        { input: "admin-acrobats", score: "score-acrobats" },
+        { input: "admin-quicksilver", score: "score-quicksilver" },
+        { input: "admin-druids", score: "score-druids" },
+        { input: "admin-bravehearts", score: "score-bravehearts" }
     ];
-    fields.forEach(item=>{
-        const inputEl=document.getElementById(item.input);
-        if(inputEl.value.trim()!==""){
-            const scoreEl=document.getElementById(item.score);
-            scoreEl.textContent = parseInt(scoreEl.textContent)+parseInt(inputEl.value);
+
+    fields.forEach(item => {
+        const inputEl = document.getElementById(item.input);
+        if (inputEl.value.trim() !== "") {
+            const scoreEl = document.getElementById(item.score);
+            scoreEl.textContent = parseInt(scoreEl.textContent) + parseInt(inputEl.value);
         }
-        inputEl.value="";
+        inputEl.value = "";
     });
-    saveScores();
+
+    const scores = {
+        acrobats: parseInt(document.getElementById("score-acrobats").textContent),
+        quicksilver: parseInt(document.getElementById("score-quicksilver").textContent),
+        druids: parseInt(document.getElementById("score-druids").textContent),
+        bravehearts: parseInt(document.getElementById("score-bravehearts").textContent)
+    };
+
+    saveScoresToFirebase(scores);
     updateLeaderboard();
     closeAdmin();
 }
 
 /* --- LEADERBOARD --- */
 function updateLeaderboard() {
-    const scores=[
-        {name:"Acrobats", score:parseInt(document.getElementById("score-acrobats").textContent), class:"lb-acrobats"},
-        {name:"Quicksilver", score:parseInt(document.getElementById("score-quicksilver").textContent), class:"lb-quicksilver"},
-        {name:"Druids", score:parseInt(document.getElementById("score-druids").textContent), class:"lb-druids"},
-        {name:"Bravehearts", score:parseInt(document.getElementById("score-bravehearts").textContent), class:"lb-bravehearts"}
+    const scores = [
+        { name: "Acrobats", score: parseInt(document.getElementById("score-acrobats").textContent), class: "lb-acrobats" },
+        { name: "Quicksilver", score: parseInt(document.getElementById("score-quicksilver").textContent), class: "lb-quicksilver" },
+        { name: "Druids", score: parseInt(document.getElementById("score-druids").textContent), class: "lb-druids" },
+        { name: "Bravehearts", score: parseInt(document.getElementById("score-bravehearts").textContent), class: "lb-bravehearts" }
     ];
-    scores.sort((a,b)=>b.score-a.score);
-    const list=document.getElementById("leaderboard-list");
-    list.innerHTML="";
-    scores.forEach(entry=>{
-        const li=document.createElement("li");
-        li.className=entry.class;
-        li.innerHTML=`${entry.name} <span>${entry.score}</span>`;
+
+    scores.sort((a, b) => b.score - a.score);
+
+    const list = document.getElementById("leaderboard-list");
+    list.innerHTML = "";
+
+    scores.forEach(entry => {
+        const li = document.createElement("li");
+        li.className = entry.class;
+        li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
         list.appendChild(li);
     });
 }
@@ -278,9 +295,8 @@ function updateLeaderboard() {
 /* --- DARK MODE --- */
 function toggleDarkMode() { document.body.classList.toggle("dark-mode"); }
 
-/* --- INITIALIZE --- */
-loadScores();
-updateLeaderboard();
+/* --- INITIAL LOAD --- */
+loadScoresFromFirebase();
 </script>
 
 </body>
