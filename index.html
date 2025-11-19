@@ -1,244 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Leaderboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House Leaderboard</title>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #ffffff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background 0.3s, color 0.3s;
-        }
+<style>
+    /* --- BODY & BACKGROUND --- */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: background 0.5s, color 0.5s;
+        background: linear-gradient(135deg, #a8edea, #fed6e3); /* Light mode default */
+        min-height: 100vh;
+    }
 
-        /* DARK MODE */
-        body.dark {
-            background: #222;
-            color: white;
-        }
+    body.dark {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Dark mode gradient */
+        color: #f0f0f0;
+    }
 
-        /* TOP-LEFT DARK MODE BUTTON */
-        #mode-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid black;
-            font-size: 26px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            z-index: 100;
-        }
+    /* --- DARK/LIGHT MODE BUTTON --- */
+    #mode-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid black;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.3s;
+        z-index: 100;
+    }
 
-        body.dark #mode-toggle {
-            background: #444;
-            color: yellow;
-            border-color: white;
-        }
+    body.dark #mode-toggle {
+        background: #444;
+        color: yellow;
+        border-color: white;
+    }
 
-        /* MAIN GRID */
-        #leaderboard {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 120px;
-            margin-bottom: 140px;
-        }
+    /* --- LEADERBOARD GRID --- */
+    #leaderboard {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        margin-top: 120px;
+        margin-bottom: 140px;
+    }
 
-        .team-card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            width: 200px;
-            transition: background 0.3s, color 0.3s, transform 0.2s;
-        }
+    .team-card {
+        background: rgba(255,255,255,0.9);
+        border-radius: 15px;
+        padding: 15px;
+        text-align: center;
+        width: 200px;
+        transition: background 0.3s, color 0.3s, transform 0.2s;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
 
-        body.dark .team-card {
-            background: #333;
-            color: white;
-        }
+    body.dark .team-card {
+        background: rgba(0,0,0,0.6);
+        color: white;
+        box-shadow: 0 8px 15px rgba(255,255,255,0.1);
+    }
 
-        .rank-label {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
+    .rank-label {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
 
-        .team-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
+    .team-card img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 10px;
+    }
 
-        .score {
-            font-weight: bold;
-            font-size: 22px;
-        }
+    .score {
+        font-weight: bold;
+        font-size: 22px;
+    }
 
-        /* FOOTER */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
-            background: #B5E0FF;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            border-top: 3px solid #ccc;
-            transition: background 0.3s;
-        }
+    /* --- FOOTER --- */
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #B5E0FF;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        border-top: 3px solid #ccc;
+        transition: background 0.3s;
+    }
 
-        body.dark footer {
-            background: #999999;
-        }
+    body.dark footer {
+        background: #999999;
+    }
 
-        .footer-logo {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
-        }
+    .footer-logo {
+        height: 55px;
+        width: auto;
+        object-fit: contain;
+    }
 
-        #admin-button {
-            background: #007BFF;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+    #admin-button {
+        background: #007BFF;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* --- ADMIN MODAL --- */
+    #admin-modal {
+        display:none;
+        position:fixed; top:0; left:0; width:100%; height:100%;
+        background:rgba(0,0,0,0.6);
+        align-items:center; justify-content:center;
+    }
+
+    #admin-modal .modal-content {
+        background:white; padding:30px; border-radius:10px; width:300px;
+    }
+
+    body.dark #admin-modal .modal-content {
+        background: #1e1e1e;
+        color: white;
+    }
+
+    #admin-modal input, #admin-modal select, #admin-modal button {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    #admin-modal button {
+        cursor: pointer;
+        font-weight: bold;
+        background: #007BFF;
+        color: white;
+        border: none;
+    }
+</style>
 </head>
 <body>
 
-    <!-- TOP LEFT DARK/LIGHT MODE BUTTON -->
+    <!-- DARK/LIGHT MODE BUTTON -->
     <button id="mode-toggle">🌙</button>
 
-    <!-- MAIN 2×2 LEADERBOARD -->
+    <!-- LEADERBOARD -->
     <div id="leaderboard"></div>
 
     <!-- FOOTER -->
     <footer>
         <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-
         <button id="admin-button" onclick="openAdmin()">Admin</button>
     </footer>
 
     <!-- ADMIN MODAL -->
-    <div id="admin-modal" style="
-        display:none;
-        position:fixed; top:0; left:0; width:100%; height:100%;
-        background:rgba(0,0,0,0.6);
-        align-items:center; justify-content:center;">
-        
-        <div style="
-            background:white; padding:30px; border-radius:10px; width:300px;">
-            
+    <div id="admin-modal">
+        <div class="modal-content">
             <h2>Admin Panel</h2>
-
-            <label>Team:</label><br>
+            <label>Team:</label>
             <select id="team-select">
                 <option value="acrobats">Acrobats</option>
                 <option value="quicksilver">Quicksilver</option>
                 <option value="druids">Druids</option>
                 <option value="bravehearts">Bravehearts</option>
-            </select><br><br>
-
-            <label>New Score:</label><br>
-            <input type="number" id="score-input"><br><br>
-
+            </select>
+            <label>New Score:</label>
+            <input type="number" id="score-input">
             <button onclick="saveScore()">Save</button>
             <button onclick="closeAdmin()">Close</button>
         </div>
     </div>
 
-    <script>
-        /* TEAM DATA + IMAGES */
-        let teams = [
-            { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
-            { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
-            { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
-            { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
-        ];
+<script>
+    /* --- TEAM DATA --- */
+    let teams = [
+        { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
+        { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
+        { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
+        { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
+    ];
 
-        const teamImages = {
-            acrobats: "project/acro.png",
-            quicksilver: "project/quicksilver.png",
-            druids: "project/druids.png",
-            bravehearts: "project/bravehearts.png"
-        };
+    const teamImages = {
+        acrobats: "project/acrobats.jpeg",
+        quicksilver: "project/quicksilver.jpeg",
+        druids: "project/druids.jpeg",
+        bravehearts: "project/bravehearts.jpeg"
+    };
 
-        /* RENDER LEADERBOARD */
-        function renderLeaderboard() {
-            const container = document.getElementById("leaderboard");
-            container.innerHTML = "";
+    /* --- RENDER LEADERBOARD --- */
+    function renderLeaderboard() {
+        const container = document.getElementById("leaderboard");
+        container.innerHTML = "";
+        teams.sort((a, b) => b.score - a.score);
 
-            // Sort teams from highest to lowest
-            teams.sort((a, b) => b.score - a.score);
+        teams.forEach((team, index) => {
+            const card = document.createElement("div");
+            card.className = "team-card";
+            card.style.border = "3px solid " + team.color;
+            card.innerHTML = `
+                <div class="rank-label">#${index + 1}</div>
+                <img src="${teamImages[team.id]}">
+                <h3>${team.name}</h3>
+                <p class="score">${team.score} pts</p>
+            `;
+            container.appendChild(card);
+        });
+    }
 
-            teams.forEach((team, index) => {
-                const card = document.createElement("div");
-                card.className = "team-card";
-                card.style.border = "3px solid " + team.color;
+    renderLeaderboard();
 
-                card.innerHTML = `
-                    <div class="rank-label">#${index + 1}</div>
-                    <img src="${teamImages[team.id]}">
-                    <h3>${team.name}</h3>
-                    <p class="score">${team.score} pts</p>
-                `;
+    /* --- DARK/LIGHT MODE --- */
+    const modeBtn = document.getElementById("mode-toggle");
+    modeBtn.onclick = () => {
+        document.body.classList.toggle("dark");
+        modeBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    };
 
-                container.appendChild(card);
-            });
-        }
-
-        renderLeaderboard();
-
-        /* DARK/LIGHT MODE */
-        document.getElementById("mode-toggle").onclick = function () {
-            document.body.classList.toggle("dark");
-
-            this.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
-        };
-
-        /* ADMIN PANEL */
-        function openAdmin() {
+    /* --- ADMIN PANEL --- */
+    function openAdmin() {
+        const pwd = prompt("Enter admin password:");
+        if (pwd === "1234") {
             document.getElementById("admin-modal").style.display = "flex";
+        } else {
+            alert("Incorrect password!");
         }
+    }
 
-        function closeAdmin() {
-            document.getElementById("admin-modal").style.display = "none";
-        }
+    function closeAdmin() {
+        document.getElementById("admin-modal").style.display = "none";
+    }
 
-        function saveScore() {
-            const teamId = document.getElementById("team-select").value;
-            const newScore = parseInt(document.getElementById("score-input").value);
+    function saveScore() {
+        const teamId = document.getElementById("team-select").value;
+        const newScore = parseInt(document.getElementById("score-input").value);
+        const team = teams.find(t => t.id === teamId);
+        if (team && !isNaN(newScore)) team.score = newScore;
+        renderLeaderboard();
+        closeAdmin();
+    }
+</script>
 
-            const team = teams.find(t => t.id === teamId);
-            if (team) team.score = newScore;
-
-            renderLeaderboard();
-            closeAdmin();
-        }
-    </script>
 </body>
 </html>
