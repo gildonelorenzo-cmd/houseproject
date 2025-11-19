@@ -137,7 +137,7 @@ body.dark footer { background: #999999; }
     background:white; padding:30px; border-radius:10px; width:300px;
 }
 body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
-#admin-modal input, #admin-modal select, #admin-modal button {
+#admin-modal input, #admin-modal button {
     width: 100%;
     margin-bottom: 10px;
     padding: 8px;
@@ -146,7 +146,6 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     font-size: 16px;
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
-
 </style>
 </head>
 <body>
@@ -164,19 +163,24 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     </div>
 </footer>
 
+<!-- Admin Panel: All teams editable -->
 <div id="admin-modal">
     <div class="modal-content">
         <h2>Admin Panel</h2>
-        <label>Team:</label>
-        <select id="team-select">
-            <option value="acrobats">Acrobats</option>
-            <option value="quicksilver">Quicksilver</option>
-            <option value="druids">Druids</option>
-            <option value="bravehearts">Bravehearts</option>
-        </select>
-        <label>New Score:</label>
-        <input type="number" id="score-input">
-        <button onclick="saveScore()">Save</button>
+        
+        <label>Acrobats:</label>
+        <input type="number" id="admin-acrobats">
+        
+        <label>Quicksilver:</label>
+        <input type="number" id="admin-quicksilver">
+        
+        <label>Druids:</label>
+        <input type="number" id="admin-druids">
+        
+        <label>Bravehearts:</label>
+        <input type="number" id="admin-bravehearts">
+        
+        <button onclick="saveScores()">Save</button>
         <button onclick="closeAdmin()">Close</button>
     </div>
 </div>
@@ -232,23 +236,31 @@ function saveToFirebase() {
     db.ref("houseScores").set(data);
 }
 
-// Admin
+// Admin functions
 function openAdmin(){
     const pwd=prompt("Enter admin password:");
-    if(pwd==="Smiling-1092") document.getElementById("admin-modal").style.display="flex";
-    else alert("Incorrect password!");
+    if(pwd==="1234"){
+        // Pre-fill inputs with current scores
+        document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
+        document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
+        document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
+        document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
+        
+        document.getElementById("admin-modal").style.display="flex";
+    } else {
+        alert("Incorrect password!");
+    }
 }
 function closeAdmin(){document.getElementById("admin-modal").style.display="none";}
-function saveScore(){
-    const id=document.getElementById("team-select").value;
-    const val=parseInt(document.getElementById("score-input").value);
-    if(!isNaN(val)){
-        const team=teams.find(t=>t.id===id);
-        if(team) team.score=val;
-        renderLeaderboard();
-        saveToFirebase();
-        closeAdmin();
-    }
+function saveScores(){
+    teams.find(t=>t.id==="acrobats").score = parseInt(document.getElementById("admin-acrobats").value) || 0;
+    teams.find(t=>t.id==="quicksilver").score = parseInt(document.getElementById("admin-quicksilver").value) || 0;
+    teams.find(t=>t.id==="druids").score = parseInt(document.getElementById("admin-druids").value) || 0;
+    teams.find(t=>t.id==="bravehearts").score = parseInt(document.getElementById("admin-bravehearts").value) || 0;
+
+    renderLeaderboard();
+    saveToFirebase();
+    closeAdmin();
 }
 
 // Dark Mode
@@ -275,4 +287,3 @@ loadFromFirebase();
 
 </body>
 </html>
-
