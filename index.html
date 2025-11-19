@@ -25,7 +25,7 @@ const db = firebase.database();
 </script>
 
 <style>
-/* BODY + GRADIENT + PATTERN */
+/* BODY + ANIMATED GRADIENT + ANIMAL PATTERN */
 body {
     margin: 0;
     padding: 0;
@@ -33,35 +33,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: color 0.5s;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-    background: linear-gradient(270deg, #a8edea, #fed6e3);
-    background-size: 400% 400%;
-    animation: gradientShift 20s ease infinite;
+    background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
+    background-size: 800% 800%;
+    animation: gradientShift 20s linear infinite;
 }
 
 body.dark {
     color: #f0f0f0;
-    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
-    background-size: 400% 400%;
-    animation: gradientShiftDark 20s ease infinite;
-}
-
-/* Background pattern overlay */
-body::before {
-    content: '';
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-}
-body.dark::before {
-    background: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
+    background-size: 800% 800%;
+    animation: gradientShiftDark 25s linear infinite;
 }
 
 /* Gradient animations */
@@ -74,6 +58,38 @@ body.dark::before {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Animal-print pattern overlay */
+body::after {
+    content: '';
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,0.12) 10%, transparent 11%),
+        radial-gradient(circle at 70% 60%, rgba(0,0,0,0.12) 12%, transparent 13%),
+        radial-gradient(circle at 40% 80%, rgba(0,0,0,0.12) 8%, transparent 9%),
+        radial-gradient(circle at 85% 20%, rgba(0,0,0,0.12) 9%, transparent 10%),
+        radial-gradient(circle at 15% 50%, rgba(0,0,0,0.12) 11%, transparent 12%);
+    background-size: 200% 200%;
+    pointer-events: none;
+    z-index: 0;
+    animation: patternMove 25s linear infinite;
+    opacity: 0.08;
+}
+body.dark::after {
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 10%, transparent 11%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,0.1) 12%, transparent 13%),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.1) 8%, transparent 9%),
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,0.1) 9%, transparent 10%),
+        radial-gradient(circle at 15% 50%, rgba(255,255,255,0.1) 11%, transparent 12%);
+}
+@keyframes patternMove {
+    0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+    50% { background-position: 20% 30%, 30% 40%, 25% 60%, 40% 20%, 15% 50%; }
+    100% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
 }
 
 /* Dark/Light mode button */
@@ -147,16 +163,18 @@ body.dark footer { background: #999999; }
 .footer-left {
     display: flex;
     align-items: center;
-    gap: 15px; /* space between logo and text */
+    gap: 15px; 
 }
 
 .footer-text {
     font-size: 16px;
     font-weight: bold;
+    line-height: 55px; /* vertical alignment with logo */
     white-space: nowrap;
 }
 
 .footer-logo {
+    display: block;
     height: 55px;
     width: auto;
     object-fit: contain;
@@ -316,16 +334,6 @@ modeBtn.onclick=()=>{
     document.body.classList.toggle("dark");
     modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
 };
-
-// Interactive gradient background
-document.addEventListener("mousemove", (e) => {
-    const x = e.clientX / window.innerWidth;
-    if(document.body.classList.contains("dark")){
-        document.body.style.background = `linear-gradient(${x*360}deg, #0f2027, #203a43, #2c5364)`;
-    } else {
-        document.body.style.background = `linear-gradient(${x*360}deg, #a8edea, #fed6e3)`;
-    }
-});
 
 renderLeaderboard();
 loadFromFirebase();
