@@ -25,7 +25,6 @@ const db = firebase.database();
 </script>
 
 <style>
-/* BODY + GRADIENT ANIMATION + PATTERN */
 body {
     margin: 0;
     padding: 0;
@@ -35,36 +34,23 @@ body {
     align-items: center;
     transition: color 0.5s;
     min-height: 100vh;
-    background: linear-gradient(270deg, #a8edea, #fed6e3);
-    background-size: 400% 400%;
-    animation: gradientShift 20s ease infinite;
     position: relative;
     overflow-x: hidden;
 }
 
-/* Light pattern overlay */
-body::before {
-    content: '';
-    position: absolute;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
+/* Background gradient animation */
+body.light-bg {
+    background: linear-gradient(270deg, #a8edea, #fed6e3);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
 }
-
-/* Dark mode */
 body.dark {
     color: #f0f0f0;
     background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
     background-size: 400% 400%;
     animation: gradientShiftDark 20s ease infinite;
 }
-body.dark::before {
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-}
 
-/* Keyframes for gradient animations */
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -74,6 +60,21 @@ body.dark::before {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Light pattern overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+body.dark::before {
+    background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
 }
 
 /* Dark/Light mode button */
@@ -92,7 +93,7 @@ body.dark::before {
     justify-content: center;
     cursor: pointer;
     transition: 0.3s;
-    z-index: 100;
+    z-index: 10;
 }
 body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
 
@@ -102,9 +103,10 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     margin-top: 120px;
-    margin-bottom: 40px;
+    z-index: 1;
 }
 
+/* Team cards */
 .team-card {
     background: rgba(255,255,255,0.9);
     border-radius: 15px;
@@ -113,6 +115,7 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     width: 200px;
     transition: background 0.3s, color 0.3s, transform 0.2s;
     box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    z-index: 1;
 }
 body.dark .team-card {
     background: rgba(0,0,0,0.6);
@@ -124,23 +127,23 @@ body.dark .team-card {
 .team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
 .score { font-weight: bold; font-size: 22px; }
 
-/* Credits rectangle under grid */
+/* Credits rectangle under leaderboard */
 #credits {
-    margin-top: 20px;
-    padding: 15px 25px;
+    margin-top: 40px;
+    padding: 20px 30px;
     border-radius: 20px;
     font-size: 20px;
     font-weight: bold;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.85);
     color: #333;
     text-align: center;
-    transition: background 0.5s, color 0.5s;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 body.dark #credits {
     background: rgba(0,0,0,0.6);
     color: #f0f0f0;
-    box-shadow: 0 8px 15px rgba(255,255,255,0.2);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.2);
 }
 
 /* Footer */
@@ -157,7 +160,7 @@ footer {
     padding: 0 20px;
     box-sizing: border-box;
     border-top: 3px solid #ccc;
-    transition: background 0.3s;
+    z-index: 2;
 }
 body.dark footer { background: #999999; }
 
@@ -182,6 +185,7 @@ body.dark footer { background: #999999; }
     position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.6);
     align-items:center; justify-content:center;
+    z-index: 100;
 }
 #admin-modal .modal-content {
     background:white; padding:30px; border-radius:10px; width:300px;
@@ -196,15 +200,16 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     font-size: 16px;
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
+
 </style>
 </head>
-<body>
+<body class="light-bg">
 
 <button id="mode-toggle">🌙</button>
 
 <div id="leaderboard"></div>
 
-<!-- Credits rectangle under grid -->
+<!-- Credits rectangle under leaderboard -->
 <div id="credits">By the IBDP1 Students of the Computer Science class</div>
 
 <footer>
@@ -318,6 +323,7 @@ function saveScores(){
 const modeBtn=document.getElementById("mode-toggle");
 modeBtn.onclick=()=>{
     document.body.classList.toggle("dark");
+    document.body.classList.toggle("light-bg");
     modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
 };
 
