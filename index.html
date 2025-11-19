@@ -25,6 +25,7 @@ const db = firebase.database();
 </script>
 
 <style>
+/* BODY + GRADIENT + PATTERN */
 body {
     margin: 0;
     padding: 0;
@@ -36,14 +37,11 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-}
-
-/* Background gradient animation */
-body.light-bg {
     background: linear-gradient(270deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
 }
+
 body.dark {
     color: #f0f0f0;
     background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
@@ -51,6 +49,22 @@ body.dark {
     animation: gradientShiftDark 20s ease infinite;
 }
 
+/* Background pattern overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+body.dark::before {
+    background: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+}
+
+/* Gradient animations */
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -60,21 +74,6 @@ body.dark {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-}
-
-/* Light pattern overlay */
-body::before {
-    content: '';
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-}
-body.dark::before {
-    background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
 }
 
 /* Dark/Light mode button */
@@ -127,25 +126,6 @@ body.dark .team-card {
 .team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
 .score { font-weight: bold; font-size: 22px; }
 
-/* Credits rectangle under leaderboard */
-#credits {
-    margin-top: 40px;
-    padding: 20px 30px;
-    border-radius: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    background: rgba(255,255,255,0.85);
-    color: #333;
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-body.dark #credits {
-    background: rgba(0,0,0,0.6);
-    color: #f0f0f0;
-    box-shadow: 0 8px 20px rgba(255,255,255,0.2);
-}
-
 /* Footer */
 footer {
     position: fixed;
@@ -164,9 +144,29 @@ footer {
 }
 body.dark footer { background: #999999; }
 
-.footer-left { display: flex; align-items: center; }
-.footer-right { display: flex; align-items: center; }
-.footer-logo { height: 55px; width: auto; object-fit: contain; }
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* space between logo and text */
+}
+
+.footer-text {
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.footer-logo {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+}
+
 #admin-button {
     background: #007BFF;
     color: white;
@@ -176,7 +176,6 @@ body.dark footer { background: #999999; }
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
-    margin-left: 15px;
 }
 
 /* Admin Modal */
@@ -200,44 +199,36 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     font-size: 16px;
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
-
 </style>
 </head>
-<body class="light-bg">
+<body>
 
 <button id="mode-toggle">🌙</button>
 
 <div id="leaderboard"></div>
 
-<!-- Credits rectangle under leaderboard -->
-<div id="credits">By the IBDP1 Students of the Computer Science class</div>
-
 <footer>
     <div class="footer-left">
         <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+        <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
     </div>
     <div class="footer-right">
         <button id="admin-button" onclick="openAdmin()">Admin</button>
     </div>
 </footer>
 
-<!-- Admin Panel -->
+<!-- Admin Modal -->
 <div id="admin-modal">
     <div class="modal-content">
         <h2>Admin Panel</h2>
-        
         <label>Acrobats:</label>
         <input type="number" id="admin-acrobats">
-        
         <label>Quicksilver:</label>
         <input type="number" id="admin-quicksilver">
-        
         <label>Druids:</label>
         <input type="number" id="admin-druids">
-        
         <label>Bravehearts:</label>
         <input type="number" id="admin-bravehearts">
-        
         <button onclick="saveScores()">Save</button>
         <button onclick="closeAdmin()">Close</button>
     </div>
@@ -323,7 +314,6 @@ function saveScores(){
 const modeBtn=document.getElementById("mode-toggle");
 modeBtn.onclick=()=>{
     document.body.classList.toggle("dark");
-    document.body.classList.toggle("light-bg");
     modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
 };
 
