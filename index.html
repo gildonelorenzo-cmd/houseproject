@@ -25,6 +25,7 @@ const db = firebase.database();
 </script>
 
 <style>
+/* BODY + GRADIENT ANIMATION */
 body {
     margin: 0;
     padding: 0;
@@ -32,17 +33,30 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: background 0.5s, color 0.5s;
+    transition: color 0.5s;
     min-height: 100vh;
     background: linear-gradient(270deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
 }
 
-/* Dark mode */
 body.dark {
     color: #f0f0f0;
     background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
     background-size: 400% 400%;
+    animation: gradientShiftDark 20s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientShiftDark {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* Dark/Light mode button */
@@ -240,12 +254,10 @@ function saveToFirebase() {
 function openAdmin(){
     const pwd=prompt("Enter admin password:");
     if(pwd==="Smiling-1092"){
-        // Pre-fill inputs with current scores
         document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
         document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
         document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
         document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
-        
         document.getElementById("admin-modal").style.display="flex";
     } else {
         alert("Incorrect password!");
@@ -287,4 +299,3 @@ loadFromFirebase();
 
 </body>
 </html>
-
