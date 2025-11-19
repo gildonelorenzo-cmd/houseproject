@@ -32,27 +32,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: background 1s, color 0.5s;
+    transition: background 0.5s, color 0.5s;
     min-height: 100vh;
     background: linear-gradient(270deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
 }
 
+/* Dark mode */
 body.dark {
     color: #f0f0f0;
     background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
     background-size: 400% 400%;
 }
 
-/* Animate Background */
-@keyframes gradientMove {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-}
-body, body.dark { animation: gradientMove 15s ease infinite; }
-
-/* DARK/LIGHT MODE BUTTON */
+/* Dark/Light mode button */
 #mode-toggle {
     position: fixed;
     top: 20px;
@@ -72,7 +65,7 @@ body, body.dark { animation: gradientMove 15s ease infinite; }
 }
 body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
 
-/* LEADERBOARD GRID */
+/* Leaderboard grid */
 #leaderboard {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -100,7 +93,7 @@ body.dark .team-card {
 .team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
 .score { font-weight: bold; font-size: 22px; }
 
-/* FOOTER */
+/* Footer */
 footer {
     position: fixed;
     bottom: 0;
@@ -109,17 +102,31 @@ footer {
     height: 70px;
     background: #B5E0FF;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 40px; /* added spacing for button */
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
     border-top: 3px solid #ccc;
     transition: background 0.3s;
 }
 body.dark footer { background: #999999; }
-.footer-logo { height: 55px; width: auto; object-fit: contain; }
-#admin-button { background: #007BFF; color: white; padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; font-weight: bold; }
 
-/* ADMIN MODAL */
+.footer-left { display: flex; align-items: center; }
+.footer-right { display: flex; align-items: center; }
+.footer-logo { height: 55px; width: auto; object-fit: contain; }
+#admin-button {
+    background: #007BFF;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+/* Admin Modal */
 #admin-modal {
     display:none;
     position:fixed; top:0; left:0; width:100%; height:100%;
@@ -139,6 +146,7 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     font-size: 16px;
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
+
 </style>
 </head>
 <body>
@@ -148,8 +156,12 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
 <div id="leaderboard"></div>
 
 <footer>
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-    <button id="admin-button" onclick="openAdmin()">Admin</button>
+    <div class="footer-left">
+        <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    </div>
+    <div class="footer-right">
+        <button id="admin-button" onclick="openAdmin()">Admin</button>
+    </div>
 </footer>
 
 <div id="admin-modal">
@@ -202,7 +214,7 @@ function renderLeaderboard() {
     });
 }
 
-// --- Load from Firebase ---
+// Firebase Load
 function loadFromFirebase() {
     db.ref("houseScores").once("value").then(snapshot=>{
         if(snapshot.exists()){
@@ -213,14 +225,14 @@ function loadFromFirebase() {
     });
 }
 
-// --- Save to Firebase ---
+// Firebase Save
 function saveToFirebase() {
     const data={};
     teams.forEach(t=>{data[t.id]=t.score;});
     db.ref("houseScores").set(data);
 }
 
-// --- Admin ---
+// Admin
 function openAdmin(){
     const pwd=prompt("Enter admin password:");
     if(pwd==="1234") document.getElementById("admin-modal").style.display="flex";
@@ -239,12 +251,23 @@ function saveScore(){
     }
 }
 
-// --- Dark Mode ---
+// Dark Mode
 const modeBtn=document.getElementById("mode-toggle");
 modeBtn.onclick=()=>{
     document.body.classList.toggle("dark");
     modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
 };
+
+// Interactive gradient background
+document.addEventListener("mousemove", (e) => {
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+    if(document.body.classList.contains("dark")){
+        document.body.style.background = `linear-gradient(${x*360}deg, #0f2027, #203a43, #2c5364)`;
+    } else {
+        document.body.style.background = `linear-gradient(${x*360}deg, #a8edea, #fed6e3)`;
+    }
+});
 
 renderLeaderboard();
 loadFromFirebase();
