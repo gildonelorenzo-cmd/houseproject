@@ -5,265 +5,249 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>House Leaderboard</title>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+  authDomain: "housesproject-cb92e.firebaseapp.com",
+  databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "housesproject-cb92e",
+  storageBucket: "housesproject-cb92e.appspot.com",
+  messagingSenderId: "643241335908",
+  appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
+  measurementId: "G-Q1Z380QK03"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
 <style>
-    /* --- BODY & BACKGROUND --- */
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: background 0.5s, color 0.5s;
-        background: linear-gradient(135deg, #a8edea, #fed6e3); /* Light mode default */
-        min-height: 100vh;
-    }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 1s, color 0.5s;
+    min-height: 100vh;
+    background: linear-gradient(270deg, #a8edea, #fed6e3);
+    background-size: 400% 400%;
+}
 
-    body.dark {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Dark mode gradient */
-        color: #f0f0f0;
-    }
+body.dark {
+    color: #f0f0f0;
+    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
+    background-size: 400% 400%;
+}
 
-    /* --- DARK/LIGHT MODE BUTTON --- */
-    #mode-toggle {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid black;
-        font-size: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: 0.3s;
-        z-index: 100;
-    }
+/* Animate Background */
+@keyframes gradientMove {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+body, body.dark { animation: gradientMove 15s ease infinite; }
 
-    body.dark #mode-toggle {
-        background: #444;
-        color: yellow;
-        border-color: white;
-    }
+/* DARK/LIGHT MODE BUTTON */
+#mode-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid black;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 100;
+}
+body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
 
-    /* --- LEADERBOARD GRID --- */
-    #leaderboard {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        margin-top: 120px;
-        margin-bottom: 140px;
-    }
+/* LEADERBOARD GRID */
+#leaderboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 120px;
+    margin-bottom: 140px;
+}
 
-    .team-card {
-        background: rgba(255,255,255,0.9);
-        border-radius: 15px;
-        padding: 15px;
-        text-align: center;
-        width: 200px;
-        transition: background 0.3s, color 0.3s, transform 0.2s;
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    }
+.team-card {
+    background: rgba(255,255,255,0.9);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    width: 200px;
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+body.dark .team-card {
+    background: rgba(0,0,0,0.6);
+    color: white;
+    box-shadow: 0 8px 15px rgba(255,255,255,0.1);
+}
 
-    body.dark .team-card {
-        background: rgba(0,0,0,0.6);
-        color: white;
-        box-shadow: 0 8px 15px rgba(255,255,255,0.1);
-    }
+.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+.team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
+.score { font-weight: bold; font-size: 22px; }
 
-    .rank-label {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
+/* FOOTER */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: #B5E0FF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px; /* added spacing for button */
+    border-top: 3px solid #ccc;
+    transition: background 0.3s;
+}
+body.dark footer { background: #999999; }
+.footer-logo { height: 55px; width: auto; object-fit: contain; }
+#admin-button { background: #007BFF; color: white; padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; font-weight: bold; }
 
-    .team-card img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border-radius: 12px;
-        margin-bottom: 10px;
-    }
-
-    .score {
-        font-weight: bold;
-        font-size: 22px;
-    }
-
-    /* --- FOOTER --- */
-    footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background: #B5E0FF;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 25px;
-        border-top: 3px solid #ccc;
-        transition: background 0.3s;
-    }
-
-    body.dark footer {
-        background: #999999;
-    }
-
-    .footer-logo {
-        height: 55px;
-        width: auto;
-        object-fit: contain;
-    }
-
-    #admin-button {
-        background: #007BFF;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    /* --- ADMIN MODAL --- */
-    #admin-modal {
-        display:none;
-        position:fixed; top:0; left:0; width:100%; height:100%;
-        background:rgba(0,0,0,0.6);
-        align-items:center; justify-content:center;
-    }
-
-    #admin-modal .modal-content {
-        background:white; padding:30px; border-radius:10px; width:300px;
-    }
-
-    body.dark #admin-modal .modal-content {
-        background: #1e1e1e;
-        color: white;
-    }
-
-    #admin-modal input, #admin-modal select, #admin-modal button {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-    }
-
-    #admin-modal button {
-        cursor: pointer;
-        font-weight: bold;
-        background: #007BFF;
-        color: white;
-        border: none;
-    }
+/* ADMIN MODAL */
+#admin-modal {
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.6);
+    align-items:center; justify-content:center;
+}
+#admin-modal .modal-content {
+    background:white; padding:30px; border-radius:10px; width:300px;
+}
+body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
+#admin-modal input, #admin-modal select, #admin-modal button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+#admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
 </style>
 </head>
 <body>
 
-    <!-- DARK/LIGHT MODE BUTTON -->
-    <button id="mode-toggle">🌙</button>
+<button id="mode-toggle">🌙</button>
 
-    <!-- LEADERBOARD -->
-    <div id="leaderboard"></div>
+<div id="leaderboard"></div>
 
-    <!-- FOOTER -->
-    <footer>
-        <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-        <button id="admin-button" onclick="openAdmin()">Admin</button>
-    </footer>
+<footer>
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    <button id="admin-button" onclick="openAdmin()">Admin</button>
+</footer>
 
-    <!-- ADMIN MODAL -->
-    <div id="admin-modal">
-        <div class="modal-content">
-            <h2>Admin Panel</h2>
-            <label>Team:</label>
-            <select id="team-select">
-                <option value="acrobats">Acrobats</option>
-                <option value="quicksilver">Quicksilver</option>
-                <option value="druids">Druids</option>
-                <option value="bravehearts">Bravehearts</option>
-            </select>
-            <label>New Score:</label>
-            <input type="number" id="score-input">
-            <button onclick="saveScore()">Save</button>
-            <button onclick="closeAdmin()">Close</button>
-        </div>
+<div id="admin-modal">
+    <div class="modal-content">
+        <h2>Admin Panel</h2>
+        <label>Team:</label>
+        <select id="team-select">
+            <option value="acrobats">Acrobats</option>
+            <option value="quicksilver">Quicksilver</option>
+            <option value="druids">Druids</option>
+            <option value="bravehearts">Bravehearts</option>
+        </select>
+        <label>New Score:</label>
+        <input type="number" id="score-input">
+        <button onclick="saveScore()">Save</button>
+        <button onclick="closeAdmin()">Close</button>
     </div>
+</div>
 
 <script>
-    /* --- TEAM DATA --- */
-    let teams = [
-        { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
-        { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
-        { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
-        { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
-    ];
+let teams = [
+    { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
+    { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
+    { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
+    { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
+];
 
-    const teamImages = {
-        acrobats: "project/acrobats.jpeg",
-        quicksilver: "project/quicksilver.jpeg",
-        druids: "project/druids.jpeg",
-        bravehearts: "project/bravehearts.jpeg"
-    };
+const teamImages = {
+    acrobats: "project/acrobats.jpeg",
+    quicksilver: "project/quicksilver.jpeg",
+    druids: "project/druids.jpeg",
+    bravehearts: "project/bravehearts.jpeg"
+};
 
-    /* --- RENDER LEADERBOARD --- */
-    function renderLeaderboard() {
-        const container = document.getElementById("leaderboard");
-        container.innerHTML = "";
-        teams.sort((a, b) => b.score - a.score);
+function renderLeaderboard() {
+    const container = document.getElementById("leaderboard");
+    container.innerHTML = "";
+    teams.sort((a,b)=>b.score-a.score);
+    teams.forEach((team,index)=>{
+        const card=document.createElement("div");
+        card.className="team-card";
+        card.style.border="3px solid "+team.color;
+        card.innerHTML=`
+            <div class="rank-label">#${index+1}</div>
+            <img src="${teamImages[team.id]}">
+            <h3>${team.name}</h3>
+            <p class="score">${team.score} pts</p>
+        `;
+        container.appendChild(card);
+    });
+}
 
-        teams.forEach((team, index) => {
-            const card = document.createElement("div");
-            card.className = "team-card";
-            card.style.border = "3px solid " + team.color;
-            card.innerHTML = `
-                <div class="rank-label">#${index + 1}</div>
-                <img src="${teamImages[team.id]}">
-                <h3>${team.name}</h3>
-                <p class="score">${team.score} pts</p>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    renderLeaderboard();
-
-    /* --- DARK/LIGHT MODE --- */
-    const modeBtn = document.getElementById("mode-toggle");
-    modeBtn.onclick = () => {
-        document.body.classList.toggle("dark");
-        modeBtn.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
-    };
-
-    /* --- ADMIN PANEL --- */
-    function openAdmin() {
-        const pwd = prompt("Enter admin password:");
-        if (pwd === "1234") {
-            document.getElementById("admin-modal").style.display = "flex";
-        } else {
-            alert("Incorrect password!");
+// --- Load from Firebase ---
+function loadFromFirebase() {
+    db.ref("houseScores").once("value").then(snapshot=>{
+        if(snapshot.exists()){
+            const data=snapshot.val();
+            teams.forEach(t=>{if(data[t.id]!==undefined) t.score=data[t.id];});
+            renderLeaderboard();
         }
-    }
+    });
+}
 
-    function closeAdmin() {
-        document.getElementById("admin-modal").style.display = "none";
-    }
+// --- Save to Firebase ---
+function saveToFirebase() {
+    const data={};
+    teams.forEach(t=>{data[t.id]=t.score;});
+    db.ref("houseScores").set(data);
+}
 
-    function saveScore() {
-        const teamId = document.getElementById("team-select").value;
-        const newScore = parseInt(document.getElementById("score-input").value);
-        const team = teams.find(t => t.id === teamId);
-        if (team && !isNaN(newScore)) team.score = newScore;
+// --- Admin ---
+function openAdmin(){
+    const pwd=prompt("Enter admin password:");
+    if(pwd==="1234") document.getElementById("admin-modal").style.display="flex";
+    else alert("Incorrect password!");
+}
+function closeAdmin(){document.getElementById("admin-modal").style.display="none";}
+function saveScore(){
+    const id=document.getElementById("team-select").value;
+    const val=parseInt(document.getElementById("score-input").value);
+    if(!isNaN(val)){
+        const team=teams.find(t=>t.id===id);
+        if(team) team.score=val;
         renderLeaderboard();
+        saveToFirebase();
         closeAdmin();
     }
+}
+
+// --- Dark Mode ---
+const modeBtn=document.getElementById("mode-toggle");
+modeBtn.onclick=()=>{
+    document.body.classList.toggle("dark");
+    modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
+};
+
+renderLeaderboard();
+loadFromFirebase();
 </script>
 
 </body>
