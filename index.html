@@ -25,7 +25,7 @@ const db = firebase.database();
 </script>
 
 <style>
-/* BODY + ANIMATED GRADIENT + ANIMAL PATTERN */
+/* BODY + ANIMATED GRADIENT */
 body {
     margin: 0;
     padding: 0;
@@ -60,37 +60,6 @@ body.dark {
     100% { background-position: 0% 50%; }
 }
 
-/* Animal-print pattern overlay */
-body::after {
-    content: '';
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background-image: 
-        radial-gradient(circle at 20% 30%, rgba(0,0,0,0.2) 10%, transparent 11%),
-        radial-gradient(circle at 70% 60%, rgba(0,0,0,0.2) 12%, transparent 13%),
-        radial-gradient(circle at 40% 80%, rgba(0,0,0,0.2) 8%, transparent 9%),
-        radial-gradient(circle at 85% 20%, rgba(0,0,0,0.2) 9%, transparent 10%),
-        radial-gradient(circle at 15% 50%, rgba(0,0,0,0.2) 11%, transparent 12%);
-    background-size: 200% 200%;
-    pointer-events: none;
-    z-index: 0;
-    animation: patternMove 25s linear infinite;
-}
-body.dark::after {
-    background-image: 
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.2) 10%, transparent 11%),
-        radial-gradient(circle at 70% 60%, rgba(255,255,255,0.2) 12%, transparent 13%),
-        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.2) 8%, transparent 9%),
-        radial-gradient(circle at 85% 20%, rgba(255,255,255,0.2) 9%, transparent 10%),
-        radial-gradient(circle at 15% 50%, rgba(255,255,255,0.2) 11%, transparent 12%);
-}
-@keyframes patternMove {
-    0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
-    50% { background-position: 20% 30%, 30% 40%, 25% 60%, 40% 20%, 15% 50%; }
-    100% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
-}
-
 /* Dark/Light mode button */
 #mode-toggle {
     position: fixed;
@@ -116,7 +85,8 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-top: 120px;
+    margin-top: 60px; /* moved up */
+    margin-bottom: 100px; /* space from footer */
     z-index: 1;
 }
 
@@ -126,7 +96,7 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     border-radius: 15px;
     padding: 10px;
     text-align: center;
-    width: 180px;      /* reduced size */
+    width: 180px;
     transition: background 0.3s, color 0.3s, transform 0.2s;
     box-shadow: 0 8px 15px rgba(0,0,0,0.1);
     z-index: 1;
@@ -169,7 +139,7 @@ body.dark footer { background: #999999; }
     font-size: 16px;
     font-weight: bold;
     line-height: 55px; 
-    margin-left: 15px;   /* moved slightly right */
+    margin-left: 15px; /* moved right from logo */
     white-space: nowrap;
 }
 
