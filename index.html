@@ -1,302 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>House Score Tracker</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>House Score Tracker — Leaderboard Layout</title>
 
-<!-- ⭐ FIREBASE v8 (ADD THIS AT TOP) ⭐ -->
+<!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
-  authDomain: "housesproject-cb92e.firebaseapp.com",
-  databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "housesproject-cb92e",
-  storageBucket: "housesproject-cb92e.firebasestorage.app",
-  messagingSenderId: "643241335908",
-  appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
-  measurementId: "G-Q1Z380QK03"
-};
+  // <-- your Firebase config (kept from your original file) -->
+  const firebaseConfig = {
+    apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+    authDomain: "housesproject-cb92e.firebaseapp.com",
+    databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "housesproject-cb92e",
+    storageBucket: "housesproject-cb92e.firebasestorage.app",
+    messagingSenderId: "643241335908",
+    appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
+    measurementId: "G-Q1Z380QK03"
+  };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 </script>
 
 <style>
-/* --- BASIC LAYOUT --- */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #fafafa;
-    color: #333;
-    transition: all 0.3s ease;
-}
+  :root {
+    --light-footer: #B5E0FF;
+    --dark-footer: #999999;
+    --bg-light: #fafafa;
+    --bg-dark: #0f0f10;
+    --text-light: #222;
+    --text-dark: #f2f2f2;
+  }
 
-header {
+  html,body {
+    height: 100%;
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Top-left round toggle */
+  .mode-toggle {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: white;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background: #87ceeb;
-    color: #333;
-}
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    cursor: pointer;
+    z-index: 60;
+  }
 
-header h1 {
-    margin: 0;
-    flex-grow: 1;
-    text-align: center;
-}
+  body.dark-mode .mode-toggle {
+    background: #222;
+    color: #fff;
+  }
 
-.school-logo {
-    width: 120px;
-    height: auto;
-}
-
-.header-buttons {
+  /* Center area: 2x2 grid */
+  .main {
+    min-height: calc(100vh - 88px); /* leave room for footer */
     display: flex;
-    gap: 10px;
-}
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
 
-.admin-button {
+  .grid {
+    width: min(960px, 92vw);
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 240px;
+  }
+
+  .card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover; /* ensure images not distorted or color-touched */
+    display: block;
+  }
+
+  .card-body {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .team-name {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .team-score {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  /* Team color bars (small pill behind name) kept not over the image */
+  .color-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    margin-right: 10px;
+    min-width: 10px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .pill-acrobats { background: #59b300; }
+  .pill-quicksilver { background: #ff4d4d; }
+  .pill-druids { background: #0073e6; }
+  .pill-bravehearts { background: #ffcc00; color: #333; }
+
+  /* Footer: full width */
+  footer.app-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    box-sizing: border-box;
+    background: var(--light-footer);
+    z-index: 50;
+    transition: background 0.25s ease;
+  }
+
+  body.dark-mode footer.app-footer {
+    background: var(--dark-footer);
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-left img.school-logo {
+    height: 64px;
+    width: auto;
+    display: block;
+  }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .admin-button {
     padding: 10px 18px;
     background: #007bff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     color: white;
+    font-weight: 700;
     cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
     font-size: 16px;
-}
+  }
 
-/* --- ADMIN PANEL --- */
-.admin-panel {
+  /* Admin modal (simple) */
+  .admin-panel {
     position: fixed;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 340px;
     background: white;
-    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    width: 300px;
-}
+    box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+    padding: 18px;
+    z-index: 120;
+    display: none;
+  }
 
-.hidden { display: none; }
+  .admin-panel h2 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+  }
 
-.admin-panel input {
+  .admin-panel label {
+    display: block;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  .admin-panel input[type="number"] {
     width: 100%;
-    margin: 8px 0 15px;
+    margin-top: 6px;
     padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-}
-
-/* --- SCOREBOARD --- */
-.scoreboard {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 30px;
-    flex-wrap: wrap;
-}
-
-.house-card {
-    width: 200px;
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.house-logo {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 10px;
-}
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
 
-.score { font-size: 32px; margin-top: 10px; }
-
-/* --- LEADERBOARD --- */
-.leaderboard {
-    margin: 40px auto;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    background: #f7f7f7;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.leaderboard h2 { font-size: 28px; margin-bottom: 15px; }
-.leaderboard ul { list-style: none; padding: 0; }
-
-.leaderboard li {
+  .admin-panel .actions {
     display: flex;
-    justify-content: space-between;
-    padding: 12px 20px;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+
+  .admin-panel .btn {
+    padding: 8px 12px;
     border-radius: 8px;
-    margin: 8px 0;
-    font-size: 20px;
-    font-weight: bold;
-}
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+  }
 
-/* Team colors */
-.lb-acrobats { background: #59b300; color: white; }
-.lb-quicksilver { background: #ff4d4d; color: white; }
-.lb-druids { background: #0073e6; color: white; }
-.lb-bravehearts { background: #ffcc00; color: #333; }
+  .btn-apply { background: #28a745; color: white; }
+  .btn-close { background: #e0e0e0; color: #333; }
 
-/* --- DARK MODE --- */
-body.dark-mode { background: #121212; color: #f0f0f0; }
-body.dark-mode header { background: #1f1f1f; }
-body.dark-mode .admin-panel { background: #1f1f1f; }
-body.dark-mode .house-card { background: #1e1e1e; }
-body.dark-mode .leaderboard { background: #1e1e1e; }
+  /* Dark-mode overrides */
+  body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+
+  body.dark-mode .card { background: #141414; color: var(--text-dark); box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+  body.dark-mode .admin-panel { background: #1b1b1b; color: var(--text-dark); }
+  body.dark-mode .card-body { border-top: 1px solid rgba(255,255,255,0.02); }
+  body.dark-mode .mode-toggle { background: #222; color: #fff; }
+
+  /* Responsive fallback */
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, auto); gap: 18px; width: 92%; }
+    .card img { height: 200px; }
+    footer.app-footer { height: 86px; padding: 10px; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="school-logo">
-    <h1>House Score Tracker</h1>
-    <div class="header-buttons">
-        <button class="admin-button" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-        <button class="admin-button" onclick="adminLogin()">Admin</button>
-    </div>
-</header>
+  <!-- Top-left round mode toggle -->
+  <button id="modeToggle" class="mode-toggle" aria-label="Toggle dark mode">🌙</button>
 
-<div id="adminPanel" class="admin-panel hidden">
+  <!-- Main: center 2x2 grid -->
+  <main class="main">
+    <div class="grid" id="leaderGrid">
+      <!-- Cards will be inserted here by JS in the right order -->
+    </div>
+  </main>
+
+  <!-- Footer full-width (logo-left, admin-right) -->
+  <footer class="app-footer" id="appFooter">
+    <div class="footer-left">
+      <!-- Use the uploaded file path as requested (system will transform to a served URL) -->
+      <img src="/mnt/data/Screenshot 2025-11-19 at 10.57.53.png" alt="School logo" class="school-logo">
+    </div>
+
+    <div class="footer-right">
+      <button class="admin-button" id="openAdmin">Admin</button>
+    </div>
+  </footer>
+
+  <!-- Admin modal -->
+  <div id="adminPanel" class="admin-panel" role="dialog" aria-modal="true" aria-hidden="true">
     <h2>Admin Panel</h2>
-    <label>Acrobats:</label><input type="number" id="admin-acrobats">
-    <label>Quicksilver:</label><input type="number" id="admin-quicksilver">
-    <label>Druids:</label><input type="number" id="admin-druids">
-    <label>Bravehearts:</label><input type="number" id="admin-bravehearts">
-    <button onclick="applyManualScores()">Update Scores</button>
-    <button onclick="closeAdmin()">Close</button>
-</div>
 
-<section class="scoreboard">
-    <div class="house-card acrobats">
-        <img src="project/acrobats.jpeg" class="house-logo">
-        <h2>Acrobats</h2>
-        <p class="score" id="score-acrobats">0</p>
-    </div>
-    <div class="house-card quicksilver">
-        <img src="project/quicksilver.jpeg" class="house-logo">
-        <h2>Quicksilver</h2>
-        <p class="score" id="score-quicksilver">0</p>
-    </div>
-    <div class="house-card druids">
-        <img src="project/druids.jpeg" class="house-logo">
-        <h2>Druids</h2>
-        <p class="score" id="score-druids">0</p>
-    </div>
-    <div class="house-card bravehearts">
-        <img src="project/bravehearts.jpeg" class="house-logo">
-        <h2>Bravehearts</h2>
-        <p class="score" id="score-bravehearts">0</p>
-    </div>
-</section>
+    <label for="admin-acrobats">Acrobats</label>
+    <input id="admin-acrobats" type="number" placeholder="Points to add">
 
-<section class="leaderboard">
-    <h2>Leaderboard</h2>
-    <ul id="leaderboard-list"></ul>
-</section>
+    <label for="admin-quicksilver">Quicksilver</label>
+    <input id="admin-quicksilver" type="number" placeholder="Points to add">
+
+    <label for="admin-druids">Druids</label>
+    <input id="admin-druids" type="number" placeholder="Points to add">
+
+    <label for="admin-bravehearts">Bravehearts</label>
+    <input id="admin-bravehearts" type="number" placeholder="Points to add">
+
+    <div class="actions">
+      <button class="btn btn-close" id="closeAdmin">Close</button>
+      <button class="btn btn-apply" id="applyScores">Update Scores</button>
+    </div>
+  </div>
 
 <script>
-/* --- ADMIN LOGIN --- */
-function adminLogin() {
-    const pwd = prompt("Enter admin password:");
-    if (pwd === "1234") openAdmin();
-    else alert("Wrong password!");
-}
+  /**********************
+   * App Data + Helpers *
+   **********************/
 
-function openAdmin() { document.getElementById("adminPanel").classList.remove("hidden"); }
-function closeAdmin() { document.getElementById("adminPanel").classList.add("hidden"); }
+  // Initial teams data (image paths match your original structure).
+  // Keep images untouched; colors are applied to pill elements only.
+  const teams = {
+    acrobats: {
+      id: 'acrobats',
+      name: 'Acrobats',
+      img: 'project/acrobats.jpeg',
+      pillClass: 'pill-acrobats'
+    },
+    quicksilver: {
+      id: 'quicksilver',
+      name: 'Quicksilver',
+      img: 'project/quicksilver.jpeg',
+      pillClass: 'pill-quicksilver'
+    },
+    druids: {
+      id: 'druids',
+      name: 'Druids',
+      img: 'project/druids.jpeg',
+      pillClass: 'pill-druids'
+    },
+    bravehearts: {
+      id: 'bravehearts',
+      name: 'Bravehearts',
+      img: 'project/bravehearts.jpeg',
+      pillClass: 'pill-bravehearts'
+    }
+  };
 
-/* --- SAVE TO FIREBASE --- */
-function saveScoresToFirebase(scores) {
-    db.ref("houseScores").set(scores);
-}
+  // Get/Set scores from DOM helper
+  function createCardElement(teamId, score) {
+    const t = teams[teamId];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.team = teamId;
 
-/* --- LOAD FROM FIREBASE --- */
-function loadScoresFromFirebase() {
-    db.ref("houseScores").once("value").then(snapshot => {
-        if (snapshot.exists()) {
-            const saved = snapshot.val();
-            document.getElementById("score-acrobats").textContent = saved.acrobats;
-            document.getElementById("score-quicksilver").textContent = saved.quicksilver;
-            document.getElementById("score-druids").textContent = saved.druids;
-            document.getElementById("score-bravehearts").textContent = saved.bravehearts;
-            updateLeaderboard();
-        }
+    const img = document.createElement('img');
+    img.src = t.img;
+    img.alt = t.name;
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const left = document.createElement('div');
+    left.style.display = 'flex';
+    left.style.alignItems = 'center';
+
+    const pill = document.createElement('span');
+    pill.className = `color-pill ${t.pillClass}`;
+    pill.textContent = t.name;
+
+    left.appendChild(pill);
+
+    const scoreEl = document.createElement('div');
+    scoreEl.className = 'team-score';
+    scoreEl.textContent = score;
+
+    body.appendChild(left);
+    body.appendChild(scoreEl);
+
+    card.appendChild(img);
+    card.appendChild(body);
+
+    return card;
+  }
+
+  // Render the grid in the required order by score:
+  // highest -> top-left, second -> top-right, third -> bottom-left, fourth -> bottom-right
+  function renderGrid(scoresObj) {
+    // scoresObj: {acrobats: n, quicksilver: n, ...}
+    const entries = Object.keys(scoresObj).map(k => ({ id: k, score: parseInt(scoresObj[k] || 0, 10) }));
+    // Sort descending by score
+    entries.sort((a,b) => b.score - a.score);
+
+    // Create card elements in the order sorted
+    const grid = document.getElementById('leaderGrid');
+    grid.innerHTML = ''; // clear
+
+    // The grid uses natural flow: first element -> top-left, second -> top-right, third -> bottom-left, fourth -> bottom-right
+    entries.forEach(e => {
+      const card = createCardElement(e.id, e.score);
+      grid.appendChild(card);
     });
-}
+  }
 
-/* --- APPLY SCORES --- */
-function applyManualScores() {
-    const fields = [
-        { input: "admin-acrobats", score: "score-acrobats" },
-        { input: "admin-quicksilver", score: "score-quicksilver" },
-        { input: "admin-druids", score: "score-druids" },
-        { input: "admin-bravehearts", score: "score-bravehearts" }
-    ];
-
-    fields.forEach(item => {
-        const inputEl = document.getElementById(item.input);
-        if (inputEl.value.trim() !== "") {
-            const scoreEl = document.getElementById(item.score);
-            scoreEl.textContent = parseInt(scoreEl.textContent) + parseInt(inputEl.value);
-        }
-        inputEl.value = "";
+  /**********************
+   * Firebase functions *
+   **********************/
+  function saveScoresToFirebase(scores) {
+    db.ref('houseScores').set(scores).catch(err => {
+      console.error('Firebase save error', err);
     });
+  }
 
-    const scores = {
-        acrobats: parseInt(document.getElementById("score-acrobats").textContent),
-        quicksilver: parseInt(document.getElementById("score-quicksilver").textContent),
-        druids: parseInt(document.getElementById("score-druids").textContent),
-        bravehearts: parseInt(document.getElementById("score-bravehearts").textContent)
+  function loadScoresFromFirebase() {
+    db.ref('houseScores').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+        const saved = snapshot.val();
+        // ensure each team key exists
+        const defaults = { acrobats:0, quicksilver:0, druids:0, bravehearts:0 };
+        const final = Object.assign(defaults, saved || {});
+        renderGrid(final);
+      } else {
+        // if no snapshot, initialize with zeros
+        renderGrid({ acrobats:0, quicksilver:0, druids:0, bravehearts:0 });
+      }
+    }).catch(err => {
+      console.error('Firebase load error', err);
+      // fallback
+      renderGrid({ acrobats:0, quicksilver:0, druids:0, bravehearts:0 });
+    });
+  }
+
+  /**********************
+   * Admin UI actions   *
+   **********************/
+  const openAdminBtn = document.getElementById('openAdmin');
+  const adminPanel = document.getElementById('adminPanel');
+  const closeAdminBtn = document.getElementById('closeAdmin');
+  const applyScoresBtn = document.getElementById('applyScores');
+
+  openAdminBtn.addEventListener('click', () => {
+    adminPanel.style.display = 'block';
+    adminPanel.setAttribute('aria-hidden', 'false');
+  });
+
+  closeAdminBtn.addEventListener('click', () => {
+    adminPanel.style.display = 'none';
+    adminPanel.setAttribute('aria-hidden', 'true');
+    // clear inputs
+    ['admin-acrobats','admin-quicksilver','admin-druids','admin-bravehearts'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  });
+
+  applyScoresBtn.addEventListener('click', () => {
+    // read inputs
+    const vals = {
+      acrobats: parseInt(document.getElementById('admin-acrobats').value || 0, 10),
+      quicksilver: parseInt(document.getElementById('admin-quicksilver').value || 0, 10),
+      druids: parseInt(document.getElementById('admin-druids').value || 0, 10),
+      bravehearts: parseInt(document.getElementById('admin-bravehearts').value || 0, 10)
     };
 
-    saveScoresToFirebase(scores);
-    updateLeaderboard();
-    closeAdmin();
-}
+    // fetch current, add, save
+    db.ref('houseScores').once('value').then(snapshot => {
+      const current = snapshot.exists() ? snapshot.val() : { acrobats:0, quicksilver:0, druids:0, bravehearts:0 };
+      const updated = {
+        acrobats: (parseInt(current.acrobats || 0,10) + (vals.acrobats || 0)),
+        quicksilver: (parseInt(current.quicksilver || 0,10) + (vals.quicksilver || 0)),
+        druids: (parseInt(current.druids || 0,10) + (vals.druids || 0)),
+        bravehearts: (parseInt(current.bravehearts || 0,10) + (vals.bravehearts || 0))
+      };
 
-/* --- LEADERBOARD --- */
-function updateLeaderboard() {
-    const scores = [
-        { name: "Acrobats", score: parseInt(document.getElementById("score-acrobats").textContent), class: "lb-acrobats" },
-        { name: "Quicksilver", score: parseInt(document.getElementById("score-quicksilver").textContent), class: "lb-quicksilver" },
-        { name: "Druids", score: parseInt(document.getElementById("score-druids").textContent), class: "lb-druids" },
-        { name: "Bravehearts", score: parseInt(document.getElementById("score-bravehearts").textContent), class: "lb-bravehearts" }
-    ];
-
-    scores.sort((a, b) => b.score - a.score);
-
-    const list = document.getElementById("leaderboard-list");
-    list.innerHTML = "";
-
-    scores.forEach(entry => {
-        const li = document.createElement("li");
-        li.className = entry.class;
-        li.innerHTML = `${entry.name} <span>${entry.score}</span>`;
-        list.appendChild(li);
+      saveScoresToFirebase(updated);
+      renderGrid(updated);
+      // close panel and clear
+      closeAdminBtn.click();
+    }).catch(err => {
+      console.error('Error applying scores', err);
+      alert('There was a problem updating scores. Check console for details.');
     });
-}
+  });
 
-/* --- DARK MODE --- */
-function toggleDarkMode() { document.body.classList.toggle("dark-mode"); }
+  /**********************
+   * Dark/Light mode    *
+   **********************/
+  const modeToggle = document.getElementById('modeToggle');
+  const appFooter = document.getElementById('appFooter');
 
-/* --- INITIAL LOAD --- */
-loadScoresFromFirebase();
+  // Persist mode in localStorage
+  const savedMode = localStorage.getItem('site-mode') || 'light';
+
+  function applyMode(mode) {
+    if (mode === 'dark') {
+      document.body.classList.add('dark-mode');
+      modeToggle.textContent = '☀️'; // show sun to indicate activating light mode on click
+      // footer color handled via CSS body.dark-mode
+    } else {
+      document.body.classList.remove('dark-mode');
+      modeToggle.textContent = '🌙'; // show moon to indicate activating dark mode on click
+    }
+    localStorage.setItem('site-mode', mode);
+  }
+
+  // Toggle behavior: when user clicks, switch mode
+  modeToggle.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    applyMode(isDark ? 'light' : 'dark');
+  });
+
+  // Initialize
+  applyMode(savedMode);
+
+  /**********************
+   * Initial load       *
+   **********************/
+  // Load scores and render grid
+  loadScoresFromFirebase();
+
+  // Also watch for remote changes (optional real-time update)
+  db.ref('houseScores').on('value', snapshot => {
+    if (snapshot.exists()) {
+      const s = snapshot.val();
+      const defaults = { acrobats:0, quicksilver:0, druids:0, bravehearts:0 };
+      const final = Object.assign(defaults, s || {});
+      renderGrid(final);
+    }
+  });
+
 </script>
 
 </body>
