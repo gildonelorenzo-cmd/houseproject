@@ -59,6 +59,19 @@ body.dark {
     100% { background-position: 0% 50%; }
 }
 
+/* Credits */
+#credits {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333; /* Light mode */
+    transition: color 0.5s;
+}
+body.dark #credits {
+    color: #f0f0f0; /* Dark mode */
+}
+
 /* Dark/Light mode button */
 #mode-toggle {
     position: fixed;
@@ -84,7 +97,7 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-top: 120px;
+    margin-top: 30px;
     margin-bottom: 140px;
 }
 
@@ -163,6 +176,8 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
 </style>
 </head>
 <body>
+
+<h2 id="credits">By the IBDP1 Students of the Computer Science class</h2>
 
 <button id="mode-toggle">🌙</button>
 
