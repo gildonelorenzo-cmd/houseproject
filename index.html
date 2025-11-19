@@ -25,7 +25,7 @@ const db = firebase.database();
 </script>
 
 <style>
-/* BODY + GRADIENT ANIMATION */
+/* BODY + GRADIENT ANIMATION + PATTERN */
 body {
     margin: 0;
     padding: 0;
@@ -38,38 +38,42 @@ body {
     background: linear-gradient(270deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
+    position: relative;
+    overflow-x: hidden;
 }
 
+/* Light pattern overlay */
+body::before {
+    content: '';
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+/* Dark mode */
 body.dark {
     color: #f0f0f0;
     background: linear-gradient(270deg, #0f2027, #203a43, #2c5364);
     background-size: 400% 400%;
     animation: gradientShiftDark 20s ease infinite;
 }
+body.dark::before {
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+}
 
+/* Keyframes for gradient animations */
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
 @keyframes gradientShiftDark {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-}
-
-/* Credits */
-#credits {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333; /* Light mode */
-    transition: color 0.5s;
-}
-body.dark #credits {
-    color: #f0f0f0; /* Dark mode */
 }
 
 /* Dark/Light mode button */
@@ -97,8 +101,8 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-top: 30px;
-    margin-bottom: 140px;
+    margin-top: 120px;
+    margin-bottom: 40px;
 }
 
 .team-card {
@@ -119,6 +123,25 @@ body.dark .team-card {
 .rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 .team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
 .score { font-weight: bold; font-size: 22px; }
+
+/* Credits rectangle under grid */
+#credits {
+    margin-top: 20px;
+    padding: 15px 25px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.8);
+    color: #333;
+    text-align: center;
+    transition: background 0.5s, color 0.5s;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+body.dark #credits {
+    background: rgba(0,0,0,0.6);
+    color: #f0f0f0;
+    box-shadow: 0 8px 15px rgba(255,255,255,0.2);
+}
 
 /* Footer */
 footer {
@@ -177,11 +200,12 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
 </head>
 <body>
 
-<h2 id="credits">By the IBDP1 Students of the Computer Science class</h2>
-
 <button id="mode-toggle">🌙</button>
 
 <div id="leaderboard"></div>
+
+<!-- Credits rectangle under grid -->
+<div id="credits">By the IBDP1 Students of the Computer Science class</div>
 
 <footer>
     <div class="footer-left">
@@ -192,7 +216,7 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     </div>
 </footer>
 
-<!-- Admin Panel: All teams editable -->
+<!-- Admin Panel -->
 <div id="admin-modal">
     <div class="modal-content">
         <h2>Admin Panel</h2>
@@ -300,7 +324,6 @@ modeBtn.onclick=()=>{
 // Interactive gradient background
 document.addEventListener("mousemove", (e) => {
     const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
     if(document.body.classList.contains("dark")){
         document.body.style.background = `linear-gradient(${x*360}deg, #0f2027, #203a43, #2c5364)`;
     } else {
