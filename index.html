@@ -239,7 +239,7 @@ function saveToFirebase() {
 // Admin functions
 function openAdmin(){
     const pwd=prompt("Enter admin password:");
-    if(pwd==="1234"){
+    if(pwd==="Smiling-1092"){
         // Pre-fill inputs with current scores
         document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
         document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
@@ -287,3 +287,4 @@ loadFromFirebase();
 
 </body>
 </html>
+
