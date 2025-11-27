@@ -64,7 +64,7 @@ body.christmas {
     100% { background-position: 0% 50%; }
 }
 
-/* Dark/Light/Christmas mode button */
+/* Mode button */
 #mode-toggle {
     position: fixed;
     top: 20px;
@@ -319,7 +319,7 @@ function saveScores(){
     closeAdmin();
 }
 
-// Mode button logic with Christmas mode
+// Mode button logic
 const modeBtn = document.getElementById("mode-toggle");
 let currentMode = "light"; // light, dark, christmas
 
@@ -367,7 +367,7 @@ function createSnowflake() {
         x: Math.random() * canvas.width,
         y: Math.random() * -50,
         radius: Math.random() * 3 + 2,
-        speed: Math.random() * 1 + 0.5,
+        speed: Math.random() * 2 + 1, // slightly faster
         drift: Math.random() * 1 - 0.5
     };
 }
@@ -380,29 +380,28 @@ function updateSnow() {
         f.y += f.speed;
         f.x += f.drift;
 
-        // Draw snowflake
+        if(f.x < 0) f.x = canvas.width;
+        if(f.x > canvas.width) f.x = 0;
+
         ctx.beginPath();
         ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
         ctx.fillStyle = "white";
         ctx.fill();
         ctx.closePath();
 
-        // Accumulate on footer
         const footerY = window.innerHeight - 70;
         if(f.y + f.radius >= footerY - snowAccumulation[Math.floor(f.x)]) {
-            snowAccumulation[Math.floor(f.x)] += 0.05; // accumulation rate
+            snowAccumulation[Math.floor(f.x)] += 0.1;
             f.y = Math.random() * -50;
             f.x = Math.random() * canvas.width;
         }
     }
 
-    // Draw accumulated snow on footer
     ctx.fillStyle = "white";
     for(let x = 0; x < canvas.width; x++) {
         let y = window.innerHeight - 70 - snowAccumulation[x];
         ctx.fillRect(x, y, 1, snowAccumulation[x]);
-        // melt gradually
-        snowAccumulation[x] *= 0.999;
+        snowAccumulation[x] *= 0.998;
     }
 
     snowAnimation = requestAnimationFrame(updateSnow);
@@ -410,7 +409,7 @@ function updateSnow() {
 
 function startSnow() {
     snowflakes = [];
-    for(let i = 0; i < 200; i++) snowflakes.push(createSnowflake());
+    for(let i = 0; i < 500; i++) snowflakes.push(createSnowflake());
     cancelAnimationFrame(snowAnimation);
     updateSnow();
 }
