@@ -48,6 +48,10 @@ body.dark {
     animation: gradientShiftDark 25s linear infinite;
 }
 
+body.christmas {
+    background: linear-gradient(180deg, #a0c4ff, #ffffff);
+}
+
 /* Gradient animations */
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
@@ -60,7 +64,7 @@ body.dark {
     100% { background-position: 0% 50%; }
 }
 
-/* Dark/Light mode button */
+/* Dark/Light/Christmas mode button */
 #mode-toggle {
     position: fixed;
     top: 20px;
@@ -76,9 +80,10 @@ body.dark {
     justify-content: center;
     cursor: pointer;
     transition: 0.3s;
-    z-index: 10;
+    z-index: 20;
 }
 body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
+body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
 
 /* Leaderboard grid */
 #leaderboard {
@@ -87,10 +92,11 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     gap: 30px;
     margin-top: 60px;
     margin-bottom: 100px;
-    z-index: 1;
+    z-index: 2; /* above canvas */
+    position: relative;
 }
 
-/* Team cards smaller */
+/* Team cards */
 .team-card {
     background: rgba(255,255,255,0.9);
     border-radius: 15px;
@@ -99,7 +105,8 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     width: 180px;
     transition: background 0.3s, color 0.3s, transform 0.2s;
     box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    z-index: 1;
+    z-index: 2;
+    position: relative;
 }
 body.dark .team-card {
     background: rgba(0,0,0,0.6);
@@ -178,6 +185,7 @@ body.dark footer { background: #999999; }
     background:white; padding:30px; border-radius:10px; width:300px;
 }
 body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
+body.christmas #admin-modal .modal-content { background: #444; color:white; }
 #admin-modal input, #admin-modal button {
     width: 100%;
     margin-bottom: 10px;
@@ -188,44 +196,23 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
 
-/* Christmas Decorations Positioning with bigger sizes */
-.christmas-deco-top {
+/* Canvas for snow */
+#snow-canvas {
     position: fixed;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 250px; /* bigger top image */
-    z-index: 5;
-}
-
-.christmas-deco-footer-left {
-    position: fixed;
-    bottom: 70px;
     left: 0;
-    width: 200px; /* bigger footer-left image */
-    z-index: 6;
-}
-
-.christmas-deco-footer-right {
-    position: fixed;
-    bottom: 65px;
-    right: 10px;
-    width: 120px;
-    z-index: 6;
-}
-
-.christmas-deco-top-right {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    width: 100px;
-    z-index: 5;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1; /* behind leaderboard */
 }
 </style>
 </head>
 <body>
 
 <button id="mode-toggle">🌙</button>
+
+<canvas id="snow-canvas"></canvas>
 
 <div id="leaderboard"></div>
 
@@ -255,12 +242,6 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
         <button onclick="closeAdmin()">Close</button>
     </div>
 </div>
-
-<!-- Christmas Decorations -->
-<img src="project/Deco_Christmas_Balls_PNG_Clip_Art.png" class="christmas-deco-top">
-<img src="project/decorated-christmas-tree-with-box-gift-presents-for-new-year-celebrate-isolated-on-transparent-background-free-png.webp" class="christmas-deco-footer-left">
-<img src="project/image-Photoroom-16.png" class="christmas-deco-footer-right">
-<img src="project/pngimg.com - christmas_PNG17223.png" class="christmas-deco-top-right">
 
 <script>
 let teams = [
@@ -338,15 +319,107 @@ function saveScores(){
     closeAdmin();
 }
 
-// Dark Mode
-const modeBtn=document.getElementById("mode-toggle");
-modeBtn.onclick=()=>{
-    document.body.classList.toggle("dark");
-    modeBtn.textContent=document.body.classList.contains("dark")?"☀️":"🌙";
+// Mode button logic with Christmas mode
+const modeBtn = document.getElementById("mode-toggle");
+let currentMode = "light"; // light, dark, christmas
+
+modeBtn.onclick = () => {
+    if(currentMode === "light") {
+        document.body.classList.remove("christmas");
+        document.body.classList.add("dark");
+        modeBtn.textContent = "☀️";
+        currentMode = "dark";
+    } else if(currentMode === "dark") {
+        document.body.classList.remove("dark");
+        document.body.classList.add("christmas");
+        modeBtn.textContent = "🎅";
+        currentMode = "christmas";
+        startSnow();
+    } else if(currentMode === "christmas") {
+        document.body.classList.remove("christmas");
+        document.body.classList.add("");
+        modeBtn.textContent = "🌙";
+        currentMode = "light";
+        stopSnow();
+    }
 };
 
 renderLeaderboard();
 loadFromFirebase();
+
+/* Snow Effect */
+const canvas = document.getElementById("snow-canvas");
+const ctx = canvas.getContext("2d");
+let snowflakes = [];
+let snowAccumulation = [];
+let snowAnimation;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    snowAccumulation = new Array(canvas.width).fill(0);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function createSnowflake() {
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * -50,
+        radius: Math.random() * 3 + 2,
+        speed: Math.random() * 1 + 0.5,
+        drift: Math.random() * 1 - 0.5
+    };
+}
+
+function updateSnow() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let i = 0; i < snowflakes.length; i++) {
+        let f = snowflakes[i];
+        f.y += f.speed;
+        f.x += f.drift;
+
+        // Draw snowflake
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.closePath();
+
+        // Accumulate on footer
+        const footerY = window.innerHeight - 70;
+        if(f.y + f.radius >= footerY - snowAccumulation[Math.floor(f.x)]) {
+            snowAccumulation[Math.floor(f.x)] += 0.05; // accumulation rate
+            f.y = Math.random() * -50;
+            f.x = Math.random() * canvas.width;
+        }
+    }
+
+    // Draw accumulated snow on footer
+    ctx.fillStyle = "white";
+    for(let x = 0; x < canvas.width; x++) {
+        let y = window.innerHeight - 70 - snowAccumulation[x];
+        ctx.fillRect(x, y, 1, snowAccumulation[x]);
+        // melt gradually
+        snowAccumulation[x] *= 0.999;
+    }
+
+    snowAnimation = requestAnimationFrame(updateSnow);
+}
+
+function startSnow() {
+    snowflakes = [];
+    for(let i = 0; i < 200; i++) snowflakes.push(createSnowflake());
+    cancelAnimationFrame(snowAnimation);
+    updateSnow();
+}
+
+function stopSnow() {
+    cancelAnimationFrame(snowAnimation);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    snowAccumulation = new Array(canvas.width).fill(0);
+}
 </script>
 
 </body>
