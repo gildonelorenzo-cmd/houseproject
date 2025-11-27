@@ -85,8 +85,8 @@ body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
-    margin-top: 60px; /* moved up */
-    margin-bottom: 100px; /* space from footer */
+    margin-top: 60px;
+    margin-bottom: 100px;
     z-index: 1;
 }
 
@@ -139,7 +139,7 @@ body.dark footer { background: #999999; }
     font-size: 16px;
     font-weight: bold;
     line-height: 55px; 
-    margin-left: 15px; /* moved right from logo */
+    margin-left: 15px;
     white-space: nowrap;
 }
 
@@ -188,27 +188,27 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
 
-/* Christmas Decorations Positioning */
+/* Christmas Decorations Positioning with bigger sizes */
 .christmas-deco-top {
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
+    width: 250px; /* bigger top image */
     z-index: 5;
 }
 
 .christmas-deco-footer-left {
     position: fixed;
-    bottom: 70px; /* on top of footer */
+    bottom: 70px;
     left: 0;
-    width: 120px;
+    width: 200px; /* bigger footer-left image */
     z-index: 6;
 }
 
 .christmas-deco-footer-right {
     position: fixed;
-    bottom: 65px; /* slightly above footer */
+    bottom: 65px;
     right: 10px;
     width: 120px;
     z-index: 6;
