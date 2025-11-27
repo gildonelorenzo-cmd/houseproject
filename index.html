@@ -25,186 +25,166 @@ const db = firebase.database();
 </script>
 
 <style>
-/* BODY + ANIMATED GRADIENT */
+/* BODY + GRADIENT */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-    background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
-    background-size: 800% 800%;
-    animation: gradientShift 20s linear infinite;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
+  background-size: 800% 800%;
+  animation: gradientShift 20s linear infinite;
 }
-
 body.dark {
-    color: #f0f0f0;
-    background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
-    background-size: 800% 800%;
-    animation: gradientShiftDark 25s linear infinite;
+  color: #f0f0f0;
+  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
+  background-size: 800% 800%;
+  animation: gradientShiftDark 25s linear infinite;
 }
-
 body.christmas {
-    background: linear-gradient(180deg, #a0c4ff, #ffffff);
+  background: linear-gradient(180deg, #a0c4ff, #ffffff);
 }
 
-/* Gradient animations */
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 @keyframes gradientShiftDark {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Mode button */
+/* MODE BUTTON */
 #mode-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: white;
-    border: 2px solid black;
-    font-size: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 20;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid black;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 20;
 }
-body.dark #mode-toggle { background: #444; color: yellow; border-color: white; }
-body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
+body.dark #mode-toggle {
+  background: #444;
+  color: yellow;
+  border-color: white;
+}
+body.christmas #mode-toggle {
+  background: #FF0000;
+  color: white;
+  border-color: white;
+}
 
-/* Leaderboard grid */
+/* LEADERBOARD GRID */
 #leaderboard {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    margin-top: 60px;
-    margin-bottom: 100px;
-    z-index: 2; /* above canvas */
-    position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+  margin-bottom: 100px;
+  z-index: 2;
+  position: relative;
 }
 
-/* Team cards */
 .team-card {
-    background: rgba(255,255,255,0.9);
-    border-radius: 15px;
-    padding: 10px;
-    text-align: center;
-    width: 180px;
-    transition: background 0.3s, color 0.3s, transform 0.2s;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    z-index: 2;
-    position: relative;
+  background: rgba(255,255,255,0.9);
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+  width: 180px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  z-index: 2;
+  position: relative;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
 }
 body.dark .team-card {
-    background: rgba(0,0,0,0.6);
-    color: white;
-    box-shadow: 0 8px 15px rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.6);
+  color: white;
+  box-shadow: 0 8px 15px rgba(255,255,255,0.1);
+}
+.rank-label {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.team-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.score {
+  font-weight: bold;
+  font-size: 22px;
 }
 
-.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-.team-card img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; }
-.score { font-weight: bold; font-size: 22px; }
-
-/* Footer */
+/* FOOTER */
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background: #B5E0FF;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    box-sizing: border-box;
-    border-top: 3px solid #ccc;
-    z-index: 2;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: #B5E0FF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  border-top: 3px solid #ccc;
+  z-index: 2;
 }
-body.dark footer { background: #999999; }
+body.dark footer { background: #999; }
 
-.footer-left {
-    display: flex;
-    align-items: center;
-    gap: 15px; 
-}
+.footer-left { display: flex; align-items: center; gap: 15px; }
+.footer-text { font-size: 16px; font-weight: bold; line-height: 55px; margin-left: 15px; white-space: nowrap; }
+.footer-logo { display: block; height: 55px; width: auto; object-fit: contain; }
+.footer-right { display: flex; align-items: center; }
+#admin-button { background: #007BFF; color: white; padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-size: 18px; font-weight: bold; }
 
-.footer-text {
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 55px; 
-    margin-left: 15px;
-    white-space: nowrap;
-}
-
-.footer-logo {
-    display: block;
-    height: 55px;
-    width: auto;
-    object-fit: contain;
-}
-
-.footer-right {
-    display: flex;
-    align-items: center;
-}
-
-#admin-button {
-    background: #007BFF;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* Admin Modal */
+/* ADMIN MODAL */
 #admin-modal {
-    display:none;
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.6);
-    align-items:center; justify-content:center;
-    z-index: 100;
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.6);
+  align-items:center; justify-content:center;
+  z-index:100;
 }
 #admin-modal .modal-content {
-    background:white; padding:30px; border-radius:10px; width:300px;
+  background:white; padding:30px; border-radius:10px; width:300px;
 }
-body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
-body.christmas #admin-modal .modal-content { background: #444; color:white; }
-#admin-modal input, #admin-modal button {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
+body.dark #admin-modal .modal-content { background:#1e1e1e; color:white; }
+body.christmas #admin-modal .modal-content { background:#444; color:white; }
+#admin-modal input, #admin-modal button { width:100%; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #ccc; font-size:16px; }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
 
-/* Canvas for snow */
+/* CANVAS */
 #snow-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1; /* behind leaderboard */
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
 }
 </style>
 </head>
@@ -217,209 +197,194 @@ body.christmas #admin-modal .modal-content { background: #444; color:white; }
 <div id="leaderboard"></div>
 
 <footer>
-    <div class="footer-left">
-        <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-        <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
-    </div>
-    <div class="footer-right">
-        <button id="admin-button" onclick="openAdmin()">Admin</button>
-    </div>
+  <div class="footer-left">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
+  </div>
+  <div class="footer-right">
+    <button id="admin-button" onclick="openAdmin()">Admin</button>
+  </div>
 </footer>
 
-<!-- Admin Modal -->
 <div id="admin-modal">
-    <div class="modal-content">
-        <h2>Admin Panel</h2>
-        <label>Acrobats:</label>
-        <input type="number" id="admin-acrobats">
-        <label>Quicksilver:</label>
-        <input type="number" id="admin-quicksilver">
-        <label>Druids:</label>
-        <input type="number" id="admin-druids">
-        <label>Bravehearts:</label>
-        <input type="number" id="admin-bravehearts">
-        <button onclick="saveScores()">Save</button>
-        <button onclick="closeAdmin()">Close</button>
-    </div>
+  <div class="modal-content">
+    <h2>Admin Panel</h2>
+    <label>Acrobats:</label><input type="number" id="admin-acrobats">
+    <label>Quicksilver:</label><input type="number" id="admin-quicksilver">
+    <label>Druids:</label><input type="number" id="admin-druids">
+    <label>Bravehearts:</label><input type="number" id="admin-bravehearts">
+    <button onclick="saveScores()">Save</button>
+    <button onclick="closeAdmin()">Close</button>
+  </div>
 </div>
 
 <script>
+// TEAMS
 let teams = [
-    { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
-    { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
-    { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
-    { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
+  { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
+  { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
+  { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
+  { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
 ];
-
 const teamImages = {
-    acrobats: "project/acrobats.jpeg",
-    quicksilver: "project/quicksilver.jpeg",
-    druids: "project/druids.jpeg",
-    bravehearts: "project/bravehearts.jpeg"
+  acrobats:"project/acrobats.jpeg",
+  quicksilver:"project/quicksilver.jpeg",
+  druids:"project/druids.jpeg",
+  bravehearts:"project/bravehearts.jpeg"
 };
 
 function renderLeaderboard() {
-    const container = document.getElementById("leaderboard");
-    container.innerHTML = "";
-    teams.sort((a,b)=>b.score-a.score);
-    teams.forEach((team,index)=>{
-        const card=document.createElement("div");
-        card.className="team-card";
-        card.style.border="3px solid "+team.color;
-        card.innerHTML=`
-            <div class="rank-label">#${index+1}</div>
-            <img src="${teamImages[team.id]}">
-            <h3>${team.name}</h3>
-            <p class="score">${team.score} pts</p>
-        `;
-        container.appendChild(card);
-    });
+  const container = document.getElementById("leaderboard");
+  container.innerHTML = "";
+  teams.sort((a,b)=>b.score-a.score);
+  teams.forEach((team,index)=>{
+    const card=document.createElement("div");
+    card.className="team-card";
+    card.style.border="3px solid "+team.color;
+    card.innerHTML = `<div class="rank-label">#${index+1}</div>
+      <img src="${teamImages[team.id]}">
+      <h3>${team.name}</h3>
+      <p class="score">${team.score} pts</p>`;
+    container.appendChild(card);
+  });
 }
 
-// Firebase Load
-function loadFromFirebase() {
-    db.ref("houseScores").once("value").then(snapshot=>{
-        if(snapshot.exists()){
-            const data=snapshot.val();
-            teams.forEach(t=>{if(data[t.id]!==undefined) t.score=data[t.id];});
-            renderLeaderboard();
-        }
-    });
-}
-
-// Firebase Save
-function saveToFirebase() {
-    const data={};
-    teams.forEach(t=>{data[t.id]=t.score;});
-    db.ref("houseScores").set(data);
-}
-
-// Admin functions
-function openAdmin(){
-    const pwd=prompt("Enter admin password:");
-    if(pwd==="Smiling-1092"){
-        document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
-        document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
-        document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
-        document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
-        document.getElementById("admin-modal").style.display="flex";
-    } else {
-        alert("Incorrect password!");
+// Firebase
+function loadFromFirebase(){
+  db.ref("houseScores").once("value").then(snapshot=>{
+    if(snapshot.exists()){
+      const data = snapshot.val();
+      teams.forEach(t => { if(data[t.id]!==undefined) t.score=data[t.id]; });
+      renderLeaderboard();
     }
+  });
+}
+function saveToFirebase(){
+  const data={};
+  teams.forEach(t=>data[t.id]=t.score);
+  db.ref("houseScores").set(data);
+}
+
+// ADMIN
+function openAdmin(){
+  const pwd = prompt("Enter admin password:");
+  if(pwd==="Smiling-1092"){
+    document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
+    document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
+    document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
+    document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
+    document.getElementById("admin-modal").style.display="flex";
+  } else { alert("Incorrect password!"); }
 }
 function closeAdmin(){document.getElementById("admin-modal").style.display="none";}
 function saveScores(){
-    teams.find(t=>t.id==="acrobats").score = parseInt(document.getElementById("admin-acrobats").value) || 0;
-    teams.find(t=>t.id==="quicksilver").score = parseInt(document.getElementById("admin-quicksilver").value) || 0;
-    teams.find(t=>t.id==="druids").score = parseInt(document.getElementById("admin-druids").value) || 0;
-    teams.find(t=>t.id==="bravehearts").score = parseInt(document.getElementById("admin-bravehearts").value) || 0;
-
-    renderLeaderboard();
-    saveToFirebase();
-    closeAdmin();
+  teams.find(t=>t.id==="acrobats").score=parseInt(document.getElementById("admin-acrobats").value)||0;
+  teams.find(t=>t.id==="quicksilver").score=parseInt(document.getElementById("admin-quicksilver").value)||0;
+  teams.find(t=>t.id==="druids").score=parseInt(document.getElementById("admin-druids").value)||0;
+  teams.find(t=>t.id==="bravehearts").score=parseInt(document.getElementById("admin-bravehearts").value)||0;
+  renderLeaderboard(); saveToFirebase(); closeAdmin();
 }
 
-// Mode button logic
+// MODE BUTTON
 const modeBtn = document.getElementById("mode-toggle");
-let currentMode = "light"; // light, dark, christmas
+let currentMode = "light";
 
-modeBtn.onclick = () => {
-    if(currentMode === "light") {
-        document.body.classList.remove("christmas");
-        document.body.classList.add("dark");
-        modeBtn.textContent = "☀️";
-        currentMode = "dark";
-    } else if(currentMode === "dark") {
-        document.body.classList.remove("dark");
-        document.body.classList.add("christmas");
-        modeBtn.textContent = "🎅";
-        currentMode = "christmas";
-        startSnow();
-    } else if(currentMode === "christmas") {
-        document.body.classList.remove("christmas");
-        document.body.classList.add("");
-        modeBtn.textContent = "🌙";
-        currentMode = "light";
-        stopSnow();
-    }
+modeBtn.onclick = function(){
+  if(currentMode==="light"){
+    document.body.classList.remove("christmas");
+    document.body.classList.add("dark");
+    modeBtn.textContent="🎅";
+    currentMode="dark";
+  } else if(currentMode==="dark"){
+    document.body.classList.remove("dark");
+    document.body.classList.add("christmas");
+    modeBtn.textContent="☀️";
+    currentMode="christmas";
+    startSnow();
+  } else if(currentMode==="christmas"){
+    document.body.classList.remove("christmas");
+    currentMode="light";
+    modeBtn.textContent="🌙";
+    stopSnow();
+  }
 };
 
 renderLeaderboard();
 loadFromFirebase();
 
-/* Snow Effect */
+/* SNOW */
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let snowflakes = [];
 let snowAccumulation = [];
 let snowAnimation;
+let snowStopping = false;
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    snowAccumulation = new Array(canvas.width).fill(0);
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  snowAccumulation = new Array(canvas.width).fill(0);
 }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-function createSnowflake() {
-    return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * -50,
-        radius: Math.random() * 3 + 2,
-        speed: Math.random() * 2 + 1, // slightly faster
-        drift: Math.random() * 1 - 0.5
-    };
+function createSnowflake(){
+  return { x: Math.random()*canvas.width, y: Math.random()*-50, radius: Math.random()*3+2, speed: Math.random()*2+1, drift: Math.random()*1-0.5 };
 }
 
-function updateSnow() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+function updateSnow(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    for(let i = 0; i < snowflakes.length; i++) {
-        let f = snowflakes[i];
-        f.y += f.speed;
-        f.x += f.drift;
+  // Update snowflakes
+  if(!snowStopping){
+    snowflakes.forEach(f=>{
+      f.y += f.speed;
+      f.x += f.drift;
+      if(f.x<0) f.x=canvas.width;
+      if(f.x>canvas.width) f.x=0;
 
-        if(f.x < 0) f.x = canvas.width;
-        if(f.x > canvas.width) f.x = 0;
+      ctx.beginPath();
+      ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+      ctx.closePath();
 
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.radius, 0, Math.PI*2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-        ctx.closePath();
+      const footerY = canvas.height-70;
+      const ix = Math.floor(f.x);
+      if(f.y+f.radius >= footerY - snowAccumulation[ix]){
+        snowAccumulation[ix] += Math.random()*0.3+0.1; // uneven accumulation
+        f.y = Math.random()*-50;
+        f.x = Math.random()*canvas.width;
+      }
+    });
+  } else {
+    // fade out snowflakes smoothly
+    const removeCount = Math.ceil(snowflakes.length * 0.02);
+    snowflakes.splice(0, removeCount);
+  }
 
-        const footerY = window.innerHeight - 70;
-        if(f.y + f.radius >= footerY - snowAccumulation[Math.floor(f.x)]) {
-            snowAccumulation[Math.floor(f.x)] += 0.1;
-            f.y = Math.random() * -50;
-            f.x = Math.random() * canvas.width;
-        }
-    }
+  // Draw accumulated snow
+  ctx.fillStyle = "white";
+  for(let x=0;x<canvas.width;x++){
+    let y = canvas.height-70-snowAccumulation[x];
+    ctx.fillRect(x,y,1,snowAccumulation[x]);
+    snowAccumulation[x] *= 0.998;
+  }
 
-    ctx.fillStyle = "white";
-    for(let x = 0; x < canvas.width; x++) {
-        let y = window.innerHeight - 70 - snowAccumulation[x];
-        ctx.fillRect(x, y, 1, snowAccumulation[x]);
-        snowAccumulation[x] *= 0.998;
-    }
-
-    snowAnimation = requestAnimationFrame(updateSnow);
+  if(snowflakes.length>0 || snowAccumulation.some(h=>h>0)) snowAnimation=requestAnimationFrame(updateSnow);
 }
 
-function startSnow() {
-    snowflakes = [];
-    for(let i = 0; i < 500; i++) snowflakes.push(createSnowflake());
-    cancelAnimationFrame(snowAnimation);
-    updateSnow();
+function startSnow(){
+  snowStopping=false;
+  snowflakes=[];
+  for(let i=0;i<500;i++) snowflakes.push(createSnowflake());
+  cancelAnimationFrame(snowAnimation);
+  updateSnow();
 }
 
-function stopSnow() {
-    cancelAnimationFrame(snowAnimation);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    snowAccumulation = new Array(canvas.width).fill(0);
+function stopSnow(){
+  snowStopping=true;
 }
 </script>
-
 </body>
 </html>
