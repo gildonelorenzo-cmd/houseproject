@@ -385,32 +385,46 @@ function stopSnow(){
   snowStopping=true;
 }
 
-/* CHRISTMAS BACKGROUND DAY-TO-NIGHT */
+/* CHRISTMAS BACKGROUND DAY-NIGHT CYCLE */
 let darknessLevel = 0;
+let goingDown = false; // false=day→night, true=night→day
+
 function updateChristmasBackground(){
-  if(currentMode!=="christmas") return;
+    if(currentMode!=="christmas") return;
 
-  darknessLevel += 0.0005; // adjust speed for full dark
-  if(darknessLevel>1) darknessLevel=1;
+    if(!goingDown){
+        darknessLevel += 0.00000084; // 5.5-6h full night
+        if(darknessLevel >=1){
+            darknessLevel =1;
+            goingDown = true;
+        }
+    } else {
+        darknessLevel -= 0.00000084;
+        if(darknessLevel <=0){
+            darknessLevel =0;
+            goingDown = false;
+        }
+    }
 
-  const lightColor = `rgb(${160 - darknessLevel*80}, ${196 - darknessLevel*100}, ${255 - darknessLevel*150})`;
-  const darkColor = `rgb(${255 - darknessLevel*255}, ${255 - darknessLevel*255}, ${255 - darknessLevel*255})`;
-  document.body.style.background = `linear-gradient(180deg, ${lightColor}, ${darkColor})`;
+    const lightColor = `rgb(${160 - darknessLevel*80}, ${196 - darknessLevel*100}, ${255 - darknessLevel*150})`;
+    const darkColor = `rgb(${255 - darknessLevel*255}, ${255 - darknessLevel*255}, ${255 - darknessLevel*255})`;
+    document.body.style.background = `linear-gradient(180deg, ${lightColor}, ${darkColor})`;
 
-  requestAnimationFrame(updateChristmasBackground);
+    requestAnimationFrame(updateChristmasBackground);
 }
 
 function startChristmasMode(){
-  document.body.classList.add("christmas");
-  darknessLevel=0;
-  updateChristmasBackground();
-  startSnow();
+    document.body.classList.add("christmas");
+    darknessLevel = 0;
+    goingDown = false;
+    updateChristmasBackground();
+    startSnow();
 }
 
 function stopChristmasMode(){
-  document.body.classList.remove("christmas");
-  document.body.style.background="";
-  stopSnow();
+    document.body.classList.remove("christmas");
+    document.body.style.background="";
+    stopSnow();
 }
 </script>
 </body>
