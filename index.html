@@ -187,6 +187,40 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
     font-size: 16px;
 }
 #admin-modal button { cursor:pointer; font-weight:bold; background:#007BFF; color:white; border:none; }
+
+/* Christmas Decorations Positioning */
+.christmas-deco-top {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    z-index: 5;
+}
+
+.christmas-deco-footer-left {
+    position: fixed;
+    bottom: 70px; /* on top of footer */
+    left: 0;
+    width: 120px;
+    z-index: 6;
+}
+
+.christmas-deco-footer-right {
+    position: fixed;
+    bottom: 65px; /* slightly above footer */
+    right: 10px;
+    width: 120px;
+    z-index: 6;
+}
+
+.christmas-deco-top-right {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    width: 100px;
+    z-index: 5;
+}
 </style>
 </head>
 <body>
@@ -221,6 +255,12 @@ body.dark #admin-modal .modal-content { background: #1e1e1e; color:white; }
         <button onclick="closeAdmin()">Close</button>
     </div>
 </div>
+
+<!-- Christmas Decorations -->
+<img src="project/Deco_Christmas_Balls_PNG_Clip_Art.png" class="christmas-deco-top">
+<img src="project/decorated-christmas-tree-with-box-gift-presents-for-new-year-celebrate-isolated-on-transparent-background-free-png.webp" class="christmas-deco-footer-left">
+<img src="project/image-Photoroom-16.png" class="christmas-deco-footer-right">
+<img src="project/pngimg.com - christmas_PNG17223.png" class="christmas-deco-top-right">
 
 <script>
 let teams = [
