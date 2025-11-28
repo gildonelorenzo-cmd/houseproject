@@ -1,412 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>House Leaderboard</title>
-
-<!-- Firebase (unchanged) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script>
-/* Firebase config */
-const firebaseConfig = {
-  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
-  authDomain: "housesproject-cb92e.firebaseapp.com",
-  databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "housesproject-cb92e",
-  storageBucket: "housesproject-cb92e.appspot.com",
-  messagingSenderId: "643241335908",
-  appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
-  measurementId: "G-Q1Z380QK03"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-</script>
+<meta charset="UTF-8" />
+<title>Game With Christmas Mode</title>
 
 <style>
-:root { --footer-height: 70px; }
-
-/* GENERAL BODY */
+/* Default Body */
 body {
   margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-
-  background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
-  background-size: 800% 800%;
-  animation: gradientShift 20s linear infinite;
+  background: #111;
+  color: white;
+  text-align: center;
 }
 
-body.dark {
-  color: #f0f0f0;
-  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
-  background-size: 800% 800%;
-  animation: gradientShiftDark 25s linear infinite;
+/* ------------------ SCORE TAB ------------------ */
+#scoreTab {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: white;
+  padding: 15px 30px;
+  font-size: 24px;
+  border-radius: 15px;
+  z-index: 200;
+  box-shadow: 0 0 10px #000;
 }
 
-/* 🎄 CHRISTMAS MODE BACKGROUND (CHRISTMAS RED) */
-body.christmas {
-  background: #B30000 !important; /* Deep Christmas Red */
-  transition: background 1.5s ease-in-out;
-}
-
-/* MERRY CHRISTMAS TEXT */
+/* ------------- MERRY CHRISTMAS TEXT ------------- */
 #merry-christmas {
   position: fixed;
-  top: 20%;
+  top: 90px;            /* <-- PLACED **DIRECTLY BELOW** SCORE TAB */
+  left: 50%;
+  transform: translateX(-50%) scale(0.7);
   width: 100%;
   text-align: center;
   font-family: "Brush Script MT", "Great Vibes", cursive;
-  font-size: 80px;
+  font-size: 60px;
   color: #ff0000;
-  text-shadow:
-    0 0 5px white,
-    0 0 10px white,
-    0 0 15px white,
-    0 0 20px white;
   opacity: 0;
-  transform: scale(0.7);
   transition: opacity 1.5s ease, transform 1.5s ease;
-  z-index: 100;
   pointer-events: none;
+  z-index: 150;
+
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 15px #fff,
+    0 0 20px #fff;
+}
+
+/* Animated glowing white border */
+@keyframes borderGlow {
+  0% { text-shadow: 0 0 8px white; }
+  50% { text-shadow: 0 0 20px white; }
+  100% { text-shadow: 0 0 8px white; }
+}
+
+/* When Xmas mode is ON */
+body.christmas {
+  background: #B30000 !important; /* Christmas Red */
 }
 
 body.christmas #merry-christmas {
   opacity: 1;
-  transform: scale(1);
+  transform: translateX(-50%) scale(1);
   animation: borderGlow 3s infinite ease-in-out;
 }
 
-@keyframes borderGlow {
-  0%   { text-shadow: 0 0 8px white; }
-  50%  { text-shadow: 0 0 20px white; }
-  100% { text-shadow: 0 0 8px white; }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes gradientShiftDark {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-
-/* MODE BUTTON */
-#mode-toggle {
+/* Christmas Mode Toggle Button */
+#toggleChristmas {
   position: fixed;
   top: 20px;
-  left: 20px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid black;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  right: 20px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
   cursor: pointer;
-  transition: 0.3s;
-  z-index: 50;
-}
-body.dark #mode-toggle { background: #444; color: yellow; }
-body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
-
-/* LEADERBOARD GRID */
-#leaderboard {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
-  margin-top: 60px;
-  margin-bottom: calc(var(--footer-height) + 30px);
-  z-index: 30;
-  position: relative;
-}
-
-.team-card {
-  background: rgba(255,255,255,0.95);
-  border-radius: 15px;
-  padding: 10px;
-  text-align: center;
-  width: 180px;
-  transition: 0.3s;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-  z-index: 30;
-}
-
-.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-.team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; }
-.score { font-size: 22px; font-weight: bold; }
-
-/* FOOTER */
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: var(--footer-height);
-  background: #B5E0FF;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  border-top: 3px solid #ccc;
-  z-index: 30;
-}
-body.dark footer { background: #777; }
-
-/* ADMIN MODAL */
-#admin-modal {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.6);
-  align-items:center;
-  justify-content:center;
-  z-index: 60;
-}
-#admin-modal .modal-content {
-  background:white;
-  padding:30px;
-  border-radius:10px;
-  width:300px;
-}
-body.dark #admin-modal .modal-content { background:#222; color:white; }
-body.christmas #admin-modal .modal-content { background:#440000; color:white; }
-
-/* SNOW CANVAS */
-#snow-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
+  background: #fff;
+  color: #000;
+  z-index: 300;
 }
 </style>
 </head>
 
 <body>
 
-<button id="mode-toggle">🌙</button>
+<!-- SCORE TAB -->
+<div id="scoreTab">Score: 0</div>
 
-<!-- 🎄 CHRISTMAS TITLE -->
+<!-- CHRISTMAS TEXT below the score tab -->
 <div id="merry-christmas">Merry Christmas</div>
 
-<!-- Snow Canvas -->
-<canvas id="snow-canvas"></canvas>
-
-<!-- Leaderboard -->
-<div id="leaderboard"></div>
-
-<footer>
-  <div class="footer-left">
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-    <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
-  </div>
-  <div class="footer-right">
-    <button id="admin-button" onclick="openAdmin()">Admin</button>
-  </div>
-</footer>
-
-<!-- Admin Modal -->
-<div id="admin-modal">
-  <div class="modal-content">
-    <h2>Admin Panel</h2>
-    <label>Acrobats:</label>
-    <input type="number" id="admin-acrobats">
-    <label>Quicksilver:</label>
-    <input type="number" id="admin-quicksilver">
-    <label>Druids:</label>
-    <input type="number" id="admin-druids">
-    <label>Bravehearts:</label>
-    <input type="number" id="admin-bravehearts">
-    <button onclick="saveScores()">Save</button>
-    <button onclick="closeAdmin()">Close</button>
-  </div>
-</div>
+<!-- TOGGLE CHRISTMAS MODE -->
+<button id="toggleChristmas">🎄 Christmas Mode</button>
 
 <script>
-/* =============== LEADERBOARD =============== */
-let teams = [
-  { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
-  { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
-  { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
-  { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
-];
-
-const teamImages = {
-  acrobats: "project/acrobats.jpeg",
-  quicksilver: "project/quicksilver.jpeg",
-  druids: "project/druids.jpeg",
-  bravehearts: "project/bravehearts.jpeg"
-};
-
-function renderLeaderboard() {
-  const container = document.getElementById("leaderboard");
-  container.innerHTML = "";
-  teams.sort((a,b)=>b.score-a.score);
-  teams.forEach((team,index)=>{
-    const card=document.createElement("div");
-    card.className = "team-card";
-    card.style.border = "3px solid " + team.color;
-    card.innerHTML = `
-      <div class="rank-label">#${index+1}</div>
-      <img src="${teamImages[team.id]}">
-      <h3>${team.name}</h3>
-      <p class="score">${team.score} pts</p>
-    `;
-    container.appendChild(card);
-  });
-}
-
-/* Firebase sync */
-function loadFromFirebase() {
-  db.ref("houseScores").once("value").then(snapshot=>{
-    if(snapshot.exists()){
-      const data = snapshot.val();
-      teams.forEach(t => { if (data[t.id] !== undefined) t.score = data[t.id]; });
-      renderLeaderboard();
-    }
-  });
-}
-function saveToFirebase() {
-  const data = {};
-  teams.forEach(t => data[t.id] = t.score);
-  db.ref("houseScores").set(data);
-}
-
-/* Admin Panel */
-function openAdmin(){
-  const pwd=prompt("Enter admin password:");
-  if(pwd==="Smiling-1092"){
-    document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
-    document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
-    document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
-    document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
-    document.getElementById("admin-modal").style.display = "flex";
-  } else alert("Incorrect password!");
-}
-function closeAdmin(){ document.getElementById("admin-modal").style.display = "none"; }
-function saveScores(){
-  teams.find(t=>t.id==="acrobats").score = +document.getElementById("admin-acrobats").value || 0;
-  teams.find(t=>t.id==="quicksilver").score = +document.getElementById("admin-quicksilver").value || 0;
-  teams.find(t=>t.id==="druids").score = +document.getElementById("admin-druids").value || 0;
-  teams.find(t=>t.id==="bravehearts").score = +document.getElementById("admin-bravehearts").value || 0;
-  renderLeaderboard();
-  saveToFirebase();
-  closeAdmin();
-}
-
-/* =============== MODE SWITCH (Light → Dark → Christmas) =============== */
-const modeBtn = document.getElementById("mode-toggle");
-let currentMode = "light";
-
-function applyMode(mode) {
-  currentMode = mode;
-  document.body.classList.remove("dark", "christmas");
-
-  if (mode === "dark") document.body.classList.add("dark");
-  if (mode === "christmas") document.body.classList.add("christmas");
-
-  // change button emoji
-  if (mode === "light") modeBtn.textContent = "🌙";
-  if (mode === "dark") modeBtn.textContent = "🎅";
-  if (mode === "christmas") modeBtn.textContent = "☀️";
-
-  // snow only in Christmas mode
-  if (mode === "christmas") startChristmasMode();
-  else stopChristmasMode();
-}
-
-modeBtn.addEventListener("click", () => {
-  if (currentMode === "light") applyMode("dark");
-  else if (currentMode === "dark") applyMode("christmas");
-  else if (currentMode === "christmas") applyMode("light");
+document.getElementById("toggleChristmas").addEventListener("click", () => {
+  document.body.classList.toggle("christmas");
 });
-
-/* =============== SNOW SYSTEM (unchanged except triggered by Christmas) =============== */
-
-const canvas = document.getElementById("snow-canvas");
-const ctx = canvas.getContext("2d");
-let cw = 0, ch = 0;
-let snowflakes = [];
-let animFrame = null;
-
-function resize() {
-  cw = canvas.width = window.innerWidth;
-  ch = canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resize);
-resize();
-
-function createSnowflake() {
-  return {
-    x: Math.random()*cw,
-    y: Math.random()*-ch*0.2,
-    r: Math.random()*3+1.5,
-    speed: Math.random()*2+1,
-    drift: (Math.random()-0.5)*0.8
-  };
-}
-
-function updateSnow() {
-  ctx.clearRect(0,0,cw,ch);
-
-  for (let f of snowflakes) {
-    f.x += f.drift;
-    f.y += f.speed;
-
-    if (f.y > ch) {
-      f.y = -10;
-      f.x = Math.random()*cw;
-    }
-
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
-    ctx.fillStyle = "white";
-    ctx.fill();
-  }
-
-  animFrame = requestAnimationFrame(updateSnow);
-}
-
-function startSnow() {
-  snowflakes = [];
-  for (let i=0;i<400;i++) snowflakes.push(createSnowflake());
-  if (!animFrame) animFrame = requestAnimationFrame(updateSnow);
-}
-
-function stopSnow() {
-  cancelAnimationFrame(animFrame);
-  animFrame = null;
-  snowflakes = [];
-  ctx.clearRect(0,0,cw,ch);
-}
-
-function startChristmasMode() { startSnow(); }
-function stopChristmasMode() { stopSnow(); }
-
-
-/* INITIALIZE */
-renderLeaderboard();
-loadFromFirebase();
-applyMode("light");
 </script>
 
 </body>
