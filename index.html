@@ -147,6 +147,12 @@ body.christmas #mode-toggle { background: #FF0000; color: white; border-color: w
   z-index: 30;
 }
 
+/* 🔥 DARK MODE – TEAM CARDS DARK */
+body.dark .team-card {
+  background: rgba(30, 30, 30, 0.92) !important;
+  color: #f0f0f0;
+}
+
 .rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 .team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; }
 .score { font-size: 22px; font-weight: bold; }
@@ -168,6 +174,12 @@ footer {
 }
 body.dark footer { background: #777; }
 
+/* 🔥 SMALLER FOOTER LOGO */
+.footer-logo {
+  height: 45px;
+  margin-right: 10px;
+}
+
 /* ADMIN MODAL */
 #admin-modal {
   display:none;
@@ -187,6 +199,33 @@ body.dark footer { background: #777; }
 }
 body.dark #admin-modal .modal-content { background:#222; color:white; }
 body.christmas #admin-modal .modal-content { background:#440000; color:white; }
+
+/* 🔥 MODERN ADMIN BUTTON */
+#admin-button {
+  padding: 10px 22px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+#admin-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+#admin-button:active {
+  transform: scale(0.97);
+}
+
+body.dark #admin-button {
+  background: linear-gradient(135deg, #666, #444);
+}
 
 /* SNOW CANVAS */
 #snow-canvas {
@@ -411,4 +450,3 @@ applyMode("light");
 
 </body>
 </html>
-
