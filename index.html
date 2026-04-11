@@ -1,822 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>School Library Tracker</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>House Leaderboard</title>
 
-  <!--
-    index.html - School Library Tracker
-    - Single-file delivery with embedded CSS & JS for simplicity
-    - Features:
-      * Scan/register books (ISBN)
-      * Scan student IDs (numeric barcodes)
-      * Lend books (2-week max)
-      * Admin area protected with password (1234) to register books
-      * Home page lists registered books and their availability
-      * Wanted page shows overdue loans with student and book info
-      * Rounded admin button using emoji 💼
-      * Scanner-friendly focus flow (scanner inputs act like keyboard)
+<!-- Firebase (unchanged) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    Note: This file intentionally contains many explanatory comments,
-    utility functions and UI polish to meet the requested size and
-    to make it easier to adapt later. Feel free to extract styles and
-    scripts into separate files (style.css / script.js) for production.
-  -->
+<script>
+/* Firebase config */
+const firebaseConfig = {
+  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+  authDomain: "housesproject-cb92e.firebaseapp.com",
+  databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "housesproject-cb92e",
+  storageBucket: "housesproject-cb92e.appspot.com",
+  messagingSenderId: "643241335908",
+  appId: "1:643241335908:web:c3cbbee89beb0185f8d371",
+  measurementId: "G-Q1Z380QK03"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
 
-  <style>
-    /* ==========================================
-       Base & Reset
-       ========================================== */
-    :root{
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --muted: #7b8794;
-      --accent: linear-gradient(135deg,#6a11cb 0%,#2575fc 100%);
-      --accent-solid: #4a90e2;
-      --danger: #ff6b6b;
-      --success: #3ecf8e;
-      --glass: rgba(255,255,255,0.6);
-      --radius: 14px;
-      --max-width: 1100px;
-      --text: #0f1724;
-    }
+<style>
+:root { --footer-height: 70px; }
 
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;padding:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;margin:0}
-    body{
-      background: radial-gradient(circle at 10% 10%, rgba(93,84,255,0.06), transparent 8%),
-                  radial-gradient(circle at 90% 90%, rgba(38,198,218,0.04), transparent 8%),
-                  var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      padding:40px 20px;
-      display:flex;justify-content:center;align-items:flex-start;
-      gap:20px;
-    }
+/* GENERAL BODY */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 
-    /* ==========================================
-       Layout
-       ========================================== */
-    .app{
-      width:100%;
-      max-width:var(--max-width);
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      gap:28px;
-      align-items:start;
-    }
+  background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
+  background-size: 800% 800%;
+  animation: gradientShift 20s linear infinite;
+}
 
-    /* single column fallback on small screens */
-    @media (max-width:980px){
-      .app{grid-template-columns: 1fr}
-    }
+body.dark {
+  color: #f0f0f0;
+  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
+  background-size: 800% 800%;
+  animation: gradientShiftDark 25s linear infinite;
+}
 
-    .panel{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow:0 10px 30px rgba(20,30,60,0.08);
-      border:1px solid rgba(20,30,60,0.03);
-    }
+/* 🎄 CHRISTMAS MODE BACKGROUND (CHRISTMAS RED) */
+body.christmas {
+  background: #B30000 !important; /* Deep Christmas Red */
+  transition: background 1.5s ease-in-out;
+}
 
-    header.app-header{
-      grid-column:1/-1;
-      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px
-    }
+/* MERRY CHRISTMAS TEXT */
+#merry-christmas {
+  position: fixed;
+  top: 20%;
+  width: 100%;
+  text-align: center;
+  font-family: "Brush Script MT", "Great Vibes", cursive;
+  font-size: 80px;
+  color: #ff0000;
+  text-shadow:
+    0 0 5px white,
+    0 0 10px white,
+    0 0 15px white,
+    0 0 20px white;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 1.5s ease, transform 1.5s ease;
+  z-index: 100;
+  pointer-events: none;
+}
 
-    .brand{
-      display:flex;align-items:center;gap:14px
-    }
+body.christmas #merry-christmas {
+  opacity: 1;
+  transform: scale(1);
+  animation: borderGlow 3s infinite ease-in-out;
+}
 
-    .logo{
-      width:56px;height:56px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:0 8px 20px rgba(74,144,226,0.15)
-    }
+@keyframes borderGlow {
+  0%   { text-shadow: 0 0 8px white; }
+  50%  { text-shadow: 0 0 20px white; }
+  100% { text-shadow: 0 0 8px white; }
+}
 
-    h1{font-size:20px;margin:0}
-    p.lead{margin:0;color:var(--muted);font-size:13px}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-    /* ==========================================
-       Scanner / Form area
-       ========================================== */
-    .scanner-panel{
-      display:flex;flex-direction:column;gap:12px
-    }
+@keyframes gradientShiftDark {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-    .row{display:flex;gap:12px}
-    .col{flex:1}
 
-    label.field-label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    input[type=text], input[type=password]{
-      width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(20,30,60,0.06);font-size:15px;background:linear-gradient(180deg,#fff,#fbfdff);
-      outline:none;transition:box-shadow .14s,border-color .14s;box-shadow:0 2px 6px rgba(12,20,40,0.02)
-    }
-    input[type=text]:focus, input[type=password]:focus{border-color:rgba(74,144,226,0.9);box-shadow:0 6px 20px rgba(74,144,226,0.08)}
+/* MODE BUTTON */
+#mode-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid black;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 50;
+}
+body.dark #mode-toggle { background: #444; color: yellow; }
+body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
 
-    .controls{display:flex;gap:10px;align-items:center}
-    .btn{
-      background:var(--accent-solid);border:none;color:white;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;box-shadow:0 6px 18px rgba(74,144,226,0.12);
-    }
-    .btn.ghost{background:transparent;color:var(--accent-solid);border:1px solid rgba(74,144,226,0.15);box-shadow:none}
-    .btn.warning{background:var(--danger)}
-    .btn.small{padding:8px 10px;font-size:13px}
+/* LEADERBOARD GRID */
+#leaderboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+  margin-bottom: calc(var(--footer-height) + 30px);
+  z-index: 30;
+  position: relative;
+}
 
-    /* Nice bordered card showing registered books */
-    .books-list{display:grid;gap:10px}
-    .book-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;border:1px solid rgba(20,30,60,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.4));}
-    .book-thumb{width:54px;height:72px;border-radius:8px;background:linear-gradient(180deg,#f4f7ff,#eef6ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#4a5;}
-    .book-meta{flex:1}
-    .book-title{font-weight:700;font-size:15px;margin:0}
-    .book-sub{font-size:13px;color:var(--muted);margin:4px 0 0 0}
+.team-card {
+  background: rgba(255,255,255,0.95);
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+  width: 180px;
+  transition: 0.3s;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
+  z-index: 30;
+}
 
-    .status{font-size:12px;padding:6px 8px;border-radius:999px;font-weight:700}
-    .status.available{background:rgba(62,207,142,0.12);color:var(--success)}
-    .status.lent{background:rgba(255,107,107,0.08);color:var(--danger)}
+/* 🔥 DARK MODE – TEAM CARDS DARK */
+body.dark .team-card {
+  background: rgba(30, 30, 30, 0.92) !important;
+  color: #f0f0f0;
+}
 
-    /* Admin floating button */
-    #adminBtn{
-      position:fixed;right:22px;bottom:22px;width:64px;height:64px;border-radius:999px;background:var(--danger);color:white;border:none;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 18px 40px rgba(12,22,60,0.18);cursor:pointer
-    }
+.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+.team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; }
+.score { font-size: 22px; font-weight: bold; }
 
-    /* Panels inside right column */
-    .right-col{display:flex;flex-direction:column;gap:12px}
-    .stats{display:flex;gap:12px}
-    .stat{flex:1;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid rgba(20,30,60,0.03)}
-    .stat h3{margin:0;font-size:18px}
-    .muted{color:var(--muted)}
+/* FOOTER */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-height);
+  background: #B5E0FF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-top: 3px solid #ccc;
+  z-index: 30;
+}
+body.dark footer { background: #777; }
 
-    /* Wanted list styling */
-    .wanted-list{display:flex;flex-direction:column;gap:10px}
-    .wanted-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff4f4,#fff);border:1px solid rgba(255,107,107,0.06)}
+/* 🔥 SMALLER FOOTER LOGO */
+.footer-logo {
+  height: 45px;
+  margin-right: 10px;
+}
 
-    footer.small{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+/* ADMIN MODAL */
+#admin-modal {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.6);
+  align-items:center;
+  justify-content:center;
+  z-index: 60;
+}
+#admin-modal .modal-content {
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+}
+body.dark #admin-modal .modal-content { background:#222; color:white; }
+body.christmas #admin-modal .modal-content { background:#440000; color:white; }
 
-    /* Animations */
-    .fade-in{animation:fadeIn .32s ease both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* 🔥 MODERN ADMIN BUTTON */
+#admin-button {
+  padding: 10px 22px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
 
-    /* Accessibility helpers */
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+#admin-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
 
-  </style>
+#admin-button:active {
+  transform: scale(0.97);
+}
+
+body.dark #admin-button {
+  background: linear-gradient(135deg, #666, #444);
+}
+
+/* SNOW CANVAS */
+#snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="app">
+<button id="mode-toggle">🌙</button>
 
-    <!-- Header spanning full width -->
-    <header class="app-header panel fade-in" role="banner">
-      <div class="brand">
-        <div class="logo">LT</div>
-        <div>
-          <h1>School Library Tracker</h1>
-          <p class="lead">Scan books and student IDs to lend — simple, fast and school-friendly.</p>
-        </div>
-      </div>
+<!-- 🎄 CHRISTMAS TITLE -->
+<div id="merry-christmas"> </div>
 
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div style="display:flex;gap:8px;align-items:center">
-          <div class="muted">Lending period</div>
-          <div class="status available">2 weeks</div>
-        </div>
-        <div class="muted">Admin access: use the 💼 button (password: <code>1234</code>)</div>
-      </div>
-    </header>
+<!-- Snow Canvas -->
+<canvas id="snow-canvas"></canvas>
 
-    <!-- Left column: main interactions and lists -->
-    <main class="panel scanner-panel fade-in" role="main" aria-live="polite">
+<!-- Leaderboard -->
+<div id="leaderboard"></div>
 
-      <!-- Scanner form -->
-      <section aria-labelledby="scanHeading" style="margin-bottom:18px">
-        <h2 id="scanHeading" style="font-size:16px;margin:0 0 12px 0">Scan to Lend</h2>
-        <p class="muted" style="margin:0 0 12px 0">First scan the <strong>book ISBN</strong>, then scan the <strong>student ID</strong>. The scanner should input like a keyboard. If you type manually, press Enter or click the "Lend" button.</p>
-
-        <div class="row" style="margin-bottom:8px">
-          <div class="col">
-            <label class="field-label" for="isbnInput">Book ISBN (scan or type)</label>
-            <input id="isbnInput" type="text" inputmode="numeric" autocomplete="off" placeholder="Scan ISBN here" />
-          </div>
-
-          <div class="col">
-            <label class="field-label" for="studentInput">Student ID (scan or type)</label>
-            <input id="studentInput" type="text" inputmode="numeric" autocomplete="off" placeholder="Scan student barcode (e.g. 001)" />
-          </div>
-        </div>
-
-        <div class="controls">
-          <button class="btn" id="lendBtn">Lend</button>
-          <button class="btn ghost" id="clearBtn">Clear</button>
-          <button class="btn ghost" id="wantedBtn">Show Wanted</button>
-        </div>
-      </section>
-
-      <!-- Registered books that appear on home page as requested -->
-      <section aria-labelledby="registeredHeading" style="margin-top:10px">
-        <h2 id="registeredHeading" style="font-size:16px;margin:0 0 12px 0">Registered Books</h2>
-        <p class="muted" style="margin:0 0 12px 0">Books registered by admin appear here. Click a book to see details or to mark as returned.</p>
-
-        <div id="booksContainer" class="books-list" role="list">
-          <!-- Book cards will be rendered here dynamically -->
-        </div>
-      </section>
-
-      <hr style="margin:18px 0;border:none;border-top:1px solid rgba(12,20,40,0.04)" />
-
-      <!-- Wanted / Overdue preview -->
-      <section aria-labelledby="wantedHeading">
-        <h2 id="wantedHeading" style="font-size:16px;margin:0 0 12px 0">Quick Wanted Preview</h2>
-        <div id="wantedPreview" class="wanted-list">
-          <!-- Overdue items will be shown here -->
-        </div>
-      </section>
-
-      <footer class="small muted" style="margin-top:16px">Tip: barcode scanners typically emulate keyboard input and send an Enter key — the form is optimized for that workflow.</footer>
-
-    </main>
-
-    <!-- Right column: stats, quick admin and wanted list full link -->
-    <aside class="right-col">
-
-      <div class="panel stats fade-in">
-        <div style="display:flex;gap:10px">
-          <div class="stat">
-            <h3 id="totalBooks">0</h3>
-            <div class="muted">Registered books</div>
-          </div>
-          <div class="stat">
-            <h3 id="activeLoans">0</h3>
-            <div class="muted">Active loans</div>
-          </div>
-          <div class="stat">
-            <h3 id="overdueCount">0</h3>
-            <div class="muted">Overdue</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel fade-in">
-        <h3 style="margin:0 0 8px 0">Wanted (Full)</h3>
-        <p class="muted" style="margin:0 0 12px 0">Students who need to return books (full view).</p>
-        <div id="wantedFull" style="max-height:280px;overflow:auto"></div>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button class="btn" id="refreshBtn">Refresh</button>
-          <button class="btn ghost" id="exportBtn">Export CSV</button>
-        </div>
-      </div>
-
-    </aside>
-
+<footer>
+  <div class="footer-left">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
   </div>
+  <div class="footer-right">
+    <button id="admin-button" onclick="openAdmin()">Admin</button>
+  </div>
+</footer>
 
-  <!-- Admin floating button (uses emoji as requested) -->
-  <button id="adminBtn" title="Admin (login)">💼</button>
+<!-- Admin Modal -->
+<div id="admin-modal">
+  <div class="modal-content">
+    <h2>Admin Panel</h2>
+    <label>Acrobats:</label>
+    <input type="number" id="admin-acrobats">
+    <label>Quicksilver:</label>
+    <input type="number" id="admin-quicksilver">
+    <label>Druids:</label>
+    <input type="number" id="admin-druids">
+    <label>Bravehearts:</label>
+    <input type="number" id="admin-bravehearts">
+    <button onclick="saveScores()">Save</button>
+    <button onclick="closeAdmin()">Close</button>
+  </div>
+</div>
 
-  <!-- Admin modal and pages rendered via JS (keeps DOM minimal) -->
+<script>
+/* =============== LEADERBOARD =============== */
+let teams = [
+  { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
+  { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
+  { id: "druids", name: "Druids", color: "#0073e6", score: 0 },
+  { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0 }
+];
 
-  <template id="adminModalTemplate">
-    <div class="panel" style="width:480px;max-width:92vw">
-      <h2 style="margin-top:0">Admin Console</h2>
-      <p class="muted">Password protected area to register books and view logs.</p>
+const teamImages = {
+  acrobats: "project/acrobats.jpeg",
+  quicksilver: "project/quicksilver.jpeg",
+  druids: "project/druids.jpeg",
+  bravehearts: "project/bravehearts.jpeg"
+};
 
-      <div style="margin-top:10px">
-        <label class="field-label">Password</label>
-        <input type="password" id="adminPassword" placeholder="Enter admin password" />
-      </div>
+function renderLeaderboard() {
+  const container = document.getElementById("leaderboard");
+  container.innerHTML = "";
+  teams.sort((a,b)=>b.score-a.score);
+  teams.forEach((team,index)=>{
+    const card=document.createElement("div");
+    card.className = "team-card";
+    card.style.border = "3px solid " + team.color;
+    card.innerHTML = `
+      <div class="rank-label">#${index+1}</div>
+      <img src="${teamImages[team.id]}">
+      <h3>${team.name}</h3>
+      <p class="score">${team.score} pts</p>
+    `;
+    container.appendChild(card);
+  });
+}
 
-      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-        <button class="btn" id="adminLoginBtn">Login</button>
-        <button class="btn ghost" id="adminCancelBtn">Cancel</button>
-      </div>
+/* Firebase sync */
+function loadFromFirebase() {
+  db.ref("houseScores").once("value").then(snapshot=>{
+    if(snapshot.exists()){
+      const data = snapshot.val();
+      teams.forEach(t => { if (data[t.id] !== undefined) t.score = data[t.id]; });
+      renderLeaderboard();
+    }
+  });
+}
+function saveToFirebase() {
+  const data = {};
+  teams.forEach(t => data[t.id] = t.score);
+  db.ref("houseScores").set(data);
+}
 
-      <hr style="margin:12px 0;border:none;border-top:1px solid rgba(12,20,40,0.04)" />
+/* Admin Panel */
+function openAdmin(){
+  const pwd=prompt("Enter admin password:");
+  if(pwd==="Smiling-1092"){
+    document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
+    document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
+    document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
+    document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
+    document.getElementById("admin-modal").style.display = "flex";
+  } else alert("Incorrect password!");
+}
+function closeAdmin(){ document.getElementById("admin-modal").style.display = "none"; }
+function saveScores(){
+  teams.find(t=>t.id==="acrobats").score = +document.getElementById("admin-acrobats").value || 0;
+  teams.find(t=>t.id==="quicksilver").score = +document.getElementById("admin-quicksilver").value || 0;
+  teams.find(t=>t.id==="druids").score = +document.getElementById("admin-druids").value || 0;
+  teams.find(t=>t.id==="bravehearts").score = +document.getElementById("admin-bravehearts").value || 0;
+  renderLeaderboard();
+  saveToFirebase();
+  closeAdmin();
+}
 
-      <div id="adminArea" style="display:none;">
-        <h3 style="margin:0 0 8px 0">Register Book</h3>
-        <p class="muted" style="margin:0 0 8px 0">Scan or type ISBN to register a new book to the system.</p>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="adminISBN" placeholder="Scan ISBN to register" />
-          <button class="btn" id="adminRegisterBtn">Register</button>
-        </div>
+/* =============== MODE SWITCH (Light → Dark → Christmas) =============== */
+const modeBtn = document.getElementById("mode-toggle");
+let currentMode = "light";
 
-        <h3 style="margin-top:16px;margin-bottom:8px">Manual Book Entry</h3>
-        <p class="muted" style="margin:0 0 8px 0">If you wish, add a title and author for easier tracking.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input type="text" id="manualTitle" placeholder="Title (optional)" />
-          <input type="text" id="manualAuthor" placeholder="Author (optional)" />
-        </div>
-        <div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end">
-          <button class="btn ghost" id="manualRegisterBtn">Add Manual Book</button>
-        </div>
+function applyMode(mode) {
+  currentMode = mode;
+  document.body.classList.remove("dark", "christmas");
 
-        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(12,20,40,0.04)" />
+  if (mode === "dark") document.body.classList.add("dark");
+  if (mode === "christmas") document.body.classList.add("christmas");
 
-        <h3 style="margin:0 0 8px 0">Admin Logs</h3>
-        <div id="adminLogs" style="max-height:200px;overflow:auto;background:linear-gradient(180deg,#fbfbff,#fff);padding:8px;border-radius:8px;border:1px solid rgba(12,20,40,0.03)"></div>
+  // change button emoji
+  if (mode === "light") modeBtn.textContent = "🌙";
+  if (mode === "dark") modeBtn.textContent = "🎅";
+  if (mode === "christmas") modeBtn.textContent = "☀️";
 
-      </div>
+  // snow only in Christmas mode
+  if (mode === "christmas") startChristmasMode();
+  else stopChristmasMode();
+}
 
-    </div>
-  </template>
+modeBtn.addEventListener("click", () => {
+  if (currentMode === "light") applyMode("dark");
+  else if (currentMode === "dark") applyMode("christmas");
+  else if (currentMode === "christmas") applyMode("light");
+});
 
+/* =============== SNOW SYSTEM (unchanged except triggered by Christmas) =============== */
 
-  <script>
-    /*************************************************************************
-     * Library Tracker Script
-     * - Uses localStorage for persistence (books, loans, students, logs)
-     * - Minimal external dependencies; scanner integration is native (keyboard)
-     * - Keep functions small and well-documented for future export.
-     *************************************************************************/
+const canvas = document.getElementById("snow-canvas");
+const ctx = canvas.getContext("2d");
+let cw = 0, ch = 0;
+let snowflakes = [];
+let animFrame = null;
 
-    /* -------------------------
-       Data structures in localStorage
-       - books: {
-           isbn: { isbn, title, author, registeredAt }
-         }
-       - loans: [ { isbn, student, lentAt, dueAt } ]
-       - students: { studentId: { name } }  // optional mapping if you want names
-       - logs: [ { ts, type, msg } ]
-       ------------------------- */
+function resize() {
+  cw = canvas.width = window.innerWidth;
+  ch = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-    const LS_KEYS = { BOOKS: 'lt_books_v1', LOANS: 'lt_loans_v1', STUDENTS: 'lt_students_v1', LOGS: 'lt_logs_v1' };
+function createSnowflake() {
+  return {
+    x: Math.random()*cw,
+    y: Math.random()*-ch*0.2,
+    r: Math.random()*3+1.5,
+    speed: Math.random()*2+1,
+    drift: (Math.random()-0.5)*0.8
+  };
+}
 
-    // Load data or initialize defaults
-    let books = JSON.parse(localStorage.getItem(LS_KEYS.BOOKS) || '{}');
-    let loans = JSON.parse(localStorage.getItem(LS_KEYS.LOANS) || '[]');
-    let students = JSON.parse(localStorage.getItem(LS_KEYS.STUDENTS) || '{}');
-    let logs = JSON.parse(localStorage.getItem(LS_KEYS.LOGS) || '[]');
+function updateSnow() {
+  ctx.clearRect(0,0,cw,ch);
 
-    // Helper: save everything
-    function saveAll(){
-      localStorage.setItem(LS_KEYS.BOOKS, JSON.stringify(books));
-      localStorage.setItem(LS_KEYS.LOANS, JSON.stringify(loans));
-      localStorage.setItem(LS_KEYS.STUDENTS, JSON.stringify(students));
-      localStorage.setItem(LS_KEYS.LOGS, JSON.stringify(logs));
+  for (let f of snowflakes) {
+    f.x += f.drift;
+    f.y += f.speed;
+
+    if (f.y > ch) {
+      f.y = -10;
+      f.x = Math.random()*cw;
     }
 
-    // Utility: push a log entry
-    function pushLog(type, msg){
-      const entry = { ts: Date.now(), type, msg };
-      logs.unshift(entry); // newest first
-      logs = logs.slice(0, 500); // cap logs for storage
-      saveAll();
-      renderAdminLogs();
-    }
-
-    // Pretty date helper
-    function formatDate(ts){
-      const d = new Date(ts);
-      return d.toLocaleString();
-    }
-
-    // Default sample students (optional) — makes wanted page show names if scanned id matches
-    if (Object.keys(students).length === 0){
-      students = {
-        '001': { name: 'Alice Romano' },
-        '002': { name: 'Marco Bianchi' },
-        '003': { name: 'Giulia Verdi' },
-        '065': { name: 'Luca Rossi' }
-      };
-      pushLog('system','Initialized sample student list');
-    }
-
-    // If no books exist, seed a few examples so the UI isn't empty on first open
-    if (Object.keys(books).length === 0){
-      const seed = {
-        '9780143126560': { isbn:'9780143126560', title:'Sample Book: The Dawn', author:'E. Writer', registeredAt: Date.now() - 1000*60*60*24*40 },
-        '9780262033848': { isbn:'9780262033848', title:'Algorithms Unlocked', author:'T. Cormen', registeredAt: Date.now() - 1000*60*60*24*20 },
-        '9780307279460': { isbn:'9780307279460', title:'Fictional Stories', author:'A. Author', registeredAt: Date.now() }
-      };
-      books = Object.assign({}, seed, books);
-      pushLog('system','Seeded sample books');
-      saveAll();
-    }
-
-    /*************************************************************************
-     * UI references
-     *************************************************************************/
-    const isbnInput = document.getElementById('isbnInput');
-    const studentInput = document.getElementById('studentInput');
-    const lendBtn = document.getElementById('lendBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const wantedBtn = document.getElementById('wantedBtn');
-
-    const booksContainer = document.getElementById('booksContainer');
-    const wantedPreview = document.getElementById('wantedPreview');
-
-    const totalBooksEl = document.getElementById('totalBooks');
-    const activeLoansEl = document.getElementById('activeLoans');
-    const overdueCountEl = document.getElementById('overdueCount');
-
-    const adminBtn = document.getElementById('adminBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const exportBtn = document.getElementById('exportBtn');
-
-    /* -------------------------
-       Events wiring
-       ------------------------- */
-    lendBtn.addEventListener('click', handleLend);
-    clearBtn.addEventListener('click', handleClear);
-    wantedBtn.addEventListener('click', showWantedPage);
-
-    adminBtn.addEventListener('click', openAdminModal);
-    refreshBtn.addEventListener('click', renderAll);
-    exportBtn.addEventListener('click', exportCSV);
-
-    // Support Enter key to lend (scanner sends Enter after barcode)
-    [isbnInput, studentInput].forEach(input=>{
-      input.addEventListener('keydown', (e)=>{
-        if (e.key === 'Enter'){
-          // If ISBN is focused and student is empty, focus student after Enter
-          if (document.activeElement === isbnInput && !studentInput.value.trim()){
-            studentInput.focus();
-            return;
-          }
-          handleLend();
-        }
-      });
-    });
-
-    /*************************************************************************
-     * Core features: register book, lend book, return book, lists
-     *************************************************************************/
-
-    // Register a new book (admin use)
-    function registerBook(isbn, title = '', author = ''){
-      isbn = String(isbn).trim();
-      if (!isbn) return { ok:false, msg:'No ISBN provided' };
-      if (books[isbn]) return { ok:false, msg:'Book already registered' };
-
-      books[isbn] = { isbn, title: title || ('Book ' + isbn.slice(-6)), author: author || 'Unknown', registeredAt: Date.now() };
-      saveAll();
-      pushLog('book.register',`Registered book ${isbn} ${title ? ('— '+title) : ''}`);
-      renderAll();
-      return { ok:true };
-    }
-
-    // Lend a book to a student
-    function lend(isbn, studentId){
-      isbn = String(isbn).trim();
-      studentId = String(studentId).trim();
-      if (!isbn || !studentId) return { ok:false, msg:'Missing ISBN or student ID' };
-      if (!books[isbn]) return { ok:false, msg:'Book not registered' };
-
-      // check if already lent
-      const existing = loans.find(l => l.isbn === isbn && !l.returnedAt);
-      if (existing) return { ok:false, msg:'Book is already lent' };
-
-      const lentAt = Date.now();
-      const dueAt = lentAt + (14 * 24 * 60 * 60 * 1000); // two weeks
-      const loan = { isbn, student: studentId, lentAt, dueAt };
-      loans.push(loan);
-      saveAll();
-      pushLog('loan',`Lent ISBN ${isbn} to ${studentId} (due ${formatDate(dueAt)})`);
-      renderAll();
-      return { ok:true, loan };
-    }
-
-    // Return a book (mark returned)
-    function markReturned(isbn){
-      const loan = loans.find(l => l.isbn === isbn && !l.returnedAt);
-      if (!loan) return { ok:false, msg:'No active loan found for this ISBN' };
-      loan.returnedAt = Date.now();
-      saveAll();
-      pushLog('return',`Book ${isbn} returned by ${loan.student}`);
-      renderAll();
-      return { ok:true };
-    }
-
-    // Utility: find book display name
-    function bookDisplayName(isbn){
-      const b = books[isbn];
-      if (!b) return `ISBN ${isbn}`;
-      return (b.title ? b.title+ (b.author ? ' — ' + b.author : '') : ('Book ' + isbn));
-    }
-
-    /*************************************************************************
-     * UI renderers
-     *************************************************************************/
-
-    // Render registered books on the home page (user requested: show newly registered book there immediately)
-    function renderBooks(){
-      booksContainer.innerHTML = '';
-      const allIsbns = Object.keys(books).sort((a,b)=> (books[a].registeredAt||0) - (books[b].registeredAt||0));
-
-      if (allIsbns.length === 0){
-        const el = document.createElement('div');
-        el.className = 'muted';
-        el.textContent = 'No books registered yet.';
-        booksContainer.appendChild(el);
-        return;
-      }
-
-      allIsbns.forEach(isbn => {
-        const b = books[isbn];
-        const card = document.createElement('div');
-        card.className = 'book-card';
-
-        const thumb = document.createElement('div');
-        thumb.className = 'book-thumb';
-        thumb.textContent = (b.title ? b.title.charAt(0).toUpperCase() : 'B');
-
-        const meta = document.createElement('div');
-        meta.className = 'book-meta';
-        const t = document.createElement('div'); t.className='book-title'; t.textContent = b.title || ('ISBN ' + isbn);
-        const s = document.createElement('div'); s.className='book-sub'; s.textContent = (b.author ? b.author + ' — ' : '') + 'ISBN ' + isbn;
-
-        meta.appendChild(t); meta.appendChild(s);
-
-        const status = document.createElement('div');
-        const activeLoan = loans.find(l => l.isbn === isbn && !l.returnedAt);
-        if (activeLoan){
-          status.className = 'status lent';
-          const studentName = (students[activeLoan.student] && students[activeLoan.student].name) ? students[activeLoan.student].name + ' ('+activeLoan.student+')' : activeLoan.student;
-          status.textContent = 'Lent — due ' + new Date(activeLoan.dueAt).toLocaleDateString();
-        } else {
-          status.className = 'status available';
-          status.textContent = 'Available';
-        }
-
-        card.appendChild(thumb);
-        card.appendChild(meta);
-        card.appendChild(status);
-
-        // click actions: if lent => show return button, else quick lend
-        card.style.cursor = 'pointer';
-        card.addEventListener('click', ()=>{
-          if (!activeLoan){
-            // quick lend flow: focus student input and prefill isbn
-            isbnInput.value = isbn;
-            studentInput.focus();
-            pushLog('ui','Prefilled ISBN '+isbn+' for quick lend');
-          } else {
-            // show a confirm to mark returned
-            if (confirm(`Mark ${bookDisplayName(isbn)} as returned?`)){
-              markReturned(isbn);
-            }
-          }
-        });
-
-        booksContainer.appendChild(card);
-      });
-    }
-
-    // Render wanted preview (small)
-    function renderWantedPreview(){
-      wantedPreview.innerHTML = '';
-      const now = Date.now();
-      const overdue = loans.filter(l => !l.returnedAt && l.dueAt < now).slice(0,6);
-      if (overdue.length === 0){
-        const el = document.createElement('div'); el.className='muted'; el.textContent='No overdue books.'; wantedPreview.appendChild(el); return;
-      }
-      overdue.forEach(l => {
-        const item = document.createElement('div'); item.className='wanted-item';
-        const info = document.createElement('div');
-        const studentName = (students[l.student] && students[l.student].name) ? students[l.student].name + ' ('+l.student+')' : l.student;
-        info.innerHTML = `<strong>${studentName}</strong><div class="muted">${bookDisplayName(l.isbn)}</div>`;
-        item.appendChild(info);
-        wantedPreview.appendChild(item);
-      });
-    }
-
-    // Render full wanted list in right column
-    function renderWantedFull(){
-      const container = document.getElementById('wantedFull');
-      container.innerHTML = '';
-      const now = Date.now();
-      const overdue = loans.filter(l => !l.returnedAt && l.dueAt < now).sort((a,b)=>a.dueAt-b.dueAt);
-      if (overdue.length === 0){ container.innerHTML='<div class="muted">No overdue loans</div>'; return; }
-
-      overdue.forEach(l => {
-        const el = document.createElement('div');
-        el.style.display='flex';el.style.justifyContent='space-between';el.style.alignItems='center';el.style.padding='8px';el.style.borderBottom='1px solid rgba(12,20,40,0.03)';
-        const left = document.createElement('div');
-        const studentName = (students[l.student] && students[l.student].name) ? students[l.student].name + ' ('+l.student+')' : l.student;
-        left.innerHTML = `<div style="font-weight:700">${studentName}</div><div class="muted">${bookDisplayName(l.isbn)}</div>`;
-        const right = document.createElement('div');
-        right.innerHTML = `<div class="muted">Due ${new Date(l.dueAt).toLocaleDateString()}</div>`;
-        el.appendChild(left);el.appendChild(right);container.appendChild(el);
-      });
-    }
-
-    // Render admin logs
-    function renderAdminLogs(){
-      const el = document.getElementById('adminLogs');
-      if (!el) return;
-      el.innerHTML = '';
-      logs.slice(0,200).forEach(entry => {
-        const d = document.createElement('div');
-        d.style.fontSize='13px';d.style.padding='6px 0';
-        d.innerHTML = `<div style="font-weight:700">${entry.type}</div><div class="muted" style="font-size:12px">${new Date(entry.ts).toLocaleString()}</div><div style="margin-top:6px">${entry.msg}</div>`;
-        el.appendChild(d);
-      });
-    }
-
-    // Render top stats
-    function renderStats(){
-      totalBooksEl.textContent = Object.keys(books).length;
-      activeLoansEl.textContent = loans.filter(l => !l.returnedAt).length;
-      overdueCountEl.textContent = loans.filter(l => !l.returnedAt && l.dueAt < Date.now()).length;
-    }
-
-    // Master render
-    function renderAll(){
-      renderBooks();
-      renderWantedPreview();
-      renderWantedFull();
-      renderAdminLogs();
-      renderStats();
-    }
-
-    // initial render
-    renderAll();
-
-    /*************************************************************************
-     * UI action handlers
-     *************************************************************************/
-
-    function handleLend(){
-      const isbn = isbnInput.value.trim();
-      const studentId = studentInput.value.trim();
-      if (!isbn || !studentId){ alert('Please provide both ISBN and Student ID.'); return; }
-
-      // If book not registered, prompt to register via admin
-      if (!books[isbn]){
-        const ok = confirm('This ISBN is not registered. Would you like to register it now as a book?');
-        if (ok){
-          // quick register with minimal info
-          registerBook(isbn);
-          alert('Book auto-registered. Now lending...');
-        } else {
-          return;
-        }
-      }
-
-      const res = lend(isbn, studentId);
-      if (!res.ok) { alert(res.msg || 'Could not lend book'); return; }
-      alert(`Lent ${bookDisplayName(isbn)} to ${students[studentId] ? students[studentId].name + ' ('+studentId+')' : studentId}`);
-
-      // clear inputs for next scan — keep focus on ISBN for next operation
-      isbnInput.value=''; studentInput.value=''; isbnInput.focus();
-    }
-
-    function handleClear(){
-      isbnInput.value=''; studentInput.value=''; isbnInput.focus();
-    }
-
-    function showWantedPage(){
-      // Take user to the right column by focusing refresh and scrolling
-      document.getElementById('wantedFull').scrollIntoView({behavior:'smooth', block:'center'});
-      renderAll();
-    }
-
-    /*************************************************************************
-     * Admin modal handling
-     *************************************************************************/
-
-    let adminModal = null;
-
-    function openAdminModal(){
-      // create modal from template
-      const tpl = document.getElementById('adminModalTemplate');
-      const clone = tpl.content.cloneNode(true);
-      const wrapper = document.createElement('div');
-      wrapper.style.position='fixed';wrapper.style.left='0';wrapper.style.top='0';wrapper.style.width='100%';wrapper.style.height='100%';wrapper.style.display='flex';wrapper.style.alignItems='center';wrapper.style.justifyContent='center';wrapper.style.zIndex='9999';
-      const backdrop = document.createElement('div');
-      backdrop.style.position='absolute';backdrop.style.left='0';backdrop.style.top='0';backdrop.style.right='0';backdrop.style.bottom='0';backdrop.style.background='rgba(12,20,40,0.32)';backdrop.style.backdropFilter='blur(2px)';
-      wrapper.appendChild(backdrop);
-
-      const panel = clone.querySelector('.panel') || clone.children[0];
-      panel.style.position='relative';panel.style.zIndex='2';panel.style.boxShadow='0 24px 60px rgba(12,20,40,0.3)';
-      wrapper.appendChild(panel);
-
-      document.body.appendChild(wrapper);
-      adminModal = wrapper;
-
-      // hook up buttons in modal
-      const adminLoginBtn = panel.querySelector('#adminLoginBtn');
-      const adminCancelBtn = panel.querySelector('#adminCancelBtn');
-      const adminPassword = panel.querySelector('#adminPassword');
-      const adminArea = panel.querySelector('#adminArea');
-      const adminRegisterBtn = panel.querySelector('#adminRegisterBtn');
-      const adminISBN = panel.querySelector('#adminISBN');
-      const manualRegisterBtn = panel.querySelector('#manualRegisterBtn');
-      const manualTitle = panel.querySelector('#manualTitle');
-      const manualAuthor = panel.querySelector('#manualAuthor');
-
-      adminCancelBtn.addEventListener('click', closeAdminModal);
-
-      adminLoginBtn.addEventListener('click', ()=>{
-        if (adminPassword.value === '1234'){
-          adminArea.style.display = 'block';
-          panel.querySelector('#adminPassword').style.display='none';
-          adminLoginBtn.style.display='none';
-          pushLog('admin','Admin logged in');
-          renderAdminLogs();
-        } else {
-          alert('Wrong password');
-          pushLog('admin','Failed admin login attempt');
-        }
-      });
-
-      adminRegisterBtn.addEventListener('click', ()=>{
-        const isbn = adminISBN.value.trim();
-        if (!isbn) { alert('Please scan or type an ISBN'); return; }
-        const res = registerBook(isbn);
-        if (!res.ok) alert(res.msg || 'Could not register'); else { alert('Book registered'); adminISBN.value=''; }
-      });
-
-      manualRegisterBtn.addEventListener('click', ()=>{
-        const title = manualTitle.value.trim();
-        const author = manualAuthor.value.trim();
-        if (!title){ alert('Provide at least a title'); return; }
-        // create a pseudo-isbn from timestamp for manual entries
-        const pseudo = 'MAN-'+Date.now();
-        registerBook(pseudo, title, author);
-        manualTitle.value=''; manualAuthor.value='';
-        alert('Manual book added');
-      });
-
-      // when modal is created, render admin logs
-      renderAdminLogs();
-    }
-
-    function closeAdminModal(){
-      if (adminModal){ document.body.removeChild(adminModal); adminModal = null; pushLog('admin','Admin modal closed'); }
-    }
-
-    /*************************************************************************
-     * Export / Import helpers
-     *************************************************************************/
-
-    function exportCSV(){
-      // Combine loans (active) with book data to export overdue or all loans
-      const headers = ['isbn','title','author','student','studentName','lentAt','dueAt','returnedAt'];
-      const rows = loans.map(l => {
-        const b = books[l.isbn] || {};
-        const sName = (students[l.student] && students[l.student].name) ? students[l.student].name : '';
-        return [l.isbn, b.title||'', b.author||'', l.student, sName, l.lentAt?new Date(l.lentAt).toISOString():'', l.dueAt?new Date(l.dueAt).toISOString():'', l.returnedAt?new Date(l.returnedAt).toISOString():''];
-      });
-
-      let csv = headers.join(',')+"
-" + rows.map(r=>r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',')).join('
-');
-      const blob = new Blob([csv], {type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='library_loans.csv'; a.click(); URL.revokeObjectURL(url);
-      pushLog('export','Exported loans CSV');
-    }
-
-    /*************************************************************************
-     * Simple data-cleaning and maintenance utilities (admin-only patterns)
-     *************************************************************************/
-
-    // Remove returned loans older than X days to keep dataset small
-    function cleanReturnedOlderThan(days){
-      const cutoff = Date.now() - days*24*60*60*1000;
-      loans = loans.filter(l => !(l.returnedAt && l.returnedAt < cutoff));
-      saveAll();
-      renderAll();
-      pushLog('maintenance',`Cleaned returned loans older than ${days} days`);
-    }
-
-    // A small convenience: when a book is registered, it is immediately visible on home page
-    // already handled by renderAll() after registerBook(). This meets the user's request.
-
-    /*************************************************************************
-     * A few helpful developer-facing functions for debugging in the console
-     *************************************************************************/
-    window.LT = {
-      books, loans, students, logs,
-      registerBook, lend, markReturned, saveAll, pushLog, exportCSV, cleanReturnedOlderThan
-    };
-
-    /*************************************************************************
-     * Extra UX polish: focus management, first-time hints
-     *************************************************************************/
-    // Keep focus on ISBN input by default
-    window.addEventListener('load', ()=>{ isbnInput.focus(); });
-
-    // Show an initial hint only once
-    if (!localStorage.getItem('lt_seen_hint')){
-      setTimeout(()=>{
-        alert('Welcome! To lend: first scan the book ISBN, then scan the student ID. Use the 💼 button for admin.');
-        localStorage.setItem('lt_seen_hint','1');
-      }, 500);
-    }
-
-    /*************************************************************************
-     * Periodic check: update counts every minute (for overdue)
-     *************************************************************************/
-    setInterval(()=>{ renderStats(); renderWantedPreview(); renderWantedFull(); }, 60*1000);
-
-    /*************************************************************************
-     * End of script
-     *************************************************************************/
-
-  </script>
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
+
+  animFrame = requestAnimationFrame(updateSnow);
+}
+
+function startSnow() {
+  snowflakes = [];
+  for (let i=0;i<400;i++) snowflakes.push(createSnowflake());
+  if (!animFrame) animFrame = requestAnimationFrame(updateSnow);
+}
+
+function stopSnow() {
+  cancelAnimationFrame(animFrame);
+  animFrame = null;
+  snowflakes = [];
+  ctx.clearRect(0,0,cw,ch);
+}
+
+function startChristmasMode() { startSnow(); }
+function stopChristmasMode() { stopSnow(); }
+
+
+/* INITIALIZE */
+renderLeaderboard();
+loadFromFirebase();
+applyMode("light");
+</script>
 
 </body>
 </html>
-
-
