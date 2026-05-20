@@ -309,6 +309,14 @@ body.dark .admin-table-header { border-color: #444; }
   white-space: nowrap;
 }
 
+/* Admin panel individual house color classes */
+.lbl-acrobats { color: #59b300; }
+.lbl-quicksilver { color: #ff4d4d; }
+.lbl-druids { color: #0073e6; }
+/* Using a slightly darker gold variant for clarity on light backgrounds */
+.lbl-bravehearts { color: #e6b800; } 
+body.dark .lbl-bravehearts { color: #ffcc00; }
+
 .admin-row .score-input {
   width: 100%;
   padding: 8px;
@@ -377,6 +385,16 @@ body.dark footer { background: #777; }
 .footer-left {
   display: flex;
   align-items: center;
+}
+
+.footer-text {
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+body.dark .footer-text {
+  color: #fff;
 }
 
 .footer-right {
@@ -473,22 +491,22 @@ body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
     </div>
     
     <div class="admin-row">
-      <label>Acrobats:</label>
+      <label class="lbl-acrobats">Acrobats:</label>
       <input type="number" id="admin-acrobats" class="score-input">
       <input type="text" id="admin-acrobats-note" class="note-input" placeholder="e.g., +100 Football match">
     </div>
     <div class="admin-row">
-      <label>Quicksilver:</label>
+      <label class="lbl-quicksilver">Quicksilver:</label>
       <input type="number" id="admin-quicksilver" class="score-input">
       <input type="text" id="admin-quicksilver-note" class="note-input" placeholder="e.g., Won Basketball cup">
     </div>
     <div class="admin-row">
-      <label>Druids:</label>
+      <label class="lbl-druids">Druids:</label>
       <input type="number" id="admin-druids" class="score-input">
       <input type="text" id="admin-druids-note" class="note-input" placeholder="e.g., +50 Trivia clean sweep">
     </div>
     <div class="admin-row">
-      <label>Bravehearts:</label>
+      <label class="lbl-bravehearts">Bravehearts:</label>
       <input type="number" id="admin-bravehearts" class="score-input">
       <input type="text" id="admin-bravehearts-note" class="note-input" placeholder="e.g., 3-2 victory in Rugby">
     </div>
@@ -504,7 +522,7 @@ body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
 <footer>
   <div class="footer-left">
     <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
-    <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
+    <span class="footer-text">2026 SPORTS DAY</span>
   </div>
   <div class="footer-right">
     <button id="refresh-button" class="hidden" onclick="manualRefresh()">🔄 Refresh</button>
