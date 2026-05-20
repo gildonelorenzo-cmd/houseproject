@@ -633,8 +633,15 @@ function renderLeaderboard() {
     
     const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : '';
     
+    let rankText = `#${index+1}`;
+    if (currentMode === 'arcade') {
+      rankText = `RANK ${index+1}`;
+    } else if (currentMode === 'hype') {
+      rankText = (index === 0) ? "🏆 CHAMP" : `#${index+1}`;
+    }
+    
     card.innerHTML = `
-      <div class="rank-label">${currentMode === 'arcade' ? 'RANK ' : (currentMode === 'hype' ? 'CHAMP ' : '#')}${index+1}</div>
+      <div class="rank-label">${rankText}</div>
       <img src="${teamImages[team.id]}">
       <h3>${team.name}</h3>
       <p class="score">${team.score} PTS</p>
@@ -795,7 +802,7 @@ modeBtn.addEventListener("click", () => {
   else if (currentMode === "hype") applyMode("light");
 });
 
-/* =============== DYNAMIC CANVAS PARTICLES (Snow, Retro Pixels, Golden Confetti) =============== */
+/* =============== DYNAMIC CANVAS PARTICLES =============== */
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let cw = 0, ch = 0;
@@ -811,7 +818,6 @@ resize();
 
 function createParticle() {
   if (currentMode === "hype") {
-    // 🎉 Golden Championship Confetti Shards
     const goldColors = ["#ffaa00", "#ffd700", "#ff5500", "#ffe680", "#ffffff"];
     return {
       x: Math.random() * cw,
@@ -825,7 +831,6 @@ function createParticle() {
       color: goldColors[Math.floor(Math.random() * goldColors.length)]
     };
   } else if (currentMode === "arcade") {
-    // 🕹️ 8-Bit Upwards Square Bits
     return {
       x: Math.random() * cw,
       y: ch + (Math.random() * ch * 0.2),
@@ -835,7 +840,6 @@ function createParticle() {
       color: Math.random() > 0.5 ? "#00ff66" : "#00ffff"
     };
   } else {
-    // 🎄 Standard Snowflakes
     return {
       x: Math.random() * cw,
       y: Math.random() * -ch * 0.2,
