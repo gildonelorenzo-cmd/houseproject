@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>House Leaderboard</title>
+<title>House Leaderboard Portal</title>
 
-<!-- Firebase (unchanged) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -52,10 +52,15 @@ body.dark {
   animation: gradientShiftDark 25s linear infinite;
 }
 
-/* 🎄 CHRISTMAS MODE BACKGROUND (CHRISTMAS RED) */
+/* 🎄 CHRISTMAS MODE BACKGROUND */
 body.christmas {
-  background: #B30000 !important; /* Deep Christmas Red */
+  background: #B30000 !important;
   transition: background 1.5s ease-in-out;
+}
+
+/* GLOBAL UTILITY */
+.hidden {
+  display: none !important;
 }
 
 /* MERRY CHRISTMAS TEXT */
@@ -103,7 +108,6 @@ body.christmas #merry-christmas {
   100% { background-position: 0% 50%; }
 }
 
-
 /* MODE BUTTON */
 #mode-toggle {
   position: fixed;
@@ -125,7 +129,65 @@ body.christmas #merry-christmas {
 body.dark #mode-toggle { background: #444; color: yellow; }
 body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
 
-/* LEADERBOARD GRID */
+/* HOME VIEW PORTAL CONTAINER */
+#home-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding-bottom: var(--footer-height);
+  z-index: 30;
+}
+
+#home-view h1 {
+  font-size: 38px;
+  margin-bottom: 40px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+body.dark #home-view h1 { text-shadow: 0 2px 4px rgba(255,255,255,0.1); }
+
+.portal-menu {
+  display: flex;
+  gap: 40px;
+}
+
+.portal-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  width: 220px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.portal-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  border-color: #4a90e2;
+}
+
+body.dark .portal-card {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: #555;
+  color: white;
+}
+
+.portal-card .icon {
+  font-size: 60px;
+  margin-bottom: 15px;
+}
+
+.portal-card h2 {
+  margin: 10px 0 0 0;
+  font-size: 24px;
+}
+
+/* LEADERBOARD VIEW GRID */
 #leaderboard {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -147,7 +209,6 @@ body.christmas #mode-toggle { background: #FF0000; color: white; border-color: w
   z-index: 30;
 }
 
-/* 🔥 DARK MODE – TEAM CARDS DARK */
 body.dark .team-card {
   background: rgba(30, 30, 30, 0.92) !important;
   color: #f0f0f0;
@@ -156,6 +217,82 @@ body.dark .team-card {
 .rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 .team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; }
 .score { font-size: 22px; font-weight: bold; }
+
+/* NEW DEDICATED ADMIN VIEW */
+#admin-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: calc(var(--footer-height) + 30px);
+  z-index: 30;
+  width: 100%;
+  max-width: 450px;
+}
+
+.admin-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body.dark .admin-container { background: #222; color: white; }
+body.christmas .admin-container { background: #440000; color: white; border: 1px solid white; }
+
+.admin-container h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 28px;
+}
+
+.admin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.admin-row label {
+  font-weight: bold;
+  font-size: 18px;
+  flex: 1;
+}
+
+.admin-row input {
+  width: 150px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center;
+}
+
+.admin-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+}
+
+.admin-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: 0.2s;
+}
+
+.btn-save { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.btn-save:hover { transform: translateY(-2px); }
+.btn-cancel { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+.btn-cancel:hover { transform: translateY(-2px); }
 
 /* FOOTER */
 footer {
@@ -175,7 +312,6 @@ footer {
 }
 body.dark footer { background: #777; }
 
-/* 🔥 SMALLER FOOTER LOGO */
 .footer-logo {
   height: 45px;
   margin-right: 10px;
@@ -189,37 +325,37 @@ body.dark footer { background: #777; }
 .footer-right {
   display: flex;
   align-items: center;
-  gap: 15px; /* Adds space between Refresh and Admin buttons */
+  gap: 15px;
 }
 
-/* 🔥 MODERN REFRESH BUTTON */
-#refresh-button {
+/* MODERN BUTTONS FOR FOOTER */
+#refresh-button, #home-button {
   padding: 10px 22px;
   font-size: 18px;
   font-weight: bold;
   border-radius: 8px;
   border: none;
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
   color: white;
   cursor: pointer;
   transition: 0.25s;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
-#refresh-button:hover {
+#refresh-button { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+#home-button { background: linear-gradient(135deg, #e67e22, #d35400); }
+
+#refresh-button:hover, #home-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.3);
 }
 
-#refresh-button:active {
+#refresh-button:active, #home-button:active {
   transform: scale(0.97);
 }
 
-body.dark #refresh-button {
-  background: linear-gradient(135deg, #555, #333);
-}
+body.dark #refresh-button { background: linear-gradient(135deg, #555, #333); }
+body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
 
-/* Spin animation for visual feedback on touch totem */
 .spin-animation {
   animation: buttonSpin 0.6s ease-in-out;
 }
@@ -228,84 +364,6 @@ body.dark #refresh-button {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-/* 🔥 MODERN ADMIN BUTTON */
-#admin-button {
-  padding: 10px 22px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 8px;
-  border: none;
-  background: linear-gradient(135deg, #4a90e2, #357ABD);
-  color: white;
-  cursor: pointer;
-  transition: 0.25s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-#admin-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
-}
-
-#admin-button:active {
-  transform: scale(0.97);
-}
-
-body.dark #admin-button {
-  background: linear-gradient(135deg, #666, #444);
-}
-
-/* ADMIN MODAL */
-#admin-modal {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.6);
-  align-items:center;
-  justify-content:center;
-  z-index: 60;
-}
-#admin-modal .modal-content {
-  background:white;
-  padding:30px;
-  border-radius:10px;
-  width:300px;
-}
-body.dark #admin-modal .modal-content { background:#222; color:white; }
-body.christmas #admin-modal .modal-content { background:#440000; color:white; }
-
-#admin-modal input {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-#admin-modal label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-#admin-modal button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  color: white;
-}
-
-.btn-save { background: #2ecc71; }
-.btn-close { background: #e74c3c; }
 
 /* SNOW CANVAS */
 #snow-canvas {
@@ -330,39 +388,73 @@ body.christmas #admin-modal .modal-content { background:#440000; color:white; }
 <!-- Snow Canvas -->
 <canvas id="snow-canvas"></canvas>
 
-<!-- Leaderboard -->
-<div id="leaderboard"></div>
 
+<!-- 1. HOME VIEW PORTAL -->
+<div id="home-view">
+  <h1>School House Portal</h1>
+  <div class="portal-menu">
+    <div class="portal-card" onclick="navigateTo('leaderboard')">
+      <div class="icon">📊</div>
+      <h2>Leaderboard</h2>
+    </div>
+    <div class="portal-card" onclick="verifyAdminAccess()">
+      <div class="icon">⚙️</div>
+      <h2>Admin Panel</h2>
+    </div>
+  </div>
+</div>
+
+
+<!-- 2. LEADERBOARD VIEW -->
+<div id="leaderboard" class="hidden"></div>
+
+
+<!-- 3. DEDICATED ADMIN VIEW (Replaces old popup modal) -->
+<div id="admin-view" class="hidden">
+  <div class="admin-container">
+    <h2>Admin Score Control</h2>
+    
+    <div class="admin-row">
+      <label>Acrobats:</label>
+      <input type="number" id="admin-acrobats">
+    </div>
+    <div class="admin-row">
+      <label>Quicksilver:</label>
+      <input type="number" id="admin-quicksilver">
+    </div>
+    <div class="admin-row">
+      <label>Druids:</label>
+      <input type="number" id="admin-druids">
+    </div>
+    <div class="admin-row">
+      <label>Bravehearts:</label>
+      <input type="number" id="admin-bravehearts">
+    </div>
+    
+    <div class="admin-actions">
+      <button class="btn-save" onclick="saveScores()">Save & Publish</button>
+      <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- GLOBAL FOOTER -->
 <footer>
   <div class="footer-left">
     <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
     <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
   </div>
   <div class="footer-right">
-    <button id="refresh-button" onclick="manualRefresh()">🔄 Refresh</button>
-    <button id="admin-button" onclick="openAdmin()">Admin</button>
+    <!-- Dynamic controls populate contextually via JS -->
+    <button id="refresh-button" class="hidden" onclick="manualRefresh()">🔄 Refresh</button>
+    <button id="home-button" class="hidden" onclick="navigateTo('home')">🏠 Home</button>
   </div>
 </footer>
 
-<!-- Admin Modal -->
-<div id="admin-modal">
-  <div class="modal-content">
-    <h2>Admin Panel</h2>
-    <label>Acrobats:</label>
-    <input type="number" id="admin-acrobats">
-    <label>Quicksilver:</label>
-    <input type="number" id="admin-quicksilver">
-    <label>Druids:</label>
-    <input type="number" id="admin-druids">
-    <label>Bravehearts:</label>
-    <input type="number" id="admin-bravehearts">
-    <button class="btn-save" onclick="saveScores()">Save</button>
-    <button class="btn-close" onclick="closeAdmin()">Close</button>
-  </div>
-</div>
 
 <script>
-/* =============== LEADERBOARD =============== */
+/* =============== LEADERBOARD STATE =============== */
 let teams = [
   { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0 },
   { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0 },
@@ -405,6 +497,7 @@ function loadFromFirebase() {
     }
   });
 }
+
 function saveToFirebase() {
   const data = {};
   teams.forEach(t => data[t.id] = t.score);
@@ -414,39 +507,63 @@ function saveToFirebase() {
 /* Manual Totem Refresh Function */
 function manualRefresh() {
   const refreshBtn = document.getElementById("refresh-button");
-  
-  // Add the spin animation class
   refreshBtn.classList.add("spin-animation");
-  
-  // Fetch fresh data from Firebase
   loadFromFirebase();
-  
-  // Remove the animation class after it completes so it can spin again next click
   setTimeout(() => {
     refreshBtn.classList.remove("spin-animation");
   }, 600);
 }
 
-/* Admin Panel */
-function openAdmin(){
-  const pwd=prompt("Enter admin password:");
-  if(pwd==="Smiling-1092"){
+/* =============== SINGLE PAGE ROUTING ENGINE =============== */
+function navigateTo(targetView) {
+  // Hide all main containers
+  document.getElementById("home-view").classList.add("hidden");
+  document.getElementById("leaderboard").classList.add("hidden");
+  document.getElementById("admin-view").classList.add("hidden");
+  
+  // Hide all dynamic footer controls
+  document.getElementById("refresh-button").classList.add("hidden");
+  document.getElementById("home-button").classList.add("hidden");
+
+  if (targetView === "home") {
+    document.getElementById("home-view").classList.remove("hidden");
+  } 
+  else if (targetView === "leaderboard") {
+    document.getElementById("leaderboard").classList.remove("hidden");
+    document.getElementById("refresh-button").classList.remove("hidden");
+    document.getElementById("home-button").classList.remove("hidden");
+    loadFromFirebase();
+  } 
+  else if (targetView === "admin") {
+    document.getElementById("admin-view").classList.remove("hidden");
+    document.getElementById("home-button").classList.remove("hidden");
+    
+    // Pre-populate input values with matching team score values
     document.getElementById("admin-acrobats").value = teams.find(t=>t.id==="acrobats").score;
     document.getElementById("admin-quicksilver").value = teams.find(t=>t.id==="quicksilver").score;
     document.getElementById("admin-druids").value = teams.find(t=>t.id==="druids").score;
     document.getElementById("admin-bravehearts").value = teams.find(t=>t.id==="bravehearts").score;
-    document.getElementById("admin-modal").style.display = "flex";
-  } else alert("Incorrect password!");
+  }
 }
-function closeAdmin(){ document.getElementById("admin-modal").style.display = "none"; }
+
+/* Gatekeeper check prior to opening Admin View */
+function verifyAdminAccess() {
+  const pwd = prompt("Enter admin password:");
+  if (pwd === "Smiling-1092") {
+    navigateTo("admin");
+  } else {
+    alert("Incorrect password!");
+  }
+}
+
 function saveScores(){
   teams.find(t=>t.id==="acrobats").score = +document.getElementById("admin-acrobats").value || 0;
   teams.find(t=>t.id==="quicksilver").score = +document.getElementById("admin-quicksilver").value || 0;
   teams.find(t=>t.id==="druids").score = +document.getElementById("admin-druids").value || 0;
   teams.find(t=>t.id==="bravehearts").score = +document.getElementById("admin-bravehearts").value || 0;
-  renderLeaderboard();
+  
   saveToFirebase();
-  closeAdmin();
+  navigateTo("home");
 }
 
 /* =============== MODE SWITCH (Light → Dark → Christmas) =============== */
@@ -460,12 +577,10 @@ function applyMode(mode) {
   if (mode === "dark") document.body.classList.add("dark");
   if (mode === "christmas") document.body.classList.add("christmas");
 
-  // change button emoji
   if (mode === "light") modeBtn.textContent = "🌙";
   if (mode === "dark") modeBtn.textContent = "🎅";
   if (mode === "christmas") modeBtn.textContent = "☀️";
 
-  // snow only in Christmas mode
   if (mode === "christmas") startChristmasMode();
   else stopChristmasMode();
 }
@@ -537,11 +652,11 @@ function stopSnow() {
 function startChristmasMode() { startSnow(); }
 function stopChristmasMode() { stopSnow(); }
 
-
-/* INITIALIZE */
+/* INITIALIZE INITIAL ROUTE */
 renderLeaderboard();
 loadFromFirebase();
 applyMode("light");
+navigateTo("home");
 </script>
 
 </body>
