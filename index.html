@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Impact&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -66,6 +66,14 @@ body.arcade {
   font-family: 'Press Start 2P', monospace !important;
   color: #00ff66 !important;
   background: #050508 !important;
+}
+
+/* 🔥 HYPE CHAMPIONSHIP MODE GLOBAL OVERRIDES */
+body.hype {
+  font-family: 'Impact', 'Arial Black', sans-serif !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #110000 0%, #220011 40%, #441100 100%) !important;
+  letter-spacing: 1px;
 }
 
 /* GLOBAL UTILITY */
@@ -139,6 +147,7 @@ body.christmas #merry-christmas {
 body.dark #mode-toggle { background: #444; color: yellow; }
 body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
 body.arcade #mode-toggle { background: #00ff66; color: #000; border: 3px dashed #00ff66; font-size: 22px; }
+body.hype #mode-toggle { background: #ffaa00; color: #000; border: 2px solid #fff; box-shadow: 0 0 10px #ffaa00; font-size: 26px; }
 
 /* MAIN APP WRAPPER */
 .view-container {
@@ -170,6 +179,13 @@ body.arcade #home-view h1 {
   text-shadow: 3px 3px 0px #ff0055; 
   color: #00ffff;
   letter-spacing: 2px;
+}
+body.hype #home-view h1 {
+  font-size: 50px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 0 15px #ffaa00, 0 0 30px #ff5500;
+  letter-spacing: 3px;
 }
 
 .portal-menu {
@@ -208,16 +224,24 @@ body.arcade .portal-card {
   box-shadow: 5px 5px 0px #ff0055 !important;
   color: #00ff66 !important;
 }
-body.arcade .portal-card h2 {
-  font-size: 14px !important;
-  margin-top: 15px !important;
-}
+body.arcade .portal-card h2 { font-size: 14px !important; margin-top: 15px !important; }
 
-.portal-card .icon {
-  font-size: 60px;
-  margin-bottom: 15px;
+body.hype .portal-card {
+  background: rgba(20, 5, 5, 0.85) !important;
+  border: 2px solid #ffaa00 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 20px rgba(255, 170, 0, 0.4) !important;
+  color: #fff !important;
 }
+body.hype .portal-card:hover {
+  box-shadow: 0 0 30px #ffaa00 !important;
+  transform: translateY(-5px);
+}
+body.hype .portal-card h2 { font-size: 26px !important; text-transform: uppercase; letter-spacing: 1px; }
+
+.portal-card .icon { font-size: 60px; margin-bottom: 15px; }
 body.arcade .portal-card .icon { font-size: 45px; }
+body.hype .portal-card .icon { text-shadow: 0 0 15px #ff5500; }
 
 .portal-card h2 {
   margin: 10px 0 0 0;
@@ -237,10 +261,8 @@ body.arcade .portal-card .icon { font-size: 45px; }
   margin-left: auto;
   margin-right: auto;
 }
-body.arcade #leaderboard {
-  max-width: 520px !important;
-  gap: 25px;
-}
+body.arcade #leaderboard { max-width: 520px !important; gap: 25px; }
+body.hype #leaderboard { max-width: 480px !important; gap: 25px; }
 
 .team-card {
   background: rgba(255,255,255,0.95);
@@ -256,10 +278,7 @@ body.arcade #leaderboard {
   box-sizing: border-box;
 }
 
-body.dark .team-card {
-  background: rgba(30, 30, 30, 0.92) !important;
-  color: #f0f0f0;
-}
+body.dark .team-card { background: rgba(30, 30, 30, 0.92) !important; color: #f0f0f0; }
 
 body.arcade .team-card {
   background: #151522 !important;
@@ -269,14 +288,26 @@ body.arcade .team-card {
 }
 body.arcade .team-card h3 { font-size: 14px; margin: 10px 0; color: #fff; }
 
+body.hype .team-card {
+  background: rgba(15, 2, 2, 0.9) !important;
+  border-radius: 16px !important;
+  width: 210px !important;
+  box-shadow: 0 0 25px rgba(255, 170, 0, 0.35) !important;
+  border: none !important;
+}
+body.hype .team-card h3 { font-size: 24px; text-transform: uppercase; margin: 8px 0; letter-spacing: 1px; }
+
 .rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
 body.arcade .rank-label { font-size: 14px; color: #ff0055; margin-bottom: 12px; }
+body.hype .rank-label { font-size: 28px; color: #ffaa00; text-shadow: 0 0 10px #ffaa00; font-style: italic; }
 
 .team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; object-fit: cover; }
 body.arcade .team-card img { border-radius: 0px !important; border: 2px solid #00ff66; width: 110px; height: 110px; }
+body.hype .team-card img { border-radius: 50% !important; border: 3px solid #ffaa00; width: 110px; height: 110px; box-shadow: 0 0 15px rgba(255,85,0,0.5); }
 
 .score { font-size: 22px; font-weight: bold; margin: 5px 0; }
 body.arcade .score { font-size: 13px !important; color: #00ff66; }
+body.hype .score { font-size: 26px !important; color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
 
 /* NOTE BADGES ON LEADERBOARD CARDS */
 .team-note {
@@ -291,22 +322,10 @@ body.arcade .score { font-size: 13px !important; color: #00ff66; }
   word-wrap: break-word;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
 }
-body.dark .team-note {
-  background: #333;
-  color: #ced6e0;
-}
-body.christmas .team-note {
-  background: #fff;
-  color: #b30000;
-}
-body.arcade .team-note {
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: bold;
-  border-radius: 0px;
-  background: #ff0055;
-  color: #fff;
-}
+body.dark .team-note { background: #333; color: #ced6e0; }
+body.christmas .team-note { background: #fff; color: #b30000; }
+body.arcade .team-note { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; border-radius: 0px; background: #ff0055; color: #fff; }
+body.hype .team-note { font-family: Arial, sans-serif; font-size: 12px; border-radius: 6px; background: linear-gradient(90deg, #ff5500, #ffaa00); color: #fff; box-shadow: 0 2px 8px rgba(255,85,0,0.4); }
 
 /* DEDICATED ADMIN VIEW */
 #admin-view {
@@ -328,30 +347,17 @@ body.arcade .team-note {
 
 body.dark .admin-container { background: #222; color: white; }
 body.christmas .admin-container { background: #440000; color: white; border: 1px solid white; }
-body.arcade .admin-container {
-  background: #111 !important;
-  border: 4px solid #00ffff !important;
-  border-radius: 0px !important;
-  box-shadow: 8px 8px 0px #ff0055;
-}
+body.arcade .admin-container { background: #111 !important; border: 4px solid #00ffff !important; border-radius: 0px !important; box-shadow: 8px 8px 0px #ff0055; }
+body.hype .admin-container { background: rgba(15, 3, 3, 0.95) !important; border-radius: 16px !important; box-shadow: 0 0 35px rgba(255, 170, 0, 0.3); border: 1px solid #ffaa00; }
 
-.admin-container h2 {
-  margin-top: 0;
-  margin-bottom: 5px;
-  text-align: center;
-  font-size: 28px;
-}
+.admin-container h2 { margin-top: 0; margin-bottom: 5px; text-align: center; font-size: 28px; }
 body.arcade .admin-container h2 { font-size: 18px; color: #00ffff; margin-bottom: 12px; }
+body.hype .admin-container h2 { font-size: 32px; color: #ffaa00; text-transform: uppercase; }
 
-.admin-subtitle {
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 25px;
-  font-style: italic;
-}
+.admin-subtitle { text-align: center; font-size: 14px; color: #666; margin-bottom: 25px; font-style: italic; }
 body.dark .admin-subtitle { color: #aaa; }
 body.arcade .admin-subtitle { font-size: 10px; color: #ff0055; margin-bottom: 30px; }
+body.hype .admin-subtitle { font-size: 14px; color: #ff5500; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 30px; }
 
 .admin-table-header {
   display: grid;
@@ -365,6 +371,7 @@ body.arcade .admin-subtitle { font-size: 10px; color: #ff0055; margin-bottom: 30
 }
 body.dark .admin-table-header { border-color: #444; }
 body.arcade .admin-table-header { border-bottom: 3px double #00ff66; font-size: 11px; color: #00ff66; }
+body.hype .admin-table-header { border-bottom: 2px dashed #ff5500; font-size: 16px; text-transform: uppercase; color: #ffaa00; }
 
 .col-score { text-align: center; }
 .col-note { text-align: center; }
@@ -377,12 +384,9 @@ body.arcade .admin-table-header { border-bottom: 3px double #00ff66; font-size: 
   margin-bottom: 15px;
 }
 
-.admin-row label {
-  font-weight: bold;
-  font-size: 18px;
-  white-space: nowrap;
-}
+.admin-row label { font-weight: bold; font-size: 18px; white-space: nowrap; }
 body.arcade .admin-row label { font-size: 11px !important; }
+body.hype .admin-row label { font-size: 20px !important; text-transform: uppercase; }
 
 /* Admin panel individual house color classes */
 .lbl-acrobats { color: #59b300; }
@@ -391,6 +395,10 @@ body.arcade .admin-row label { font-size: 11px !important; }
 .lbl-bravehearts { color: #e6b800; } 
 body.dark .lbl-bravehearts { color: #ffcc00; }
 body.arcade .lbl-bravehearts { color: #ffff00; }
+body.hype .lbl-acrobats { color: #7cfc00; text-shadow: 0 0 5px rgba(124,252,0,0.3); }
+body.hype .lbl-quicksilver { color: #ff5252; text-shadow: 0 0 5px rgba(255,82,82,0.3); }
+body.hype .lbl-druids { color: #40a9ff; text-shadow: 0 0 5px rgba(64,169,255,0.3); }
+body.hype .lbl-bravehearts { color: #ffd700; text-shadow: 0 0 5px rgba(255,215,0,0.3); }
 
 .admin-row .score-input {
   width: 100%;
@@ -401,18 +409,10 @@ body.arcade .lbl-bravehearts { color: #ffff00; }
   text-align: center;
   box-sizing: border-box;
 }
-body.arcade .admin-row .score-input {
-  border: 2px solid #00ff66 !important;
-  background: #000;
-  color: #00ff66;
-  border-radius: 0px !important;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-}
+body.arcade .admin-row .score-input { border: 2px solid #00ff66 !important; background: #000; color: #00ff66; border-radius: 0px !important; font-family: 'Press Start 2P', monospace; font-size: 10px; }
+body.hype .admin-row .score-input { border: 1px solid #ffaa00 !important; background: #1a0808; color: #fff; font-family: 'Impact', sans-serif; font-size: 18px; }
 
-.admin-row .score-input-modifier {
-  font-weight: bold;
-}
+.admin-row .score-input-modifier { font-weight: bold; }
 
 .admin-row .note-input {
   width: 100%;
@@ -422,20 +422,10 @@ body.arcade .admin-row .score-input {
   font-size: 15px;
   box-sizing: border-box;
 }
-body.arcade .admin-row .note-input {
-  border: 2px solid #00ff66 !important;
-  background: #000;
-  color: #fff;
-  border-radius: 0px !important;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-}
+body.arcade .admin-row .note-input { border: 2px solid #00ff66 !important; background: #000; color: #fff; border-radius: 0px !important; font-family: Arial, sans-serif; font-size: 13px; }
+body.hype .admin-row .note-input { border: 1px solid #ffaa00 !important; background: #1a0808; color: #fff; font-family: Arial, sans-serif; font-size: 14px; }
 
-.admin-actions {
-  margin-top: 30px;
-  display: flex;
-  gap: 15px;
-}
+.admin-actions { margin-top: 30px; display: flex; gap: 15px; }
 
 .admin-actions button {
   flex: 1;
@@ -448,19 +438,18 @@ body.arcade .admin-row .note-input {
   color: white;
   transition: 0.2s;
 }
-body.arcade .admin-actions button {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 12px;
-  border-radius: 0px !important;
-}
+body.arcade .admin-actions button { font-family: 'Press Start 2P', monospace; font-size: 12px; border-radius: 0px !important; }
+body.hype .admin-actions button { font-family: 'Impact', sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
 .btn-save { background: linear-gradient(135deg, #2ecc71, #27ae60); }
 .btn-save:hover { transform: translateY(-2px); }
 body.arcade .btn-save { background: #00ff66 !important; color: #000 !important; }
+body.hype .btn-save { background: linear-gradient(135deg, #ffaa00, #ff5500) !important; color: #000 !important; box-shadow: 0 4px 15px rgba(255,85,0,0.4); }
 
 .btn-cancel { background: linear-gradient(135deg, #e74c3c, #c0392b); }
 .btn-cancel:hover { transform: translateY(-2px); }
 body.arcade .btn-cancel { background: #ff0055 !important; color: #fff !important; }
+body.hype .btn-cancel { background: #331111 !important; color: #ff5500 !important; border: 1px solid #ff5500 !important; }
 
 /* FOOTER */
 footer {
@@ -479,41 +468,21 @@ footer {
   z-index: 40;
 }
 body.dark footer { background: #777; }
-body.arcade footer {
-  background: #111 !important;
-  border-top: 4px solid #ff0055 !important;
-}
+body.arcade footer { background: #111 !important; border-top: 4px solid #ff0055 !important; }
+body.hype footer { background: #0f0202 !important; border-top: 2px solid #ffaa00 !important; }
 
-.footer-logo {
-  height: 45px;
-  margin-right: 10px;
-}
+.footer-logo { height: 45px; margin-right: 10px; }
 body.arcade .footer-logo { filter: brightness(1.2) contrast(1.2); }
+body.hype .footer-logo { filter: drop-shadow(0 0 5px #ffaa00); }
 
-.footer-left {
-  display: flex;
-  align-items: center;
-}
+.footer-left { display: flex; align-items: center; }
 
-.footer-text {
-  font-weight: bold;
-  font-size: 16px;
-  letter-spacing: 1px;
-}
+.footer-text { font-weight: bold; font-size: 16px; letter-spacing: 1px; }
 body.dark .footer-text { color: #fff; }
-body.arcade .footer-text {
-  color: #00ffff !important;
-  font-size: 11px !important;
-  letter-spacing: 0px;
-}
+body.arcade .footer-text { color: #00ffff !important; font-size: 11px !important; letter-spacing: 0px; }
+body.hype .footer-text { color: #ffaa00 !important; font-size: 20px !important; text-shadow: 0 0 8px #ff5500; }
 
-/* SHIFTED ENTIRE CONTAINER TOWARD THE LEFT */
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-right: 40px; /* Pushes both buttons 40px to the left away from the screen boundary */
-}
+.footer-right { display: flex; align-items: center; gap: 15px; margin-right: 40px; }
 
 /* MODERN BUTTONS FOR FOOTER */
 #refresh-button, #home-button {
@@ -531,14 +500,8 @@ body.arcade .footer-text {
 #refresh-button { background: linear-gradient(135deg, #2ecc71, #27ae60); }
 #home-button { background: linear-gradient(135deg, #e67e22, #d35400); }
 
-#refresh-button:hover, #home-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
-}
-
-#refresh-button:active, #home-button:active {
-  transform: scale(0.97);
-}
+#refresh-button:hover, #home-button:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.3); }
+#refresh-button:active, #home-button:active { transform: scale(0.97); }
 
 body.dark #refresh-button { background: linear-gradient(135deg, #555, #333); }
 body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
@@ -546,25 +509,14 @@ body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
 body.arcade #refresh-button { background: #00ff66 !important; color: #000; border-radius: 0px; font-family: 'Press Start 2P', monospace; font-size: 11px; }
 body.arcade #home-button { background: #00ffff !important; color: #000; border-radius: 0px; font-family: 'Press Start 2P', monospace; font-size: 11px; }
 
-.spin-animation {
-  animation: buttonSpin 0.6s ease-in-out;
-}
+body.hype #refresh-button { background: #ffaa00 !important; color: #000; font-family: 'Impact', sans-serif; font-size: 18px; text-transform: uppercase; }
+body.hype #home-button { background: #fff !important; color: #000; font-family: 'Impact', sans-serif; font-size: 18px; text-transform: uppercase; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
 
-@keyframes buttonSpin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+.spin-animation { animation: buttonSpin 0.6s ease-in-out; }
+@keyframes buttonSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* SNOW / PARTICLES CANVAS */
-#snow-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
-}
+/* CANVAS SCREEN OVERLAY */
+#snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 </style>
 </head>
 
@@ -673,6 +625,8 @@ function renderLeaderboard() {
     
     if (currentMode === "arcade") {
       card.style.border = "4px solid " + team.color;
+    } else if (currentMode === "hype") {
+      card.style.border = "none";
     } else {
       card.style.border = "3px solid " + team.color;
     }
@@ -680,7 +634,7 @@ function renderLeaderboard() {
     const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : '';
     
     card.innerHTML = `
-      <div class="rank-label">${currentMode === 'arcade' ? 'RANK ' : '#'}${index+1}</div>
+      <div class="rank-label">${currentMode === 'arcade' ? 'RANK ' : (currentMode === 'hype' ? 'CHAMP ' : '#')}${index+1}</div>
       <img src="${teamImages[team.id]}">
       <h3>${team.name}</h3>
       <p class="score">${team.score} PTS</p>
@@ -714,10 +668,7 @@ function loadFromFirebase() {
 function saveToFirebase() {
   const data = {};
   teams.forEach(t => {
-    data[t.id] = {
-      score: t.score,
-      note: t.note
-    };
+    data[t.id] = { score: t.score, note: t.note };
   });
   db.ref("houseScores").set(data);
 }
@@ -796,17 +747,12 @@ function saveScores(){
     if (rawVal !== "") {
       if (rawVal.startsWith("+") || rawVal.startsWith("-")) {
         const cleanModifier = parseFloat(rawVal);
-        if (!isNaN(cleanModifier)) {
-          t.score += cleanModifier;
-        }
+        if (!isNaN(cleanModifier)) t.score += cleanModifier;
       } else {
         const parsedNum = parseFloat(rawVal);
-        if (!isNaN(parsedNum)) {
-          t.score += parsedNum;
-        }
+        if (!isNaN(parsedNum)) t.score += parsedNum;
       }
     }
-    
     t.note = document.getElementById(`admin-${t.id}-note`).value.trim();
   });
   
@@ -814,25 +760,27 @@ function saveScores(){
   navigateTo("home");
 }
 
-/* =============== MODE SWITCH (Light → Dark → Christmas → Arcade) =============== */
+/* =============== MODE SWITCH (Light → Dark → Christmas → Arcade → Hype) =============== */
 const modeBtn = document.getElementById("mode-toggle");
 let currentMode = "light";
 
 function applyMode(mode) {
   currentMode = mode;
-  document.body.classList.remove("dark", "christmas", "arcade");
+  document.body.classList.remove("dark", "christmas", "arcade", "hype");
   stopParticleMatrix();
 
   if (mode === "dark") document.body.classList.add("dark");
   if (mode === "christmas") document.body.classList.add("christmas");
   if (mode === "arcade") document.body.classList.add("arcade");
+  if (mode === "hype") document.body.classList.add("hype");
 
   if (mode === "light") modeBtn.textContent = "🌙";
   if (mode === "dark") modeBtn.textContent = "🎅";
   if (mode === "christmas") modeBtn.textContent = "🕹️";
-  if (mode === "arcade") modeBtn.textContent = "☀️";
+  if (mode === "arcade") modeBtn.textContent = "🔥";
+  if (mode === "hype") modeBtn.textContent = "☀️";
 
-  if (mode === "christmas" || mode === "arcade") {
+  if (mode === "christmas" || mode === "arcade" || mode === "hype") {
     startParticleMatrix();
   }
   
@@ -843,10 +791,11 @@ modeBtn.addEventListener("click", () => {
   if (currentMode === "light") applyMode("dark");
   else if (currentMode === "dark") applyMode("christmas");
   else if (currentMode === "christmas") applyMode("arcade");
-  else if (currentMode === "arcade") applyMode("light");
+  else if (currentMode === "arcade") applyMode("hype");
+  else if (currentMode === "hype") applyMode("light");
 });
 
-/* =============== DYNAMIC CANVAS PARTICLES =============== */
+/* =============== DYNAMIC CANVAS PARTICLES (Snow, Retro Pixels, Golden Confetti) =============== */
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let cw = 0, ch = 0;
@@ -861,7 +810,22 @@ window.addEventListener("resize", resize);
 resize();
 
 function createParticle() {
-  if (currentMode === "arcade") {
+  if (currentMode === "hype") {
+    // 🎉 Golden Championship Confetti Shards
+    const goldColors = ["#ffaa00", "#ffd700", "#ff5500", "#ffe680", "#ffffff"];
+    return {
+      x: Math.random() * cw,
+      y: Math.random() * -ch,
+      w: Math.random() * 6 + 5,
+      h: Math.random() * 4 + 8,
+      speed: Math.random() * 3 + 2,
+      drift: (Math.random() - 0.5) * 1.5,
+      rotation: Math.random() * 360,
+      rotSpeed: Math.random() * 4 - 2,
+      color: goldColors[Math.floor(Math.random() * goldColors.length)]
+    };
+  } else if (currentMode === "arcade") {
+    // 🕹️ 8-Bit Upwards Square Bits
     return {
       x: Math.random() * cw,
       y: ch + (Math.random() * ch * 0.2),
@@ -871,6 +835,7 @@ function createParticle() {
       color: Math.random() > 0.5 ? "#00ff66" : "#00ffff"
     };
   } else {
+    // 🎄 Standard Snowflakes
     return {
       x: Math.random() * cw,
       y: Math.random() * -ch * 0.2,
@@ -886,29 +851,41 @@ function updateParticles() {
   ctx.clearRect(0, 0, cw, ch);
 
   for (let p of particles) {
-    p.x += p.drift;
-    p.y += p.speed;
+    if (currentMode === "hype") {
+      p.y += p.speed;
+      p.x += p.drift;
+      p.rotation += p.rotSpeed;
 
-    if (currentMode === "arcade") {
-      if (p.y < -10) {
-        p.y = ch + 10;
-        p.x = Math.random() * cw;
-      }
-    } else {
       if (p.y > ch) {
-        p.y = -10;
+        p.y = -20;
         p.x = Math.random() * cw;
       }
-    }
 
-    ctx.beginPath();
-    if (currentMode === "arcade") {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
       ctx.fillStyle = p.color;
-      ctx.fillRect(p.x, p.y, p.size, p.size);
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
     } else {
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
+      p.x += p.drift;
+      p.y += p.speed;
+
+      if (currentMode === "arcade") {
+        if (p.y < -10) { p.y = ch + 10; p.x = Math.random() * cw; }
+      } else {
+        if (p.y > ch) { p.y = -10; p.x = Math.random() * cw; }
+      }
+
+      ctx.beginPath();
+      if (currentMode === "arcade") {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      } else {
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      }
     }
   }
 
@@ -917,16 +894,13 @@ function updateParticles() {
 
 function startParticleMatrix() {
   particles = [];
-  const maxCount = currentMode === "arcade" ? 150 : 400; 
+  const maxCount = (currentMode === "arcade" || currentMode === "hype") ? 150 : 400; 
   for (let i = 0; i < maxCount; i++) particles.push(createParticle());
   if (!animFrame) animFrame = requestAnimationFrame(updateParticles);
 }
 
 function stopParticleMatrix() {
-  if (animFrame) {
-    cancelAnimationFrame(animFrame);
-    animFrame = null;
-  }
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
   particles = [];
   ctx.clearRect(0, 0, cw, ch);
 }
