@@ -300,7 +300,7 @@ body.christmas .team-note {
   color: #b30000;
 }
 body.arcade .team-note {
-  font-family: Arial, sans-serif; /* Keep normal sans-serif readable for small variable texts */
+  font-family: Arial, sans-serif;
   font-size: 11px;
   font-weight: bold;
   border-radius: 0px;
@@ -507,10 +507,12 @@ body.arcade .footer-text {
   letter-spacing: 0px;
 }
 
+/* SHIFTED ENTIRE CONTAINER TOWARD THE LEFT */
 .footer-right {
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-right: 40px; /* Pushes both buttons 40px to the left away from the screen boundary */
 }
 
 /* MODERN BUTTONS FOR FOOTER */
@@ -669,7 +671,6 @@ function renderLeaderboard() {
     const card=document.createElement("div");
     card.className = "team-card";
     
-    // Switch border design based on active mode
     if (currentMode === "arcade") {
       card.style.border = "4px solid " + team.color;
     } else {
@@ -835,7 +836,6 @@ function applyMode(mode) {
     startParticleMatrix();
   }
   
-  // Force a complete rebuild of the view cards to apply design shifts
   renderLeaderboard();
 }
 
@@ -846,7 +846,7 @@ modeBtn.addEventListener("click", () => {
   else if (currentMode === "arcade") applyMode("light");
 });
 
-/* =============== DYNAMIC CANVAS PARTICLES (Snow & 8-Bit Matrix Pixels) =============== */
+/* =============== DYNAMIC CANVAS PARTICLES =============== */
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let cw = 0, ch = 0;
@@ -862,22 +862,20 @@ resize();
 
 function createParticle() {
   if (currentMode === "arcade") {
-    // 8-Bit Upwards Square Bits
     return {
       x: Math.random() * cw,
       y: ch + (Math.random() * ch * 0.2),
-      size: Math.random() * 5 + 4, // Bigger blocky pixel look
-      speed: -(Math.random() * 1.5 + 0.5), // Moves upward
+      size: Math.random() * 5 + 4, 
+      speed: -(Math.random() * 1.5 + 0.5), 
       drift: (Math.random() - 0.5) * 0.3,
       color: Math.random() > 0.5 ? "#00ff66" : "#00ffff"
     };
   } else {
-    // Standard Snowflakes
     return {
       x: Math.random() * cw,
       y: Math.random() * -ch * 0.2,
       size: Math.random() * 3 + 1.5,
-      speed: Math.random() * 2 + 1, // Moves downward
+      speed: Math.random() * 2 + 1, 
       drift: (Math.random() - 0.5) * 0.8,
       color: "white"
     };
@@ -891,7 +889,6 @@ function updateParticles() {
     p.x += p.drift;
     p.y += p.speed;
 
-    // Boundary looping resets
     if (currentMode === "arcade") {
       if (p.y < -10) {
         p.y = ch + 10;
@@ -906,11 +903,9 @@ function updateParticles() {
 
     ctx.beginPath();
     if (currentMode === "arcade") {
-      // Draw retro block pixels
       ctx.fillStyle = p.color;
       ctx.fillRect(p.x, p.y, p.size, p.size);
     } else {
-      // Draw round snowflakes
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
@@ -922,7 +917,7 @@ function updateParticles() {
 
 function startParticleMatrix() {
   particles = [];
-  const maxCount = currentMode === "arcade" ? 150 : 400; // Keep screen clean for layout blocks
+  const maxCount = currentMode === "arcade" ? 150 : 400; 
   for (let i = 0; i < maxCount; i++) particles.push(createParticle());
   if (!animFrame) animFrame = requestAnimationFrame(updateParticles);
 }
