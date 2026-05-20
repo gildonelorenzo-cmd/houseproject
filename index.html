@@ -252,7 +252,7 @@ body.christmas .team-note {
   color: #b30000;
 }
 
-/* DEDICATED ADMIN VIEW */
+/* DEDICATED ADMIN VIEW WITH REBALANCED TRACK WIDTHS */
 #admin-view {
   margin-top: 40px;
   margin-bottom: calc(var(--footer-height) + 30px);
@@ -291,7 +291,7 @@ body.dark .admin-subtitle { color: #aaa; }
 
 .admin-table-header {
   display: grid;
-  grid-template-columns: 130px 100px 1fr;
+  grid-template-columns: 130px 140px 1fr; /* Middle column widened to 140px */
   gap: 20px;
   font-weight: bold;
   font-size: 16px;
@@ -306,7 +306,7 @@ body.dark .admin-table-header { border-color: #444; }
 
 .admin-row {
   display: grid;
-  grid-template-columns: 130px 100px 1fr;
+  grid-template-columns: 130px 140px 1fr; /* Matches the header track layout exactly */
   gap: 20px;
   align-items: center;
   margin-bottom: 15px;
@@ -335,7 +335,6 @@ body.dark .lbl-bravehearts { color: #ffcc00; }
   box-sizing: border-box;
 }
 
-/* Change input back to text type to allow operator input signs (+/-) */
 .admin-row .score-input-modifier {
   font-weight: bold;
 }
@@ -646,8 +645,8 @@ function navigateTo(targetView) {
     
     teams.forEach(t => {
       const scoreInput = document.getElementById(`admin-${t.id}`);
-      scoreInput.value = ""; // Empty out field so user can cleanly type modifiers (+/-)
-      scoreInput.placeholder = `Current: ${t.score}`; // Put the active score inside placeholder
+      scoreInput.value = ""; 
+      scoreInput.placeholder = `Current: ${t.score}`; 
       document.getElementById(`admin-${t.id}-note`).value = t.note || "";
     });
   }
@@ -683,16 +682,13 @@ function saveScores(){
   teams.forEach(t => {
     const rawVal = document.getElementById(`admin-${t.id}`).value.trim();
     
-    // Check if user input an explicit calculation modifier string (+/-)
     if (rawVal !== "") {
       if (rawVal.startsWith("+") || rawVal.startsWith("-")) {
-        // Evaluate expression relative to current base value
         const cleanModifier = parseFloat(rawVal);
         if (!isNaN(cleanModifier)) {
           t.score += cleanModifier;
         }
       } else {
-        // No explicit modifier used; assume it is a simple positive addition value
         const parsedNum = parseFloat(rawVal);
         if (!isNaN(parsedNum)) {
           t.score += parsedNum;
