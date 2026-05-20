@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>House Leaderboard Portal</title>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -35,6 +34,723 @@ body {
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+
+  background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
+  background-size: 800% 800%;
+  animation: gradientShift 20s linear infinite;
+}
+
+body.dark {
+  color: #f0f0f0;
+  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
+  background-size: 800% 800%;
+  animation: gradientShiftDark 25s linear infinite;
+}
+
+/* 🎄 CHRISTMAS MODE BACKGROUND */
+body.christmas {
+  background: #B30000 !important;
+  transition: background 1.5s ease-in-out;
+}
+
+/* GLOBAL UTILITY */
+.hidden {
+  display: none !important;
+}
+
+/* MERRY CHRISTMAS TEXT */
+#merry-christmas {
+  position: fixed;
+  top: 20%;
+  width: 100%;
+  text-align: center;
+  font-family: "Brush Script MT", "Great Vibes", cursive;
+  font-size: 80px;
+  color: #ff0000;
+  text-shadow:
+    0 0 5px white,
+    0 0 10px white,
+    0 0 15px white,
+    0 0 20px white;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 1.5s ease, transform 1.5s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+body.christmas #merry-christmas {
+  opacity: 1;
+  transform: scale(1);
+  animation: borderGlow 3s infinite ease-in-out;
+}
+
+@keyframes borderGlow {
+  0%   { text-shadow: 0 0 8px white; }
+  50%  { text-shadow: 0 0 20px white; }
+  100% { text-shadow: 0 0 8px white; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes gradientShiftDark {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* MODE BUTTON */
+#mode-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid black;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 50;
+}
+body.dark #mode-toggle { background: #444; color: yellow; }
+body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
+
+/* HOME VIEW PORTAL CONTAINER */
+#home-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding-bottom: var(--footer-height);
+  z-index: 30;
+}
+
+#home-view h1 {
+  font-size: 38px;
+  margin-bottom: 40px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+body.dark #home-view h1 { text-shadow: 0 2px 4px rgba(255,255,255,0.1); }
+
+.portal-menu {
+  display: flex;
+  gap: 40px;
+}
+
+.portal-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  width: 220px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.portal-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  border-color: #4a90e2;
+}
+
+body.dark .portal-card {
+  background: rgba(40, 40, 40, 0.95);
+  border-color: #555;
+  color: white;
+}
+
+.portal-card .icon {
+  font-size: 60px;
+  margin-bottom: 15px;
+}
+
+.portal-card h2 {
+  margin: 10px 0 0 0;
+  font-size: 24px;
+}
+
+/* LEADERBOARD VIEW GRID */
+#leaderboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+  margin-bottom: calc(var(--footer-height) + 30px);
+  z-index: 30;
+  position: relative;
+}
+
+.team-card {
+  background: rgba(255,255,255,0.95);
+  border-radius: 15px;
+  padding: 15px 10px;
+  text-align: center;
+  width: 190px;
+  transition: 0.3s;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body.dark .team-card {
+  background: rgba(30, 30, 30, 0.92) !important;
+  color: #f0f0f0;
+}
+
+.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+.team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; object-fit: cover; }
+.score { font-size: 22px; font-weight: bold; margin: 5px 0; }
+
+/* DYNAMIC NOTE BADGES ON LEADERBOARD CARDS */
+.team-note {
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  background: #f1f2f6;
+  color: #57606f;
+  max-width: 90%;
+  word-wrap: break-word;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+body.dark .team-note {
+  background: #333;
+  color: #ced6e0;
+}
+body.christmas .team-note {
+  background: #fff;
+  color: #b30000;
+}
+
+/* NEW DEDICATED ADMIN VIEW (Perfectly Aligned Grid) */
+#admin-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: calc(var(--footer-height) + 30px);
+  z-index: 30;
+  width: 100%;
+  max-width: 650px; /* Widened slightly to give full comfortable room */
+}
+
+.admin-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body.dark .admin-container { background: #222; color: white; }
+body.christmas .admin-container { background: #440000; color: white; border: 1px solid white; }
+
+.admin-container h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 28px;
+}
+
+/* Strict grid alignment for symmetric starting/ending lines */
+.admin-table-header {
+  display: grid;
+  grid-template-columns: 130px 100px 1fr;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+}
+body.dark .admin-table-header { border-color: #444; }
+
+.col-score { text-align: center; }
+.col-note { text-align: center; }
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 130px 100px 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.admin-row label {
+  font-weight: bold;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.admin-row .score-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.admin-row .note-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.admin-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+}
+
+.admin-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: 0.2s;
+}
+
+.btn-save { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.btn-save:hover { transform: translateY(-2px); }
+.btn-cancel { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+.btn-cancel:hover { transform: translateY(-2px); }
+
+/* FOOTER */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-height);
+  background: #B5E0FF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  border-top: 3px solid #ccc;
+  z-index: 30;
+}
+body.dark footer { background: #777; }
+
+.footer-logo {
+  height: 45px;
+  margin-right: 10px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* MODERN BUTTONS FOR FOOTER */
+#refresh-button, #home-button {
+  padding: 10px 22px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+#refresh-button { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+#home-button { background: linear-gradient(135deg, #e67e22, #d35400); }
+
+#refresh-button:hover, #home-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+#refresh-button:active, #home-button:active {
+  transform: scale(0.97);
+}
+
+body.dark #refresh-button { background: linear-gradient(135deg, #555, #333); }
+body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
+
+.spin-animation {
+  animation: buttonSpin 0.6s ease-in-out;
+}
+
+@keyframes buttonSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* SNOW CANVAS */
+#snow-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+</style>
+</head>
+
+<body>
+
+<button id="mode-toggle">🌙</button>
+
+<div id="merry-christmas"></div>
+
+<canvas id="snow-canvas"></canvas>
+
+
+<div id="home-view">
+  <h1>School House Portal</h1>
+  <div class="portal-menu">
+    <div class="portal-card" onclick="navigateTo('leaderboard')">
+      <div class="icon">📊</div>
+      <h2>Leaderboard</h2>
+    </div>
+    <div class="portal-card" onclick="verifyAdminAccess()">
+      <div class="icon">⚙️</div>
+      <h2>Admin Panel</h2>
+    </div>
+  </div>
+</div>
+
+
+<div id="leaderboard" class="hidden"></div>
+
+
+<div id="admin-view" class="hidden">
+  <div class="admin-container">
+    <h2>Admin Score Control</h2>
+    
+    <div class="admin-table-header">
+      <div>House</div>
+      <div class="col-score">Score</div>
+      <div class="col-note">Optional Note (Match info, bonus pts)</div>
+    </div>
+    
+    <div class="admin-row">
+      <label>Acrobats:</label>
+      <input type="number" id="admin-acrobats" class="score-input">
+      <input type="text" id="admin-acrobats-note" class="note-input" placeholder="e.g., +100 Football match">
+    </div>
+    <div class="admin-row">
+      <label>Quicksilver:</label>
+      <input type="number" id="admin-quicksilver" class="score-input">
+      <input type="text" id="admin-quicksilver-note" class="note-input" placeholder="e.g., Won Basketball cup">
+    </div>
+    <div class="admin-row">
+      <label>Druids:</label>
+      <input type="number" id="admin-druids" class="score-input">
+      <input type="text" id="admin-druids-note" class="note-input" placeholder="e.g., +50 Trivia clean sweep">
+    </div>
+    <div class="admin-row">
+      <label>Bravehearts:</label>
+      <input type="number" id="admin-bravehearts" class="score-input">
+      <input type="text" id="admin-bravehearts-note" class="note-input" placeholder="e.g., 3-2 victory in Rugby">
+    </div>
+    
+    <div class="admin-actions">
+      <button class="btn-save" onclick="saveScores()">Save & Publish</button>
+      <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-left">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    <span class="footer-text">By the IBDP1 Students of the Computer Science class</span>
+  </div>
+  <div class="footer-right">
+    <button id="refresh-button" class="hidden" onclick="manualRefresh()">🔄 Refresh</button>
+    <button id="home-button" class="hidden" onclick="navigateTo('home')">🏠 Home</button>
+  </div>
+</footer>
+
+
+<script>
+/* =============== LEADERBOARD STATE =============== */
+let teams = [
+  { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0, note: "" },
+  { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0, note: "" },
+  { id: "druids", name: "Druids", color: "#0073e6", score: 0, note: "" },
+  { id: "bravehearts", name: "Bravehearts", color: "#ffcc00", score: 0, note: "" }
+];
+
+const teamImages = {
+  acrobats: "project/acrobats.jpeg",
+  quicksilver: "project/quicksilver.jpeg",
+  druids: "project/druids.jpeg",
+  bravehearts: "project/bravehearts.jpeg"
+};
+
+function renderLeaderboard() {
+  const container = document.getElementById("leaderboard");
+  container.innerHTML = "";
+  teams.sort((a,b)=>b.score-a.score);
+  teams.forEach((team,index)=>{
+    const card=document.createElement("div");
+    card.className = "team-card";
+    card.style.border = "3px solid " + team.color;
+    
+    const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : '';
+    
+    card.innerHTML = `
+      <div class="rank-label">#${index+1}</div>
+      <img src="${teamImages[team.id]}">
+      <h3>${team.name}</h3>
+      <p class="score">${team.score} pts</p>
+      ${noteHTML}
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* Firebase sync */
+function loadFromFirebase() {
+  db.ref("houseScores").once("value").then(snapshot=>{
+    if(snapshot.exists()){
+      const data = snapshot.val();
+      teams.forEach(t => { 
+        if (data[t.id] !== undefined) {
+          if (typeof data[t.id] === 'object') {
+            t.score = data[t.id].score || 0;
+            t.note = data[t.id].note || "";
+          } else {
+            t.score = data[t.id];
+            t.note = "";
+          }
+        }
+      });
+      renderLeaderboard();
+    }
+  });
+}
+
+function saveToFirebase() {
+  const data = {};
+  teams.forEach(t => {
+    data[t.id] = {
+      score: t.score,
+      note: t.note
+    };
+  });
+  db.ref("houseScores").set(data);
+}
+
+/* Manual Totem Refresh Function */
+function manualRefresh() {
+  const refreshBtn = document.getElementById("refresh-button");
+  refreshBtn.classList.add("spin-animation");
+  loadFromFirebase();
+  setTimeout(() => {
+    refreshBtn.classList.remove("spin-animation");
+  }, 600);
+}
+
+/* =============== SINGLE PAGE ROUTING ENGINE =============== */
+function navigateTo(targetView) {
+  document.getElementById("home-view").classList.add("hidden");
+  document.getElementById("leaderboard").classList.add("hidden");
+  document.getElementById("admin-view").classList.add("hidden");
+  
+  document.getElementById("refresh-button").classList.add("hidden");
+  document.getElementById("home-button").classList.add("hidden");
+
+  if (targetView === "home") {
+    document.getElementById("home-view").classList.remove("hidden");
+  } 
+  else if (targetView === "leaderboard") {
+    document.getElementById("leaderboard").classList.remove("hidden");
+    document.getElementById("refresh-button").classList.remove("hidden");
+    document.getElementById("home-button").classList.remove("hidden");
+    loadFromFirebase();
+  } 
+  else if (targetView === "admin") {
+    document.getElementById("admin-view").classList.remove("hidden");
+    document.getElementById("home-button").classList.remove("hidden");
+    
+    teams.forEach(t => {
+      document.getElementById(`admin-${t.id}`).value = t.score;
+      document.getElementById(`admin-${t.id}-note`).value = t.note || "";
+    });
+  }
+}
+
+/* Gatekeeper check prior to opening Admin View */
+function verifyAdminAccess() {
+  const pwd = prompt("Enter admin password:");
+  if (pwd === "Smiling-1092") {
+    db.ref("houseScores").once("value").then(snapshot => {
+      if(snapshot.exists()){
+        const data = snapshot.val();
+        teams.forEach(t => {
+          if (data[t.id] !== undefined) {
+            if (typeof data[t.id] === 'object') {
+              t.score = data[t.id].score || 0;
+              t.note = data[t.id].note || "";
+            } else {
+              t.score = data[t.id];
+              t.note = "";
+            }
+          }
+        });
+      }
+      navigateTo("admin");
+    });
+  } else {
+    alert("Incorrect password!");
+  }
+}
+
+function saveScores(){
+  teams.forEach(t => {
+    t.score = +document.getElementById(`admin-${t.id}`).value || 0;
+    t.note = document.getElementById(`admin-${t.id}-note`).value.trim();
+  });
+  
+  saveToFirebase();
+  navigateTo("home");
+}
+
+/* =============== MODE SWITCH (Light → Dark → Christmas) =============== */
+const modeBtn = document.getElementById("mode-toggle");
+let currentMode = "light";
+
+function applyMode(mode) {
+  currentMode = mode;
+  document.body.classList.remove("dark", "christmas");
+
+  if (mode === "dark") document.body.classList.add("dark");
+  if (mode === "christmas") document.body.classList.add("christmas");
+
+  if (mode === "light") modeBtn.textContent = "🌙";
+  if (mode === "dark") modeBtn.textContent = "🎅";
+  if (mode === "christmas") modeBtn.textContent = "☀️";
+
+  if (mode === "christmas") startChristmasMode();
+  else stopChristmasMode();
+  
+  if(!document.getElementById("leaderboard").classList.contains("hidden")) {
+    renderLeaderboard();
+  }
+}
+
+modeBtn.addEventListener("click", () => {
+  if (currentMode === "light") applyMode("dark");
+  else if (currentMode === "dark") applyMode("christmas");
+  else if (currentMode === "christmas") applyMode("light");
+});
+
+/* =============== SNOW SYSTEM =============== */
+const canvas = document.getElementById("snow-canvas");
+const ctx = canvas.getContext("2d");
+let cw = 0, ch = 0;
+let snowflakes = [];
+let animFrame = null;
+
+function resize() {
+  cw = canvas.width = window.innerWidth;
+  ch = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+function createSnowflake() {
+  return {
+    x: Math.random()*cw,
+    y: Math.random()*-ch*0.2,
+    r: Math.random()*3+1.5,
+    speed: Math.random()*2+1,
+    drift: (Math.random()-0.5)*0.8
+  };
+}
+
+function updateSnow() {
+  ctx.clearRect(0,0,cw,ch);
+
+  for (let f of snowflakes) {
+    f.x += f.drift;
+    f.y += f.speed;
+
+    if (f.y > ch) {
+      f.y = -10;
+      f.x = Math.random()*cw;
+    }
+
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
+
+  animFrame = requestAnimationFrame(updateSnow);
+}
+
+function startSnow() {
+  snowflakes = [];
+  for (let i=0;i<400;i++) snowflakes.push(createSnowflake());
+  if (!animFrame) animFrame = requestAnimationFrame(updateSnow);
+}
+
+function stopSnow() {
+  cancelAnimationFrame(animFrame);
+  animFrame = null;
+  snowflakes = [];
+  ctx.clearRect(0,0,cw,ch);
+}
+
+function startChristmasMode() { startSnow(); }
+function stopChristmasMode() { stopSnow(); }
+
+/* INITIALIZE INITIAL ROUTE */
+renderLeaderboard();
+loadFromFirebase();
+applyMode("light");
+navigateTo("home");
+</script>
+
+</body>
+</html>  flex-direction: column;
   align-items: center;
   min-height: 100vh;
   position: relative;
