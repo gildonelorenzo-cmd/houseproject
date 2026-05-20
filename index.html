@@ -275,10 +275,19 @@ body.christmas .admin-container { background: #440000; color: white; border: 1px
 
 .admin-container h2 {
   margin-top: 0;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
   text-align: center;
   font-size: 28px;
 }
+
+.admin-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+  font-style: italic;
+}
+body.dark .admin-subtitle { color: #aaa; }
 
 .admin-table-header {
   display: grid;
@@ -313,7 +322,6 @@ body.dark .admin-table-header { border-color: #444; }
 .lbl-acrobats { color: #59b300; }
 .lbl-quicksilver { color: #ff4d4d; }
 .lbl-druids { color: #0073e6; }
-/* Using a slightly darker gold variant for clarity on light backgrounds */
 .lbl-bravehearts { color: #e6b800; } 
 body.dark .lbl-bravehearts { color: #ffcc00; }
 
@@ -325,6 +333,11 @@ body.dark .lbl-bravehearts { color: #ffcc00; }
   font-size: 16px;
   text-align: center;
   box-sizing: border-box;
+}
+
+/* Change input back to text type to allow operator input signs (+/-) */
+.admin-row .score-input-modifier {
+  font-weight: bold;
 }
 
 .admin-row .note-input {
@@ -392,10 +405,7 @@ body.dark footer { background: #777; }
   font-size: 16px;
   letter-spacing: 1px;
 }
-
-body.dark .footer-text {
-  color: #fff;
-}
+body.dark .footer-text { color: #fff; }
 
 .footer-right {
   display: flex;
@@ -483,31 +493,32 @@ body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
 <div id="admin-view" class="view-container hidden">
   <div class="admin-container">
     <h2>Admin Score Control</h2>
+    <div class="admin-subtitle">Type values like +50 or -15 to calculate dynamically</div>
     
     <div class="admin-table-header">
       <div>House</div>
-      <div class="col-score">Score</div>
+      <div class="col-score">Points Change</div>
       <div class="col-note">Optional Note (Match info, bonus pts)</div>
     </div>
     
     <div class="admin-row">
       <label class="lbl-acrobats">Acrobats:</label>
-      <input type="number" id="admin-acrobats" class="score-input">
+      <input type="text" id="admin-acrobats" class="score-input score-input-modifier">
       <input type="text" id="admin-acrobats-note" class="note-input" placeholder="e.g., +100 Football match">
     </div>
     <div class="admin-row">
       <label class="lbl-quicksilver">Quicksilver:</label>
-      <input type="number" id="admin-quicksilver" class="score-input">
+      <input type="text" id="admin-quicksilver" class="score-input score-input-modifier">
       <input type="text" id="admin-quicksilver-note" class="note-input" placeholder="e.g., Won Basketball cup">
     </div>
     <div class="admin-row">
       <label class="lbl-druids">Druids:</label>
-      <input type="number" id="admin-druids" class="score-input">
+      <input type="text" id="admin-druids" class="score-input score-input-modifier">
       <input type="text" id="admin-druids-note" class="note-input" placeholder="e.g., +50 Trivia clean sweep">
     </div>
     <div class="admin-row">
       <label class="lbl-bravehearts">Bravehearts:</label>
-      <input type="number" id="admin-bravehearts" class="score-input">
+      <input type="text" id="admin-bravehearts" class="score-input score-input-modifier">
       <input type="text" id="admin-bravehearts-note" class="note-input" placeholder="e.g., 3-2 victory in Rugby">
     </div>
     
@@ -634,7 +645,9 @@ function navigateTo(targetView) {
     document.getElementById("home-button").classList.remove("hidden");
     
     teams.forEach(t => {
-      document.getElementById(`admin-${t.id}`).value = t.score;
+      const scoreInput = document.getElementById(`admin-${t.id}`);
+      scoreInput.value = ""; // Empty out field so user can cleanly type modifiers (+/-)
+      scoreInput.placeholder = `Current: ${t.score}`; // Put the active score inside placeholder
       document.getElementById(`admin-${t.id}-note`).value = t.note || "";
     });
   }
@@ -668,7 +681,25 @@ function verifyAdminAccess() {
 
 function saveScores(){
   teams.forEach(t => {
-    t.score = +document.getElementById(`admin-${t.id}`).value || 0;
+    const rawVal = document.getElementById(`admin-${t.id}`).value.trim();
+    
+    // Check if user input an explicit calculation modifier string (+/-)
+    if (rawVal !== "") {
+      if (rawVal.startsWith("+") || rawVal.startsWith("-")) {
+        // Evaluate expression relative to current base value
+        const cleanModifier = parseFloat(rawVal);
+        if (!isNaN(cleanModifier)) {
+          t.score += cleanModifier;
+        }
+      } else {
+        // No explicit modifier used; assume it is a simple positive addition value
+        const parsedNum = parseFloat(rawVal);
+        if (!isNaN(parsedNum)) {
+          t.score += parsedNum;
+        }
+      }
+    }
+    
     t.note = document.getElementById(`admin-${t.id}-note`).value.trim();
   });
   
