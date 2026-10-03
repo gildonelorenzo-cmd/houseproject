@@ -55,20 +55,20 @@ body.dark {
   animation: gradientShiftDark 25s linear infinite;
 }
 
-/* 🎄 CHRISTMAS MODE BACKGROUND */
+/* CHRISTMAS MODE */
 body.christmas {
   background: #B30000 !important;
   transition: background 1.5s ease-in-out;
 }
 
-/* 🕹️ RETRO ARCADE MODE GLOBAL OVERRIDES */
+/* ARCADE MODE */
 body.arcade {
   font-family: 'Press Start 2P', monospace !important;
   color: #00ff66 !important;
   background: #050508 !important;
 }
 
-/* 🔥 HYPE CHAMPIONSHIP MODE GLOBAL OVERRIDES */
+/* HYPE MODE */
 body.hype {
   font-family: 'Impact', 'Arial Black', sans-serif !important;
   color: #fff !important;
@@ -126,28 +126,48 @@ body.christmas #merry-christmas {
   100% { background-position: 0% 50%; }
 }
 
-/* MODE BUTTON */
-#mode-toggle {
+/* THEME DROPDOWN */
+#theme-picker {
   position: fixed;
   top: 20px;
   left: 20px;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid black;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: 0.3s;
   z-index: 50;
 }
+
+/* arrow drawn here because the select's own arrow is hidden (appearance: none) */
+#theme-picker::after {
+  content: "\25BE";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #000;
+  pointer-events: none;
+}
+body.dark #theme-picker::after { color: yellow; }
+body.christmas #theme-picker::after { color: white; }
+
+#mode-toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 44px;
+  padding: 0 36px 0 16px;
+  border-radius: 22px;
+  background: white;
+  color: #000;
+  border: 2px solid black;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#mode-toggle option { background: #fff; color: #000; }
 body.dark #mode-toggle { background: #444; color: yellow; }
 body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
-body.arcade #mode-toggle { background: #00ff66; color: #000; border: 3px dashed #00ff66; font-size: 22px; }
-body.hype #mode-toggle { background: #ffaa00; color: #000; border: 2px solid #fff; box-shadow: 0 0 10px #ffaa00; font-size: 26px; }
+body.arcade #mode-toggle { background: #00ff66; color: #000; border: 3px dashed #00ff66; border-radius: 0; font-size: 11px; }
+body.hype #mode-toggle { background: #ffaa00; color: #000; border: 2px solid #fff; box-shadow: 0 0 10px #ffaa00; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
 
 /* MAIN APP WRAPPER */
 .view-container {
@@ -517,12 +537,205 @@ body.hype #home-button { background: #fff !important; color: #000; font-family: 
 
 /* CANVAS SCREEN OVERLAY */
 #snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
+/* ADMIN PASSWORD SCREEN */
+#admin-gate {
+  margin-top: 40px;
+  margin-bottom: calc(var(--footer-height) + 30px);
+  z-index: 30;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 16px;
+}
+#admin-gate .admin-container { text-align: center; }
+
+#admin-pwd-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 15px 0 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+body.arcade #admin-pwd-input { border: 2px solid #00ff66; background: #000; color: #00ff66; border-radius: 0px; }
+body.hype #admin-pwd-input { border: 1px solid #ffaa00; background: #1a0808; color: #fff; }
+
+#admin-pwd-error { color: #e74c3c; font-weight: bold; margin: 8px 0 0; }
+body.christmas #admin-pwd-error { color: #ffd6d6; }
+body.arcade #admin-pwd-error { color: #ff0055; font-size: 10px; }
+
+
+/* PHONES (PORTRAIT) */
+@media (max-width: 700px) {
+  :root { --footer-height: 60px; }
+
+  #theme-picker { top: 12px; left: 12px; }
+  #mode-toggle { height: 40px; padding: 0 32px 0 14px; }
+  #theme-picker::after { right: 12px; }
+
+  #merry-christmas { font-size: 46px; top: 12%; }
+
+  #home-view { padding: 80px 16px calc(var(--footer-height) + 20px); }
+  #home-view h1 { font-size: 28px; margin: 0 0 24px; }
+  body.arcade #home-view h1 { font-size: 15px; line-height: 1.7; }
+  body.hype #home-view h1 { font-size: 36px; }
+
+  .portal-menu { flex-direction: column; align-items: center; gap: 18px; width: 100%; }
+  .portal-card { width: 100%; max-width: 300px; padding: 22px; box-sizing: border-box; }
+  .portal-card .icon, body.arcade .portal-card .icon { font-size: 42px; margin-bottom: 8px; }
+  .portal-card h2 { font-size: 20px; }
+  body.arcade .portal-card h2 { font-size: 12px !important; }
+  body.hype .portal-card h2 { font-size: 22px !important; }
+
+  #leaderboard, body.arcade #leaderboard, body.hype #leaderboard {
+    max-width: 480px !important;
+    gap: 14px;
+    margin-top: 72px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    align-content: start;
+  }
+  .team-card, body.arcade .team-card, body.hype .team-card { width: 100% !important; padding: 12px 8px; }
+  body.arcade .team-card { box-shadow: 4px 4px 0px #00ffff !important; }
+  .team-card img, body.arcade .team-card img, body.hype .team-card img { width: 84px; height: 84px; }
+  .rank-label { font-size: 17px; }
+  body.hype .rank-label { font-size: 22px; }
+  .team-card h3 { font-size: 17px; margin: 6px 0; }
+  body.arcade .team-card h3 { font-size: 10px; }
+  body.hype .team-card h3 { font-size: 19px; }
+  .score { font-size: 18px; }
+  body.arcade .score { font-size: 11px !important; }
+  body.hype .score { font-size: 21px !important; }
+  .team-note { font-size: 12px; }
+  body.arcade .team-note { font-size: 10px; }
+
+  #admin-view { margin-top: 72px; padding: 0 12px; }
+  #admin-gate { margin-top: 72px; }
+  .admin-container { padding: 22px 16px; }
+  .admin-container h2 { font-size: 22px; }
+  body.arcade .admin-container h2 { font-size: 13px; line-height: 1.6; }
+  body.hype .admin-container h2 { font-size: 26px; }
+  .admin-subtitle { margin-bottom: 16px; }
+  body.arcade .admin-subtitle, body.hype .admin-subtitle { margin-bottom: 18px; }
+
+  /* the three-column table doesn't fit, so each house becomes a small block:
+     name + points on one line, note underneath */
+  .admin-table-header { display: none; }
+  .admin-row {
+    grid-template-columns: 1fr 120px;
+    gap: 8px 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+  }
+  .admin-row .note-input { grid-column: 1 / -1; }
+  .admin-row label { font-size: 17px; }
+  body.hype .admin-row label { font-size: 19px !important; }
+  body.hype .admin-row .score-input { font-size: 16px; }
+  .admin-actions { margin-top: 18px; }
+  body.hype .admin-actions button { font-size: 17px; }
+
+  footer { padding: 0 12px; }
+  .footer-left { min-width: 0; }
+  .footer-logo { height: 34px; margin-right: 8px; }
+  .footer-text { font-size: 13px; letter-spacing: 0.5px; line-height: 1.2; }
+  body.arcade .footer-text { font-size: 8px !important; line-height: 1.6; }
+  body.hype .footer-text { font-size: 15px !important; }
+  .footer-right { margin-right: 0; gap: 8px; flex-shrink: 0; }
+  #refresh-button, #home-button { padding: 8px 12px; font-size: 14px; }
+  body.arcade #refresh-button, body.arcade #home-button { font-size: 9px; padding: 8px; }
+  body.hype #refresh-button, body.hype #home-button { font-size: 15px; }
+}
+
+/* PHONES (LANDSCAPE) - short screen, so everything gets tighter and the
+   leaderboard goes to one row of four */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root { --footer-height: 52px; }
+
+  #theme-picker { top: 8px; left: 8px; }
+  #mode-toggle { height: 36px; }
+
+  #merry-christmas { font-size: 40px; top: 5%; }
+
+  #home-view { padding: 16px 16px calc(var(--footer-height) + 12px); }
+  #home-view h1 { font-size: 26px; margin: 0 0 16px; }
+  body.arcade #home-view h1 { font-size: 15px; }
+  body.hype #home-view h1 { font-size: 32px; }
+
+  .portal-menu { flex-direction: row; gap: 24px; width: auto; }
+  .portal-card { width: 210px; max-width: none; padding: 16px; box-sizing: border-box; }
+  .portal-card .icon, body.arcade .portal-card .icon { font-size: 36px; margin-bottom: 6px; }
+  .portal-card h2 { font-size: 18px; }
+  body.arcade .portal-card h2 { font-size: 11px !important; }
+  body.hype .portal-card h2 { font-size: 20px !important; }
+
+  #leaderboard, body.arcade #leaderboard, body.hype #leaderboard {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 900px !important;
+    gap: 12px;
+    margin-top: 56px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  .team-card, body.arcade .team-card, body.hype .team-card { width: 100% !important; padding: 10px 6px; }
+  body.arcade .team-card { box-shadow: 4px 4px 0px #00ffff !important; }
+  .team-card img, body.arcade .team-card img, body.hype .team-card img { width: 64px; height: 64px; margin-bottom: 6px; }
+  .rank-label { font-size: 15px; margin-bottom: 6px; }
+  body.arcade .rank-label { font-size: 10px; }
+  body.hype .rank-label { font-size: 18px; }
+  .team-card h3 { font-size: 15px; margin: 4px 0; }
+  body.arcade .team-card h3 { font-size: 8px; }
+  body.hype .team-card h3 { font-size: 16px; }
+  .score { font-size: 15px; margin: 2px 0; }
+  body.arcade .score { font-size: 9px !important; }
+  body.hype .score { font-size: 18px !important; }
+  .team-note { font-size: 11px; margin-top: 6px; }
+  body.arcade .team-note { font-size: 9px; }
+
+  #admin-view { margin-top: 56px; padding: 0 16px; }
+  #admin-gate { margin-top: 56px; }
+  .admin-container { padding: 16px 20px; }
+  .admin-container h2 { font-size: 20px; }
+  body.arcade .admin-container h2 { font-size: 12px; margin-bottom: 8px; }
+  body.hype .admin-container h2 { font-size: 24px; }
+  .admin-subtitle, body.arcade .admin-subtitle, body.hype .admin-subtitle { margin-bottom: 10px; }
+
+  /* wide enough for the table again */
+  .admin-table-header { display: grid; grid-template-columns: 140px 130px 1fr; gap: 12px; font-size: 14px; margin-bottom: 8px; padding-bottom: 6px; }
+  body.arcade .admin-table-header { font-size: 9px; }
+  .admin-row { grid-template-columns: 140px 130px 1fr; gap: 12px; margin-bottom: 8px; padding-bottom: 0; border-bottom: none; }
+  .admin-row .note-input { grid-column: auto; }
+  .admin-row label { font-size: 16px; }
+  body.hype .admin-row label { font-size: 16px !important; }
+  body.hype .admin-row .score-input { font-size: 16px; }
+  body.hype .admin-table-header { font-size: 13px; }
+  .admin-actions { margin-top: 12px; }
+  .admin-actions button { padding: 9px; }
+
+  footer { padding: 0 16px; }
+  .footer-logo { height: 30px; }
+  .footer-text { font-size: 13px; }
+  body.arcade .footer-text { font-size: 9px !important; }
+  body.hype .footer-text { font-size: 16px !important; }
+  .footer-right { margin-right: 0; gap: 10px; }
+  #refresh-button, #home-button { padding: 6px 14px; font-size: 14px; }
+  body.arcade #refresh-button, body.arcade #home-button { font-size: 9px; padding: 7px 10px; }
+  body.hype #refresh-button, body.hype #home-button { font-size: 15px; }
+}
 </style>
 </head>
 
 <body>
 
-<button id="mode-toggle">🌙</button>
+<div id="theme-picker">
+  <select id="mode-toggle" aria-label="Theme">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+    <option value="christmas">Christmas</option>
+    <option value="arcade">Arcade</option>
+    <option value="hype">Hype</option>
+  </select>
+</div>
 
 <div id="merry-christmas"></div>
 
@@ -536,7 +749,7 @@ body.hype #home-button { background: #fff !important; color: #000; font-family: 
       <div class="icon">📊</div>
       <h2>Leaderboard</h2>
     </div>
-    <div class="portal-card" onclick="verifyAdminAccess()">
+    <div class="portal-card" onclick="navigateTo('admin-gate')">
       <div class="icon">⚙️</div>
       <h2>Admin Panel</h2>
     </div>
@@ -547,38 +760,52 @@ body.hype #home-button { background: #fff !important; color: #000; font-family: 
 <div id="leaderboard" class="view-container hidden"></div>
 
 
+<div id="admin-gate" class="view-container hidden">
+  <div class="admin-container">
+    <h2>Admin Access</h2>
+    <input type="password" id="admin-pwd-input" placeholder="Enter admin password"
+      onkeydown="if (event.key === 'Enter') verifyAdminAccess()">
+    <p id="admin-pwd-error" class="hidden">Incorrect password!</p>
+    <div class="admin-actions">
+      <button class="btn-save" onclick="verifyAdminAccess()">Enter</button>
+      <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
 <div id="admin-view" class="view-container hidden">
   <div class="admin-container">
     <h2>Admin Score Control</h2>
     <div class="admin-subtitle">Type values like +50 or -15 to calculate dynamically</div>
-    
+
     <div class="admin-table-header">
       <div>House</div>
       <div class="col-score">Points Change</div>
       <div class="col-note">Optional Note (Match info, bonus pts)</div>
     </div>
-    
+
     <div class="admin-row">
       <label class="lbl-acrobats">Acrobats:</label>
-      <input type="text" id="admin-acrobats" class="score-input score-input-modifier">
+      <input type="text" id="admin-acrobats" class="score-input score-input-modifier" inputmode="decimal">
       <input type="text" id="admin-acrobats-note" class="note-input" placeholder="e.g., +100 Football match">
     </div>
     <div class="admin-row">
       <label class="lbl-quicksilver">Quicksilver:</label>
-      <input type="text" id="admin-quicksilver" class="score-input score-input-modifier">
+      <input type="text" id="admin-quicksilver" class="score-input score-input-modifier" inputmode="decimal">
       <input type="text" id="admin-quicksilver-note" class="note-input" placeholder="e.g., Won Basketball cup">
     </div>
     <div class="admin-row">
       <label class="lbl-druids">Druids:</label>
-      <input type="text" id="admin-druids" class="score-input score-input-modifier">
+      <input type="text" id="admin-druids" class="score-input score-input-modifier" inputmode="decimal">
       <input type="text" id="admin-druids-note" class="note-input" placeholder="e.g., +50 Trivia clean sweep">
     </div>
     <div class="admin-row">
       <label class="lbl-bravehearts">Bravehearts:</label>
-      <input type="text" id="admin-bravehearts" class="score-input score-input-modifier">
+      <input type="text" id="admin-bravehearts" class="score-input score-input-modifier" inputmode="decimal">
       <input type="text" id="admin-bravehearts-note" class="note-input" placeholder="e.g., 3-2 victory in Rugby">
     </div>
-    
+
     <div class="admin-actions">
       <button class="btn-save" onclick="saveScores()">Save & Publish</button>
       <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
@@ -600,7 +827,6 @@ body.hype #home-button { background: #fff !important; color: #000; font-family: 
 
 
 <script>
-/* =============== LEADERBOARD STATE =============== */
 let teams = [
   { id: "acrobats", name: "Acrobats", color: "#59b300", score: 0, note: "" },
   { id: "quicksilver", name: "Quicksilver", color: "#ff4d4d", score: 0, note: "" },
@@ -615,14 +841,17 @@ const teamImages = {
   bravehearts: "project/bravehearts.jpeg"
 };
 
+let currentMode = "light";
+
 function renderLeaderboard() {
   const container = document.getElementById("leaderboard");
   container.innerHTML = "";
-  teams.sort((a,b)=>b.score-a.score);
-  teams.forEach((team,index)=>{
-    const card=document.createElement("div");
+  teams.sort((a, b) => b.score - a.score);
+
+  teams.forEach((team, index) => {
+    const card = document.createElement("div");
     card.className = "team-card";
-    
+
     if (currentMode === "arcade") {
       card.style.border = "4px solid " + team.color;
     } else if (currentMode === "hype") {
@@ -630,16 +859,13 @@ function renderLeaderboard() {
     } else {
       card.style.border = "3px solid " + team.color;
     }
-    
-    const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : '';
-    
-    let rankText = `#${index+1}`;
-    if (currentMode === 'arcade') {
-      rankText = `RANK ${index+1}`;
-    } else if (currentMode === 'hype') {
-      rankText = (index === 0) ? "🏆 CHAMP" : `#${index+1}`;
-    }
-    
+
+    let rankText = `#${index + 1}`;
+    if (currentMode === "arcade") rankText = `RANK ${index + 1}`;
+    if (currentMode === "hype") rankText = index === 0 ? "🏆 CHAMP" : `#${index + 1}`;
+
+    const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : "";
+
     card.innerHTML = `
       <div class="rank-label">${rankText}</div>
       <img src="${teamImages[team.id]}">
@@ -651,24 +877,28 @@ function renderLeaderboard() {
   });
 }
 
-/* Firebase sync */
-function loadFromFirebase() {
-  db.ref("houseScores").once("value").then(snapshot=>{
-    if(snapshot.exists()){
+// Gets the latest scores and notes. With no callback it redraws the
+// leaderboard, otherwise it runs the callback (used by the admin panel).
+function loadFromFirebase(onComplete) {
+  db.ref("houseScores").once("value").then(snapshot => {
+    if (snapshot.exists()) {
       const data = snapshot.val();
-      teams.forEach(t => { 
-        if (data[t.id] !== undefined) {
-          if (typeof data[t.id] === 'object') {
-            t.score = data[t.id].score || 0;
-            t.note = data[t.id].note || "";
-          } else {
-            t.score = data[t.id];
-            t.note = "";
-          }
+      teams.forEach(t => {
+        if (data[t.id] === undefined) return;
+        if (typeof data[t.id] === "object") {
+          t.score = data[t.id].score || 0;
+          t.note = data[t.id].note || "";
+        } else {
+          // older entries were saved as just a number
+          t.score = data[t.id];
+          t.note = "";
         }
       });
-      renderLeaderboard();
     }
+    onComplete ? onComplete() : renderLeaderboard();
+  }).catch(err => {
+    console.error("Could not read scores from Firebase:", err);
+    onComplete ? onComplete() : renderLeaderboard();
   });
 }
 
@@ -680,7 +910,6 @@ function saveToFirebase() {
   db.ref("houseScores").set(data);
 }
 
-/* Manual Totem Refresh Function */
 function manualRefresh() {
   const refreshBtn = document.getElementById("refresh-button");
   refreshBtn.classList.add("spin-animation");
@@ -690,119 +919,99 @@ function manualRefresh() {
   }, 600);
 }
 
-/* =============== SINGLE PAGE ROUTING ENGINE =============== */
 function navigateTo(targetView) {
   document.getElementById("home-view").classList.add("hidden");
   document.getElementById("leaderboard").classList.add("hidden");
+  document.getElementById("admin-gate").classList.add("hidden");
   document.getElementById("admin-view").classList.add("hidden");
-  
+
   document.getElementById("refresh-button").classList.add("hidden");
   document.getElementById("home-button").classList.add("hidden");
 
   if (targetView === "home") {
     document.getElementById("home-view").classList.remove("hidden");
-  } 
+  }
   else if (targetView === "leaderboard") {
     document.getElementById("leaderboard").classList.remove("hidden");
     document.getElementById("refresh-button").classList.remove("hidden");
     document.getElementById("home-button").classList.remove("hidden");
+    renderLeaderboard();
     loadFromFirebase();
-  } 
+  }
+  else if (targetView === "admin-gate") {
+    document.getElementById("admin-gate").classList.remove("hidden");
+    document.getElementById("home-button").classList.remove("hidden");
+    document.getElementById("admin-pwd-input").value = "";
+    document.getElementById("admin-pwd-error").classList.add("hidden");
+    document.getElementById("admin-pwd-input").focus();
+  }
   else if (targetView === "admin") {
     document.getElementById("admin-view").classList.remove("hidden");
     document.getElementById("home-button").classList.remove("hidden");
-    
+
     teams.forEach(t => {
       const scoreInput = document.getElementById(`admin-${t.id}`);
-      scoreInput.value = ""; 
-      scoreInput.placeholder = `Current: ${t.score}`; 
+      scoreInput.value = "";
+      scoreInput.placeholder = `Current: ${t.score}`;
       document.getElementById(`admin-${t.id}-note`).value = t.note || "";
     });
   }
 }
 
-/* Gatekeeper check prior to opening Admin View */
+// The password is checked in the browser, so anyone reading the page
+// source can see it. OK for this school event, not for anything sensitive.
 function verifyAdminAccess() {
-  const pwd = prompt("Enter admin password:");
-  if (pwd === "Smiling-1092") {
-    db.ref("houseScores").once("value").then(snapshot => {
-      if(snapshot.exists()){
-        const data = snapshot.val();
-        teams.forEach(t => {
-          if (data[t.id] !== undefined) {
-            if (typeof data[t.id] === 'object') {
-              t.score = data[t.id].score || 0;
-              t.note = data[t.id].note || "";
-            } else {
-              t.score = data[t.id];
-              t.note = "";
-            }
-          }
-        });
-      }
-      navigateTo("admin");
-    });
-  } else {
-    alert("Incorrect password!");
+  const pwd = document.getElementById("admin-pwd-input").value;
+  if (pwd !== "Smiling-1092") {
+    document.getElementById("admin-pwd-error").classList.remove("hidden");
+    return;
   }
+  navigateTo("admin");
+  loadFromFirebase(() => {
+    teams.forEach(t => {
+      document.getElementById(`admin-${t.id}`).placeholder = `Current: ${t.score}`;
+      document.getElementById(`admin-${t.id}-note`).value = t.note || "";
+    });
+  });
 }
 
-function saveScores(){
+function saveScores() {
   teams.forEach(t => {
     const rawVal = document.getElementById(`admin-${t.id}`).value.trim();
-    
     if (rawVal !== "") {
-      if (rawVal.startsWith("+") || rawVal.startsWith("-")) {
-        const cleanModifier = parseFloat(rawVal);
-        if (!isNaN(cleanModifier)) t.score += cleanModifier;
-      } else {
-        const parsedNum = parseFloat(rawVal);
-        if (!isNaN(parsedNum)) t.score += parsedNum;
-      }
+      const change = parseFloat(rawVal);
+      if (!isNaN(change)) t.score += change;
     }
     t.note = document.getElementById(`admin-${t.id}-note`).value.trim();
   });
-  
+
   saveToFirebase();
   navigateTo("home");
 }
 
-/* =============== MODE SWITCH (Light → Dark → Christmas → Arcade → Hype) =============== */
-const modeBtn = document.getElementById("mode-toggle");
-let currentMode = "light";
+const modeSelect = document.getElementById("mode-toggle");
 
 function applyMode(mode) {
   currentMode = mode;
   document.body.classList.remove("dark", "christmas", "arcade", "hype");
   stopParticleMatrix();
 
-  if (mode === "dark") document.body.classList.add("dark");
-  if (mode === "christmas") document.body.classList.add("christmas");
-  if (mode === "arcade") document.body.classList.add("arcade");
-  if (mode === "hype") document.body.classList.add("hype");
-
-  if (mode === "light") modeBtn.textContent = "🌙";
-  if (mode === "dark") modeBtn.textContent = "🎅";
-  if (mode === "christmas") modeBtn.textContent = "🕹️";
-  if (mode === "arcade") modeBtn.textContent = "🔥";
-  if (mode === "hype") modeBtn.textContent = "☀️";
+  if (mode !== "light") document.body.classList.add(mode);
+  modeSelect.value = mode;
 
   if (mode === "christmas" || mode === "arcade" || mode === "hype") {
     startParticleMatrix();
   }
-  
+
   renderLeaderboard();
 }
 
-modeBtn.addEventListener("click", () => {
-  if (currentMode === "light") applyMode("dark");
-  else if (currentMode === "dark") applyMode("christmas");
-  else if (currentMode === "christmas") applyMode("arcade");
-  else if (currentMode === "arcade") applyMode("hype");
-  else if (currentMode === "hype") applyMode("light");
+modeSelect.addEventListener("change", () => {
+  applyMode(modeSelect.value);
 });
 
-/* =============== DYNAMIC CANVAS PARTICLES =============== */
+// Background particles: snow (christmas), rising pixels (arcade),
+// gold confetti (hype)
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let cw = 0, ch = 0;
@@ -834,8 +1043,8 @@ function createParticle() {
     return {
       x: Math.random() * cw,
       y: ch + (Math.random() * ch * 0.2),
-      size: Math.random() * 5 + 4, 
-      speed: -(Math.random() * 1.5 + 0.5), 
+      size: Math.random() * 5 + 4,
+      speed: -(Math.random() * 1.5 + 0.5),
       drift: (Math.random() - 0.5) * 0.3,
       color: Math.random() > 0.5 ? "#00ff66" : "#00ffff"
     };
@@ -844,7 +1053,7 @@ function createParticle() {
       x: Math.random() * cw,
       y: Math.random() * -ch * 0.2,
       size: Math.random() * 3 + 1.5,
-      speed: Math.random() * 2 + 1, 
+      speed: Math.random() * 2 + 1,
       drift: (Math.random() - 0.5) * 0.8,
       color: "white"
     };
@@ -854,16 +1063,12 @@ function createParticle() {
 function updateParticles() {
   ctx.clearRect(0, 0, cw, ch);
 
-  for (let p of particles) {
+  for (const p of particles) {
     if (currentMode === "hype") {
       p.y += p.speed;
       p.x += p.drift;
       p.rotation += p.rotSpeed;
-
-      if (p.y > ch) {
-        p.y = -20;
-        p.x = Math.random() * cw;
-      }
+      if (p.y > ch) { p.y = -20; p.x = Math.random() * cw; }
 
       ctx.save();
       ctx.translate(p.x, p.y);
@@ -871,25 +1076,22 @@ function updateParticles() {
       ctx.fillStyle = p.color;
       ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
       ctx.restore();
+      continue;
+    }
+
+    p.x += p.drift;
+    p.y += p.speed;
+
+    if (currentMode === "arcade") {
+      if (p.y < -10) { p.y = ch + 10; p.x = Math.random() * cw; }
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
     } else {
-      p.x += p.drift;
-      p.y += p.speed;
-
-      if (currentMode === "arcade") {
-        if (p.y < -10) { p.y = ch + 10; p.x = Math.random() * cw; }
-      } else {
-        if (p.y > ch) { p.y = -10; p.x = Math.random() * cw; }
-      }
-
+      if (p.y > ch) { p.y = -10; p.x = Math.random() * cw; }
       ctx.beginPath();
-      if (currentMode === "arcade") {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-      } else {
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      }
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
     }
   }
 
@@ -898,7 +1100,7 @@ function updateParticles() {
 
 function startParticleMatrix() {
   particles = [];
-  const maxCount = (currentMode === "arcade" || currentMode === "hype") ? 150 : 400; 
+  const maxCount = (currentMode === "arcade" || currentMode === "hype") ? 150 : 400;
   for (let i = 0; i < maxCount; i++) particles.push(createParticle());
   if (!animFrame) animFrame = requestAnimationFrame(updateParticles);
 }
@@ -909,7 +1111,6 @@ function stopParticleMatrix() {
   ctx.clearRect(0, 0, cw, ch);
 }
 
-/* INITIALIZE INITIAL ROUTE */
 loadFromFirebase();
 applyMode("light");
 navigateTo("home");
