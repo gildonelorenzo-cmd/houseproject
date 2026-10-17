@@ -3,19 +3,18 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>House Leaderboard Portal</title>
+<title>House Leaderboard</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Impact&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-/* Firebase config */
 const firebaseConfig = {
-  apiKey: "AIzaSyBMrqvOdPiXQPbhzu2S7k1Yx9EJ6tu28O4",
+  apiKey: "AIzaSyBM•••••••••••••••••••••••••••••••",
   authDomain: "housesproject-cb92e.firebaseapp.com",
   databaseURL: "https://housesproject-cb92e-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "housesproject-cb92e",
@@ -29,698 +28,727 @@ const db = firebase.database();
 </script>
 
 <style>
-:root { --footer-height: 70px; }
-
-/* GENERAL BODY */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-
-  background: linear-gradient(270deg, #f3d1a8, #fed6e3, #a8edea, #f3d1a8);
-  background-size: 800% 800%;
-  animation: gradientShift 20s linear infinite;
+/* colors come from the school logo: navy #151a30 and green #43a435 */
+:root {
+  --footer-height: 88px;
+  --bg: #f3f4f7;
+  --bg-solid: #f3f4f7;
+  --surface: #ffffff;
+  --fill: #eef0f4;
+  --text: #151a30;
+  --text-2: #565d70;
+  --on-bg: #151a30;
+  --on-bg-2: #565d70;
+  --line: rgba(21, 26, 48, 0.12);
+  --accent: #2e7d24;
+  --accent-text: #ffffff;
+  --danger: #b42318;
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-text: #151a30;
+  --focus: #2563eb;
+  --shadow: 0 1px 2px rgba(21, 26, 48, 0.06), 0 8px 24px rgba(21, 26, 48, 0.07);
+  --logo-filter: none;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --display: var(--font);
+  --radius: 18px;
+  color-scheme: light;
 }
 
 body.dark {
-  color: #f0f0f0;
-  background: linear-gradient(270deg, #0f2027, #203a43, #2c5364, #0f2027);
-  background-size: 800% 800%;
-  animation: gradientShiftDark 25s linear infinite;
+  --bg: #0e1116;
+  --bg-solid: #0e1116;
+  --surface: #181c24;
+  --fill: #232833;
+  --text: #f1f3f7;
+  --text-2: #a3acbb;
+  --on-bg: #f1f3f7;
+  --on-bg-2: #a3acbb;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #5cc14a;
+  --accent-text: #08210a;
+  --danger: #ff8a7a;
+  --glass: rgba(30, 34, 43, 0.72);
+  --glass-text: #f1f3f7;
+  --focus: #6ea8ff;
+  --shadow: none;
+  --logo-filter: brightness(0) invert(1);
+  color-scheme: dark;
 }
 
-/* CHRISTMAS MODE */
 body.christmas {
-  background: #B30000 !important;
-  transition: background 1.5s ease-in-out;
+  --bg: #8b1a1a;
+  --bg-solid: #8b1a1a;
+  --surface: #fffaf3;
+  --fill: #f6e9df;
+  --text: #2b0b0b;
+  --text-2: #6e3d3d;
+  --on-bg: #ffffff;
+  --on-bg-2: #f6dede;
+  --line: rgba(43, 11, 11, 0.12);
+  --accent: #1d6b38;
+  --accent-text: #ffffff;
+  --danger: #b42318;
+  --glass: rgba(255, 255, 255, 0.16);
+  --glass-text: #ffffff;
+  --focus: #ffd166;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --logo-filter: brightness(0) invert(1);
+  color-scheme: light;
 }
 
-/* ARCADE MODE */
 body.arcade {
-  font-family: 'Press Start 2P', monospace !important;
-  color: #00ff66 !important;
-  background: #050508 !important;
+  --bg: #07070c;
+  --bg-solid: #07070c;
+  --surface: #11111b;
+  --fill: #1c1c2b;
+  --text: #eafff1;
+  --text-2: #7fe0a3;
+  --on-bg: #00ffff;
+  --on-bg-2: #7fe0a3;
+  --line: rgba(0, 255, 102, 0.25);
+  --accent: #00ff66;
+  --accent-text: #001a0a;
+  --danger: #ff6b8f;
+  --glass: rgba(17, 17, 27, 0.85);
+  --glass-text: #00ff66;
+  --focus: #00ffff;
+  --shadow: none;
+  --logo-filter: brightness(0) invert(1);
+  --display: "Press Start 2P", monospace;
+  --radius: 0px;
+  color-scheme: dark;
 }
 
-/* HYPE MODE */
 body.hype {
-  font-family: 'Impact', 'Arial Black', sans-serif !important;
-  color: #fff !important;
-  background: linear-gradient(135deg, #110000 0%, #220011 40%, #441100 100%) !important;
-  letter-spacing: 1px;
+  --bg: linear-gradient(160deg, #160404, #2a0b02);
+  --bg-solid: #1f0803;
+  --surface: #241008;
+  --fill: #3a1a0c;
+  --text: #ffffff;
+  --text-2: #ffcf8a;
+  --on-bg: #ffffff;
+  --on-bg-2: #ffcf8a;
+  --line: rgba(255, 170, 0, 0.3);
+  --accent: #ffaa00;
+  --accent-text: #1a0800;
+  --danger: #ff8a7a;
+  --glass: rgba(36, 16, 8, 0.78);
+  --glass-text: #ffaa00;
+  --focus: #ffd700;
+  --shadow: 0 0 24px rgba(255, 170, 0, 0.12);
+  --logo-filter: brightness(0) invert(1) drop-shadow(0 0 4px #ffaa00);
+  --display: Impact, "Arial Black", sans-serif;
+  --radius: 14px;
+  color-scheme: dark;
 }
 
-/* GLOBAL UTILITY */
+body.halloween {
+  /* moon in the top corner, glow first so it sits behind */
+  --bg:
+    radial-gradient(circle at 86% 9%, #ffe6b3 0 34px, rgba(255, 214, 140, 0.18) 35px 80px, transparent 81px),
+    linear-gradient(180deg, #2b1745 0%, #150b22 60%, #0d0714 100%);
+  --bg-solid: #0d0714;
+  --surface: #21142e;
+  --fill: #33224a;
+  --text: #fff3e6;
+  --text-2: #f5b77e;
+  --on-bg: #fff3e6;
+  --on-bg-2: #d2bff0;
+  --line: rgba(255, 122, 26, 0.3);
+  --accent: #ff7a1a;
+  --accent-text: #1a0a00;
+  --danger: #ff8f80;
+  --glass: rgba(33, 20, 46, 0.8);
+  --glass-text: #ffa04d;
+  --focus: #ffd166;
+  --shadow: 0 0 24px rgba(255, 122, 26, 0.1);
+  --logo-filter: brightness(0) invert(1);
+  color-scheme: dark;
+}
+
+/* the orange take on halloween: pumpkin background, dark cards, black bats */
+body.pumpkin {
+  --bg: linear-gradient(180deg, #ff9a33 0%, #ff7a1a 50%, #f26a0f 100%);
+  --bg-solid: #f26a0f;
+  --surface: #1c0f08;
+  --fill: #2e1a0e;
+  --text: #fff1e0;
+  --text-2: #ffb070;
+  --on-bg: #1a0a00;
+  --on-bg-2: #2e1300;
+  --line: rgba(0, 0, 0, 0.25);
+  --accent: #ff7a1a;
+  --accent-text: #1a0a00;
+  --danger: #ff8f80;
+  --glass: rgba(28, 15, 8, 0.82);
+  --glass-text: #ffa04d;
+  --focus: #ffffff;
+  --shadow: 0 8px 24px rgba(80, 25, 0, 0.35);
+  --logo-filter: brightness(0);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  background-attachment: fixed;
+  color: var(--on-bg);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
 .hidden {
   display: none !important;
 }
 
-/* MERRY CHRISTMAS TEXT */
-#merry-christmas {
-  position: fixed;
-  top: 20%;
-  width: 100%;
-  text-align: center;
-  font-family: "Brush Script MT", "Great Vibes", cursive;
-  font-size: 80px;
-  color: #ff0000;
-  text-shadow:
-    0 0 5px white,
-    0 0 10px white,
-    0 0 15px white,
-    0 0 20px white;
-  opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 1.5s ease, transform 1.5s ease;
-  z-index: 100;
-  pointer-events: none;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-body.christmas #merry-christmas {
-  opacity: 1;
-  transform: scale(1);
-  animation: borderGlow 3s infinite ease-in-out;
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
-@keyframes borderGlow {
-  0%   { text-shadow: 0 0 8px white; }
-  50%  { text-shadow: 0 0 20px white; }
-  100% { text-shadow: 0 0 8px white; }
-}
+#snow-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes gradientShiftDark {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* THEME DROPDOWN */
 #theme-picker {
-  position: fixed;
+  position: absolute;
   top: 20px;
-  left: 20px;
+  left: 24px;
   z-index: 50;
 }
 
 /* arrow drawn here because the select's own arrow is hidden (appearance: none) */
 #theme-picker::after {
-  content: "\25BE";
+  content: "";
   position: absolute;
-  right: 14px;
+  right: 17px;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: #000;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid var(--glass-text);
+  border-bottom: 2px solid var(--glass-text);
+  transform: translateY(-70%) rotate(45deg);
   pointer-events: none;
 }
-body.dark #theme-picker::after { color: yellow; }
-body.christmas #theme-picker::after { color: white; }
+
+.glass {
+  background: var(--glass);
+  color: var(--glass-text);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  backdrop-filter: blur(16px) saturate(1.6);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
 
 #mode-toggle {
   -webkit-appearance: none;
   appearance: none;
-  height: 44px;
-  padding: 0 36px 0 16px;
+  min-height: 44px;
+  padding: 0 38px 0 16px;
   border-radius: 22px;
-  background: white;
-  color: #000;
-  border: 2px solid black;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: bold;
+  font: 600 15px var(--font);
   cursor: pointer;
-  transition: 0.3s;
 }
-#mode-toggle option { background: #fff; color: #000; }
-body.dark #mode-toggle { background: #444; color: yellow; }
-body.christmas #mode-toggle { background: #FF0000; color: white; border-color: white; }
-body.arcade #mode-toggle { background: #00ff66; color: #000; border: 3px dashed #00ff66; border-radius: 0; font-size: 11px; }
-body.hype #mode-toggle { background: #ffaa00; color: #000; border: 2px solid #fff; box-shadow: 0 0 10px #ffaa00; font-size: 17px; text-transform: uppercase; letter-spacing: 1px; }
+#mode-toggle option { background: #fff; color: #151a30; }
 
-/* MAIN APP WRAPPER */
-.view-container {
+.view {
+  position: relative;
+  z-index: 20;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 96px 24px calc(var(--footer-height) + 24px);
   box-sizing: border-box;
 }
 
-/* HOME VIEW PORTAL CONTAINER */
-#home-view {
-  padding-top: 50px;
-  padding-bottom: calc(var(--footer-height) + 20px);
-  z-index: 30;
+h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--on-bg);
 }
 
-#home-view h1 {
-  font-size: 38px;
-  margin-bottom: 40px;
-  text-align: center;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-body.dark #home-view h1 { text-shadow: 0 2px 4px rgba(255,255,255,0.1); }
-body.arcade #home-view h1 { 
-  font-size: 22px; 
-  text-shadow: 3px 3px 0px #ff0055; 
-  color: #00ffff;
-  letter-spacing: 2px;
-}
-body.hype #home-view h1 {
-  font-size: 50px;
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 0 15px #ffaa00, 0 0 30px #ff5500;
-  letter-spacing: 3px;
+  color: var(--on-bg-2);
+}
+
+.lede {
+  margin: 8px 0 0;
+  color: var(--on-bg-2);
+}
+
+#home-view {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-inner {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .portal-menu {
-  display: flex;
-  gap: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
 }
 
 .portal-card {
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid #ccc;
-  border-radius: 20px;
-  width: 220px;
-  padding: 30px;
-  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 150px;
+  padding: 20px 44px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font: inherit;
+  text-align: left;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.portal-card:hover { transform: translateY(-2px); }
+.portal-card:active { transform: scale(0.98); }
+
+.portal-card .card-title { margin-top: auto; font-family: var(--display); font-size: 20px; font-weight: 600; }
+.portal-card .card-desc { font-size: 15px; color: var(--text-2); }
+
+.portal-card .chevron {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid var(--text-2);
+  border-right: 2px solid var(--text-2);
+  transform: translateY(-50%) rotate(45deg);
 }
 
-.portal-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-  border-color: #4a90e2;
+.mascot-stack { display: flex; margin-bottom: 12px; }
+.mascot-stack img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--surface);
+  margin-right: -8px;
 }
 
-body.dark .portal-card {
-  background: rgba(40, 40, 40, 0.95);
-  border-color: #555;
-  color: white;
+.admin-glyph {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: var(--fill);
+}
+/* three short lines, reads as "settings" without needing an icon font */
+.admin-glyph::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  top: 11px;
+  height: 14px;
+  background:
+    linear-gradient(var(--text-2), var(--text-2)) 0 0 / 100% 2px no-repeat,
+    linear-gradient(var(--text-2), var(--text-2)) 0 6px / 100% 2px no-repeat,
+    linear-gradient(var(--text-2), var(--text-2)) 0 12px / 100% 2px no-repeat;
 }
 
-body.arcade .portal-card {
-  background: #111 !important;
-  border: 4px solid #00ff66 !important;
-  border-radius: 0px !important;
-  box-shadow: 5px 5px 0px #ff0055 !important;
-  color: #00ff66 !important;
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
 }
-body.arcade .portal-card h2 { font-size: 14px !important; margin-top: 15px !important; }
+.view-header .lede { margin: 0; font-size: 15px; }
 
-body.hype .portal-card {
-  background: rgba(20, 5, 5, 0.85) !important;
-  border: 2px solid #ffaa00 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 0 20px rgba(255, 170, 0, 0.4) !important;
-  color: #fff !important;
-}
-body.hype .portal-card:hover {
-  box-shadow: 0 0 30px #ffaa00 !important;
-  transform: translateY(-5px);
-}
-body.hype .portal-card h2 { font-size: 26px !important; text-transform: uppercase; letter-spacing: 1px; }
-
-.portal-card .icon { font-size: 60px; margin-bottom: 15px; }
-body.arcade .portal-card .icon { font-size: 45px; }
-body.hype .portal-card .icon { text-shadow: 0 0 15px #ff5500; }
-
-.portal-card h2 {
-  margin: 10px 0 0 0;
-  font-size: 24px;
-}
-
-/* LEADERBOARD VIEW GRID */
-#leaderboard {
+#standings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 60px;
-  margin-bottom: calc(var(--footer-height) + 30px);
-  z-index: 30;
-  width: 100%;
-  max-width: 440px;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: start;
 }
-body.arcade #leaderboard { max-width: 520px !important; gap: 25px; }
-body.hype #leaderboard { max-width: 480px !important; gap: 25px; }
 
 .team-card {
-  background: rgba(255,255,255,0.95);
-  border-radius: 15px;
-  padding: 15px 10px;
-  text-align: center;
-  width: 190px;
-  transition: 0.3s;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
+  padding: 22px 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+  /* thin stripe in the house color along the top */
+  box-shadow: inset 0 4px 0 var(--house), var(--shadow);
+}
+.team-card.leader { border: 2px solid var(--house); }
+
+.rank-label {
+  margin-bottom: 12px;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.team-card.leader .rank-label {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-text);
 }
 
-body.dark .team-card { background: rgba(30, 30, 30, 0.92) !important; color: #f0f0f0; }
-
-body.arcade .team-card {
-  background: #151522 !important;
-  border-radius: 0px !important;
-  width: 240px !important;
-  box-shadow: 6px 6px 0px #00ffff !important;
+.team-card img {
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  object-fit: cover;
 }
-body.arcade .team-card h3 { font-size: 14px; margin: 10px 0; color: #fff; }
 
-body.hype .team-card {
-  background: rgba(15, 2, 2, 0.9) !important;
-  border-radius: 16px !important;
-  width: 210px !important;
-  box-shadow: 0 0 25px rgba(255, 170, 0, 0.35) !important;
-  border: none !important;
+.team-card h3 {
+  margin: 12px 0 0;
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
 }
-body.hype .team-card h3 { font-size: 24px; text-transform: uppercase; margin: 8px 0; letter-spacing: 1px; }
 
-.rank-label { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-body.arcade .rank-label { font-size: 14px; color: #ff0055; margin-bottom: 12px; }
-body.hype .rank-label { font-size: 28px; color: #ffaa00; text-shadow: 0 0 10px #ffaa00; font-style: italic; }
+.score {
+  margin: 4px 0 0;
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.score .unit { font-family: var(--font); font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
 
-.team-card img { width: 120px; height: 120px; border-radius: 12px; margin-bottom: 10px; object-fit: cover; }
-body.arcade .team-card img { border-radius: 0px !important; border: 2px solid #00ff66; width: 110px; height: 110px; }
-body.hype .team-card img { border-radius: 50% !important; border: 3px solid #ffaa00; width: 110px; height: 110px; box-shadow: 0 0 15px rgba(255,85,0,0.5); }
+.gap { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
 
-.score { font-size: 22px; font-weight: bold; margin: 5px 0; }
-body.arcade .score { font-size: 13px !important; color: #00ff66; }
-body.hype .score { font-size: 26px !important; color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
-
-/* NOTE BADGES ON LEADERBOARD CARDS */
 .team-note {
-  margin-top: 8px;
+  margin: 12px 0 0;
   padding: 4px 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: var(--fill);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.panel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.panel h1 { color: var(--text); font-size: 28px; }
+.panel .lede { color: var(--text-2); font-size: 15px; }
+
+.gate { max-width: 420px; }
+
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--text);
+  font: 16px var(--font);
+}
+.field::placeholder { color: var(--text-2); opacity: 1; }
+
+.field-label { display: block; margin: 24px 0 8px; font-size: 15px; font-weight: 600; }
+
+#admin-pwd-error { margin: 8px 0 0; color: var(--danger); font-size: 15px; font-weight: 600; }
+
+.admin-head, .admin-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px minmax(0, 1.3fr);
+  gap: 12px;
+  align-items: center;
+}
+.admin-head {
+  margin-top: 24px;
+  padding-bottom: 8px;
   font-size: 13px;
   font-weight: 600;
-  border-radius: 20px;
-  background: #f1f2f6;
-  color: #57606f;
-  max-width: 90%;
-  word-wrap: break-word;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
 }
-body.dark .team-note { background: #333; color: #ced6e0; }
-body.christmas .team-note { background: #fff; color: #b30000; }
-body.arcade .team-note { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; border-radius: 0px; background: #ff0055; color: #fff; }
-body.hype .team-note { font-family: Arial, sans-serif; font-size: 12px; border-radius: 6px; background: linear-gradient(90deg, #ff5500, #ffaa00); color: #fff; box-shadow: 0 2px 8px rgba(255,85,0,0.4); }
+.admin-row { padding: 12px 0; border-top: 1px solid var(--line); }
 
-/* DEDICATED ADMIN VIEW */
-#admin-view {
-  margin-top: 40px;
-  margin-bottom: calc(var(--footer-height) + 30px);
-  z-index: 30;
-  width: 100%;
-  max-width: 650px;
+.house { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.house img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.house-name { display: block; font-size: 17px; font-weight: 600; }
+.house-name::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--house);
+  vertical-align: middle;
 }
+.house-current { display: block; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.house-current.invalid { color: var(--danger); font-weight: 600; }
 
-.admin-container {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 35px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  width: 100%;
-  box-sizing: border-box;
-}
+.score-input { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-body.dark .admin-container { background: #222; color: white; }
-body.christmas .admin-container { background: #440000; color: white; border: 1px solid white; }
-body.arcade .admin-container { background: #111 !important; border: 4px solid #00ffff !important; border-radius: 0px !important; box-shadow: 8px 8px 0px #ff0055; }
-body.hype .admin-container { background: rgba(15, 3, 3, 0.95) !important; border-radius: 16px !important; box-shadow: 0 0 35px rgba(255, 170, 0, 0.3); border: 1px solid #ffaa00; }
+.actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
 
-.admin-container h2 { margin-top: 0; margin-bottom: 5px; text-align: center; font-size: 28px; }
-body.arcade .admin-container h2 { font-size: 18px; color: #00ffff; margin-bottom: 12px; }
-body.hype .admin-container h2 { font-size: 32px; color: #ffaa00; text-transform: uppercase; }
-
-.admin-subtitle { text-align: center; font-size: 14px; color: #666; margin-bottom: 25px; font-style: italic; }
-body.dark .admin-subtitle { color: #aaa; }
-body.arcade .admin-subtitle { font-size: 10px; color: #ff0055; margin-bottom: 30px; }
-body.hype .admin-subtitle { font-size: 14px; color: #ff5500; font-family: Arial, sans-serif; font-weight: bold; margin-bottom: 30px; }
-
-.admin-table-header {
-  display: grid;
-  grid-template-columns: 130px 140px 1fr;
-  gap: 20px;
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 12px;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 8px;
-}
-body.dark .admin-table-header { border-color: #444; }
-body.arcade .admin-table-header { border-bottom: 3px double #00ff66; font-size: 11px; color: #00ff66; }
-body.hype .admin-table-header { border-bottom: 2px dashed #ff5500; font-size: 16px; text-transform: uppercase; color: #ffaa00; }
-
-.col-score { text-align: center; }
-.col-note { text-align: center; }
-
-.admin-row {
-  display: grid;
-  grid-template-columns: 130px 140px 1fr;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.admin-row label { font-weight: bold; font-size: 18px; white-space: nowrap; }
-body.arcade .admin-row label { font-size: 11px !important; }
-body.hype .admin-row label { font-size: 20px !important; text-transform: uppercase; }
-
-/* Admin panel individual house color classes */
-.lbl-acrobats { color: #59b300; }
-.lbl-quicksilver { color: #ff4d4d; }
-.lbl-druids { color: #0073e6; }
-.lbl-bravehearts { color: #e6b800; } 
-body.dark .lbl-bravehearts { color: #ffcc00; }
-body.arcade .lbl-bravehearts { color: #ffff00; }
-body.hype .lbl-acrobats { color: #7cfc00; text-shadow: 0 0 5px rgba(124,252,0,0.3); }
-body.hype .lbl-quicksilver { color: #ff5252; text-shadow: 0 0 5px rgba(255,82,82,0.3); }
-body.hype .lbl-druids { color: #40a9ff; text-shadow: 0 0 5px rgba(64,169,255,0.3); }
-body.hype .lbl-bravehearts { color: #ffd700; text-shadow: 0 0 5px rgba(255,215,0,0.3); }
-
-.admin-row .score-input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  text-align: center;
-  box-sizing: border-box;
-}
-body.arcade .admin-row .score-input { border: 2px solid #00ff66 !important; background: #000; color: #00ff66; border-radius: 0px !important; font-family: 'Press Start 2P', monospace; font-size: 10px; }
-body.hype .admin-row .score-input { border: 1px solid #ffaa00 !important; background: #1a0808; color: #fff; font-family: 'Impact', sans-serif; font-size: 18px; }
-
-.admin-row .score-input-modifier { font-weight: bold; }
-
-.admin-row .note-input {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-body.arcade .admin-row .note-input { border: 2px solid #00ff66 !important; background: #000; color: #fff; border-radius: 0px !important; font-family: Arial, sans-serif; font-size: 13px; }
-body.hype .admin-row .note-input { border: 1px solid #ffaa00 !important; background: #1a0808; color: #fff; font-family: Arial, sans-serif; font-size: 14px; }
-
-.admin-actions { margin-top: 30px; display: flex; gap: 15px; }
-
-.admin-actions button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 8px;
+.btn {
+  min-height: 44px;
+  white-space: nowrap;
+  padding: 0 22px;
   border: none;
-  font-size: 16px;
-  font-weight: bold;
+  border-radius: 12px;
+  font: 600 16px var(--font);
   cursor: pointer;
-  color: white;
-  transition: 0.2s;
+  transition: transform 0.1s ease, filter 0.15s ease;
 }
-body.arcade .admin-actions button { font-family: 'Press Start 2P', monospace; font-size: 12px; border-radius: 0px !important; }
-body.hype .admin-actions button { font-family: 'Impact', sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent); color: var(--accent-text); }
+.btn-secondary { background: var(--fill); color: var(--text); }
 
-.btn-save { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-.btn-save:hover { transform: translateY(-2px); }
-body.arcade .btn-save { background: #00ff66 !important; color: #000 !important; }
-body.hype .btn-save { background: linear-gradient(135deg, #ffaa00, #ff5500) !important; color: #000 !important; box-shadow: 0 4px 15px rgba(255,85,0,0.4); }
-
-.btn-cancel { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-.btn-cancel:hover { transform: translateY(-2px); }
-body.arcade .btn-cancel { background: #ff0055 !important; color: #fff !important; }
-body.hype .btn-cancel { background: #331111 !important; color: #ff5500 !important; border: 1px solid #ff5500 !important; }
-
-/* FOOTER */
+/* floating footer: no bar, just a fade so scrolled content doesn't fight the controls */
 footer {
   position: fixed;
-  bottom: 0;
   left: 0;
-  width: 100%;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
   height: var(--footer-height);
-  background: #B5E0FF;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
   box-sizing: border-box;
-  border-top: 3px solid #ccc;
-  z-index: 40;
+  background: linear-gradient(to top, var(--bg-solid) 45%, transparent);
+  pointer-events: none;
 }
-body.dark footer { background: #777; }
-body.arcade footer { background: #111 !important; border-top: 4px solid #ff0055 !important; }
-body.hype footer { background: #0f0202 !important; border-top: 2px solid #ffaa00 !important; }
+footer button { pointer-events: auto; }
 
-.footer-logo { height: 45px; margin-right: 10px; }
-body.arcade .footer-logo { filter: brightness(1.2) contrast(1.2); }
-body.hype .footer-logo { filter: drop-shadow(0 0 5px #ffaa00); }
+.footer-left { display: flex; align-items: center; min-width: 0; }
+.footer-logo { height: 56px; width: 134px; object-fit: cover; margin-right: 12px; filter: var(--logo-filter); }
+.footer-text { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--on-bg); }
 
-.footer-left { display: flex; align-items: center; }
+.footer-right { display: flex; gap: 8px; flex-shrink: 0; }
 
-.footer-text { font-weight: bold; font-size: 16px; letter-spacing: 1px; }
-body.dark .footer-text { color: #fff; }
-body.arcade .footer-text { color: #00ffff !important; font-size: 11px !important; letter-spacing: 0px; }
-body.hype .footer-text { color: #ffaa00 !important; font-size: 20px !important; text-shadow: 0 0 8px #ff5500; }
-
-.footer-right { display: flex; align-items: center; gap: 15px; margin-right: 40px; }
-
-/* MODERN BUTTONS FOR FOOTER */
 #refresh-button, #home-button {
-  padding: 10px 22px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 8px;
-  border: none;
-  color: white;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 22px;
+  font: 600 15px var(--font);
   cursor: pointer;
-  transition: 0.25s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
-
-#refresh-button { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-#home-button { background: linear-gradient(135deg, #e67e22, #d35400); }
-
-#refresh-button:hover, #home-button:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.3); }
-#refresh-button:active, #home-button:active { transform: scale(0.97); }
-
-body.dark #refresh-button { background: linear-gradient(135deg, #555, #333); }
-body.dark #home-button { background: linear-gradient(135deg, #666, #444); }
-
-body.arcade #refresh-button { background: #00ff66 !important; color: #000; border-radius: 0px; font-family: 'Press Start 2P', monospace; font-size: 11px; }
-body.arcade #home-button { background: #00ffff !important; color: #000; border-radius: 0px; font-family: 'Press Start 2P', monospace; font-size: 11px; }
-
-body.hype #refresh-button { background: #ffaa00 !important; color: #000; font-family: 'Impact', sans-serif; font-size: 18px; text-transform: uppercase; }
-body.hype #home-button { background: #fff !important; color: #000; font-family: 'Impact', sans-serif; font-size: 18px; text-transform: uppercase; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
 
 .spin-animation { animation: buttonSpin 0.6s ease-in-out; }
-@keyframes buttonSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes buttonSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* CANVAS SCREEN OVERLAY */
-#snow-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-
-/* ADMIN PASSWORD SCREEN */
-#admin-gate {
-  margin-top: 40px;
-  margin-bottom: calc(var(--footer-height) + 30px);
-  z-index: 30;
-  width: 100%;
-  max-width: 400px;
-  padding: 0 16px;
-}
-#admin-gate .admin-container { text-align: center; }
-
-#admin-pwd-input {
-  width: 100%;
-  padding: 10px 12px;
-  margin: 15px 0 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--footer-height) + 8px);
+  z-index: 60;
+  max-width: calc(100% - 48px);
+  padding: 12px 18px;
   box-sizing: border-box;
+  border-radius: 14px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: 15px;
+  font-weight: 600;
+  transform: translateX(-50%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
-body.arcade #admin-pwd-input { border: 2px solid #00ff66; background: #000; color: #00ff66; border-radius: 0px; }
-body.hype #admin-pwd-input { border: 1px solid #ffaa00; background: #1a0808; color: #fff; }
 
-#admin-pwd-error { color: #e74c3c; font-weight: bold; margin: 8px 0 0; }
-body.christmas #admin-pwd-error { color: #ffd6d6; }
-body.arcade #admin-pwd-error { color: #ff0055; font-size: 10px; }
+/* theme touches beyond the color tokens */
+body.arcade h1 { font-size: 22px; font-weight: 400; letter-spacing: 0; line-height: 1.5; }
+body.arcade .panel h1 { font-size: 18px; }
+body.arcade .portal-card .card-title { font-size: 14px; font-weight: 400; }
+body.arcade .team-card { border: 2px solid var(--house); box-shadow: 4px 4px 0 #ff0055; }
+body.arcade .team-card h3 { font-size: 13px; font-weight: 400; }
+body.arcade .score { margin-top: 8px; font-size: 20px; font-weight: 400; letter-spacing: 0; }
+body.arcade .rank-label { font-size: 12px; font-weight: 400; letter-spacing: 0; }
+body.arcade .team-card img, body.arcade .house img, body.arcade .mascot-stack img,
+body.arcade .btn, body.arcade .field, body.arcade .team-note { border-radius: 0; }
 
+body.hype h1, body.hype .team-card h3, body.hype .portal-card .card-title { font-weight: 400; text-transform: uppercase; letter-spacing: 0.02em; }
+body.hype .score { font-weight: 400; letter-spacing: 0.01em; }
+body.hype .rank-label { font-size: 16px; font-weight: 400; }
+body.hype .team-card.leader { box-shadow: inset 0 4px 0 var(--house), 0 0 32px rgba(255, 170, 0, 0.3); }
+body.hype .team-card img { border-radius: 50%; }
 
-/* PHONES (PORTRAIT) */
+/* the spooky font only on big headings, names and scores stay readable */
+body.halloween h1, body.halloween .portal-card .card-title,
+body.pumpkin h1, body.pumpkin .portal-card .card-title { font-family: Creepster, var(--font); font-weight: 400; letter-spacing: 0.04em; }
+body.halloween .team-card.leader, body.pumpkin .team-card.leader { box-shadow: inset 0 4px 0 var(--house), 0 0 32px rgba(255, 122, 26, 0.35); }
+
+/* tablets and narrow windows */
+@media (max-width: 899px) {
+  #standings { grid-template-columns: repeat(2, 1fr); max-width: 640px; margin: 0 auto; }
+  .view-header { max-width: 640px; margin-left: auto; margin-right: auto; }
+}
+
+/* phones, portrait */
 @media (max-width: 700px) {
-  :root { --footer-height: 60px; }
+  :root { --footer-height: 76px; }
 
-  #theme-picker { top: 12px; left: 12px; }
-  #mode-toggle { height: 40px; padding: 0 32px 0 14px; }
-  #theme-picker::after { right: 12px; }
+  #theme-picker { top: 16px; left: 16px; }
+  .view { padding: 84px 16px calc(var(--footer-height) + 16px); }
 
-  #merry-christmas { font-size: 46px; top: 12%; }
+  h1 { font-size: 28px; }
+  body.arcade h1 { font-size: 16px; }
 
-  #home-view { padding: 80px 16px calc(var(--footer-height) + 20px); }
-  #home-view h1 { font-size: 28px; margin: 0 0 24px; }
-  body.arcade #home-view h1 { font-size: 15px; line-height: 1.7; }
-  body.hype #home-view h1 { font-size: 36px; }
+  .portal-menu { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; }
+  .portal-card { min-height: 0; }
 
-  .portal-menu { flex-direction: column; align-items: center; gap: 18px; width: 100%; }
-  .portal-card { width: 100%; max-width: 300px; padding: 22px; box-sizing: border-box; }
-  .portal-card .icon, body.arcade .portal-card .icon { font-size: 42px; margin-bottom: 8px; }
-  .portal-card h2 { font-size: 20px; }
-  body.arcade .portal-card h2 { font-size: 12px !important; }
-  body.hype .portal-card h2 { font-size: 22px !important; }
-
-  #leaderboard, body.arcade #leaderboard, body.hype #leaderboard {
-    max-width: 480px !important;
-    gap: 14px;
-    margin-top: 72px;
-    padding: 0 12px;
-    box-sizing: border-box;
-    align-content: start;
+  /* smaller moon, pushed into the corner so it doesn't crowd the heading */
+  body.halloween {
+    --bg:
+      radial-gradient(circle at 93% 3%, #ffe6b3 0 20px, rgba(255, 214, 140, 0.16) 21px 46px, transparent 47px),
+      linear-gradient(180deg, #2b1745 0%, #150b22 60%, #0d0714 100%);
   }
-  .team-card, body.arcade .team-card, body.hype .team-card { width: 100% !important; padding: 12px 8px; }
-  body.arcade .team-card { box-shadow: 4px 4px 0px #00ffff !important; }
-  .team-card img, body.arcade .team-card img, body.hype .team-card img { width: 84px; height: 84px; }
-  .rank-label { font-size: 17px; }
-  body.hype .rank-label { font-size: 22px; }
-  .team-card h3 { font-size: 17px; margin: 6px 0; }
-  body.arcade .team-card h3 { font-size: 10px; }
-  body.hype .team-card h3 { font-size: 19px; }
-  .score { font-size: 18px; }
-  body.arcade .score { font-size: 11px !important; }
-  body.hype .score { font-size: 21px !important; }
-  .team-note { font-size: 12px; }
-  body.arcade .team-note { font-size: 10px; }
 
-  #admin-view { margin-top: 72px; padding: 0 12px; }
-  #admin-gate { margin-top: 72px; }
-  .admin-container { padding: 22px 16px; }
-  .admin-container h2 { font-size: 22px; }
-  body.arcade .admin-container h2 { font-size: 13px; line-height: 1.6; }
-  body.hype .admin-container h2 { font-size: 26px; }
-  .admin-subtitle { margin-bottom: 16px; }
-  body.arcade .admin-subtitle, body.hype .admin-subtitle { margin-bottom: 18px; }
+  /* the heading sits on the same row as the theme dropdown */
+  #leaderboard { padding-top: 16px; }
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    min-height: 44px;
+    padding-left: 150px;
+    margin-bottom: 20px;
+  }
+  .view-header h1 { font-size: 22px; }
+  body.arcade .view-header h1 { font-size: 13px; }
+  .view-header .lede { font-size: 13px; }
+  #standings { gap: 12px; }
+  .team-card { padding: 18px 10px 16px; }
+  .team-card img { width: 72px; height: 72px; border-radius: 16px; }
+  .score { font-size: 28px; }
+  body.arcade .score { font-size: 16px; }
+  body.arcade .team-card h3 { font-size: 12px; }
 
-  /* the three-column table doesn't fit, so each house becomes a small block:
+  .panel { padding: 20px 16px; }
+  .panel h1 { font-size: 24px; }
+  body.arcade .panel h1 { font-size: 16px; }
+
+  /* the table doesn't fit, so each house becomes a small block:
      name + points on one line, note underneath */
-  .admin-table-header { display: none; }
+  .admin-head { display: none; }
   .admin-row {
-    grid-template-columns: 1fr 120px;
+    grid-template-columns: minmax(0, 1fr) 110px;
+    grid-template-areas: "house change" "note note";
     gap: 8px 10px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.25);
   }
-  .admin-row .note-input { grid-column: 1 / -1; }
-  .admin-row label { font-size: 17px; }
-  body.hype .admin-row label { font-size: 19px !important; }
-  body.hype .admin-row .score-input { font-size: 16px; }
-  .admin-actions { margin-top: 18px; }
-  body.hype .admin-actions button { font-size: 17px; }
-
-  footer { padding: 0 12px; }
-  .footer-left { min-width: 0; }
-  .footer-logo { height: 34px; margin-right: 8px; }
-  .footer-text { font-size: 13px; letter-spacing: 0.5px; line-height: 1.2; }
-  body.arcade .footer-text { font-size: 8px !important; line-height: 1.6; }
-  body.hype .footer-text { font-size: 15px !important; }
-  .footer-right { margin-right: 0; gap: 8px; flex-shrink: 0; }
-  #refresh-button, #home-button { padding: 8px 12px; font-size: 14px; }
-  body.arcade #refresh-button, body.arcade #home-button { font-size: 9px; padding: 8px; }
-  body.hype #refresh-button, body.hype #home-button { font-size: 15px; }
-}
-
-/* PHONES (LANDSCAPE) - short screen, so everything gets tighter and the
-   leaderboard goes to one row of four */
-@media (orientation: landscape) and (max-height: 500px) {
-  :root { --footer-height: 52px; }
-
-  #theme-picker { top: 8px; left: 8px; }
-  #mode-toggle { height: 36px; }
-
-  #merry-christmas { font-size: 40px; top: 5%; }
-
-  #home-view { padding: 16px 16px calc(var(--footer-height) + 12px); }
-  #home-view h1 { font-size: 26px; margin: 0 0 16px; }
-  body.arcade #home-view h1 { font-size: 15px; }
-  body.hype #home-view h1 { font-size: 32px; }
-
-  .portal-menu { flex-direction: row; gap: 24px; width: auto; }
-  .portal-card { width: 210px; max-width: none; padding: 16px; box-sizing: border-box; }
-  .portal-card .icon, body.arcade .portal-card .icon { font-size: 36px; margin-bottom: 6px; }
-  .portal-card h2 { font-size: 18px; }
-  body.arcade .portal-card h2 { font-size: 11px !important; }
-  body.hype .portal-card h2 { font-size: 20px !important; }
-
-  #leaderboard, body.arcade #leaderboard, body.hype #leaderboard {
-    grid-template-columns: repeat(4, 1fr);
-    max-width: 900px !important;
-    gap: 12px;
-    margin-top: 56px;
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
-  .team-card, body.arcade .team-card, body.hype .team-card { width: 100% !important; padding: 10px 6px; }
-  body.arcade .team-card { box-shadow: 4px 4px 0px #00ffff !important; }
-  .team-card img, body.arcade .team-card img, body.hype .team-card img { width: 64px; height: 64px; margin-bottom: 6px; }
-  .rank-label { font-size: 15px; margin-bottom: 6px; }
-  body.arcade .rank-label { font-size: 10px; }
-  body.hype .rank-label { font-size: 18px; }
-  .team-card h3 { font-size: 15px; margin: 4px 0; }
-  body.arcade .team-card h3 { font-size: 8px; }
-  body.hype .team-card h3 { font-size: 16px; }
-  .score { font-size: 15px; margin: 2px 0; }
-  body.arcade .score { font-size: 9px !important; }
-  body.hype .score { font-size: 18px !important; }
-  .team-note { font-size: 11px; margin-top: 6px; }
-  body.arcade .team-note { font-size: 9px; }
-
-  #admin-view { margin-top: 56px; padding: 0 16px; }
-  #admin-gate { margin-top: 56px; }
-  .admin-container { padding: 16px 20px; }
-  .admin-container h2 { font-size: 20px; }
-  body.arcade .admin-container h2 { font-size: 12px; margin-bottom: 8px; }
-  body.hype .admin-container h2 { font-size: 24px; }
-  .admin-subtitle, body.arcade .admin-subtitle, body.hype .admin-subtitle { margin-bottom: 10px; }
-
-  /* wide enough for the table again */
-  .admin-table-header { display: grid; grid-template-columns: 140px 130px 1fr; gap: 12px; font-size: 14px; margin-bottom: 8px; padding-bottom: 6px; }
-  body.arcade .admin-table-header { font-size: 9px; }
-  .admin-row { grid-template-columns: 140px 130px 1fr; gap: 12px; margin-bottom: 8px; padding-bottom: 0; border-bottom: none; }
-  .admin-row .note-input { grid-column: auto; }
-  .admin-row label { font-size: 16px; }
-  body.hype .admin-row label { font-size: 16px !important; }
-  body.hype .admin-row .score-input { font-size: 16px; }
-  body.hype .admin-table-header { font-size: 13px; }
-  .admin-actions { margin-top: 12px; }
-  .admin-actions button { padding: 9px; }
+  .admin-row .house { grid-area: house; }
+  .admin-row .score-input { grid-area: change; }
+  .admin-row .note-input { grid-area: note; }
+  .house img { width: 36px; height: 36px; }
+  .actions .btn-primary { flex: 1; }
 
   footer { padding: 0 16px; }
-  .footer-logo { height: 30px; }
-  .footer-text { font-size: 13px; }
-  body.arcade .footer-text { font-size: 9px !important; }
-  body.hype .footer-text { font-size: 16px !important; }
-  .footer-right { margin-right: 0; gap: 10px; }
-  #refresh-button, #home-button { padding: 6px 14px; font-size: 14px; }
-  body.arcade #refresh-button, body.arcade #home-button { font-size: 9px; padding: 7px 10px; }
-  body.hype #refresh-button, body.hype #home-button { font-size: 15px; }
+  .footer-logo { height: 44px; width: 106px; margin-right: 8px; }
+  .footer-text { font-size: 12px; letter-spacing: 0.04em; line-height: 1.2; }
+  #refresh-button, #home-button { padding: 0 14px; }
+}
+
+/* phones, landscape: short screen, so everything gets tighter and the
+   leaderboard goes to one row of four */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root { --footer-height: 68px; }
+
+  #theme-picker { top: 12px; left: 16px; }
+  .view { padding: 68px 24px calc(var(--footer-height) + 12px); }
+
+  #home-view { padding-top: 64px; }
+  h1 { font-size: 24px; }
+  .portal-menu { grid-template-columns: 1fr 1fr; margin-top: 16px; }
+  .mascot-stack, .admin-glyph { margin-bottom: 8px; }
+
+  #leaderboard { padding-top: 68px; }
+  .view-header { flex-direction: row; align-items: flex-end; justify-content: space-between; min-height: 0; padding-left: 0; max-width: none; margin-bottom: 12px; }
+  .view-header h1 { font-size: 24px; }
+  body.arcade .view-header h1 { font-size: 16px; }
+  .view-header .lede { font-size: 15px; }
+  #standings { grid-template-columns: repeat(4, 1fr); max-width: none; gap: 10px; }
+  .team-card { padding: 14px 8px 12px; }
+  .rank-label { margin-bottom: 8px; }
+  .team-card img { width: 56px; height: 56px; border-radius: 12px; }
+  .team-card h3 { margin-top: 8px; font-size: 15px; }
+  .score { font-size: 22px; }
+  body.arcade .score { font-size: 14px; }
+  .team-note { margin-top: 8px; font-size: 12px; }
+
+  .panel { padding: 16px 20px; }
+  .panel h1 { font-size: 22px; }
+
+  /* wide enough for the table again */
+  .admin-head { display: grid; margin-top: 12px; }
+  .admin-row { grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1.3fr); grid-template-areas: none; gap: 10px; padding: 8px 0; }
+  .admin-row .house, .admin-row .score-input, .admin-row .note-input { grid-area: auto; }
+  .actions { margin-top: 12px; }
+  .actions .btn-primary { flex: 0 1 auto; }
+
+  footer { padding: 0 24px; }
+  .footer-logo { height: 40px; width: 96px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 </style>
 </head>
@@ -728,102 +756,149 @@ body.arcade #admin-pwd-error { color: #ff0055; font-size: 10px; }
 <body>
 
 <div id="theme-picker">
-  <select id="mode-toggle" aria-label="Theme">
+  <label for="mode-toggle" class="visually-hidden">Theme</label>
+  <select id="mode-toggle" class="glass">
     <option value="light">Light</option>
     <option value="dark">Dark</option>
     <option value="christmas">Christmas</option>
     <option value="arcade">Arcade</option>
     <option value="hype">Hype</option>
+    <option value="halloween">Halloween</option>
+    <option value="pumpkin">Pumpkin</option>
   </select>
 </div>
-
-<div id="merry-christmas"></div>
 
 <canvas id="snow-canvas"></canvas>
 
 
-<div id="home-view" class="view-container">
-  <h1>School House Portal</h1>
-  <div class="portal-menu">
-    <div class="portal-card" onclick="navigateTo('leaderboard')">
-      <div class="icon">📊</div>
-      <h2>Leaderboard</h2>
-    </div>
-    <div class="portal-card" onclick="navigateTo('admin-gate')">
-      <div class="icon">⚙️</div>
-      <h2>Admin Panel</h2>
-    </div>
-  </div>
-</div>
-
-
-<div id="leaderboard" class="view-container hidden"></div>
-
-
-<div id="admin-gate" class="view-container hidden">
-  <div class="admin-container">
-    <h2>Admin Access</h2>
-    <input type="password" id="admin-pwd-input" placeholder="Enter admin password"
-      onkeydown="if (event.key === 'Enter') verifyAdminAccess()">
-    <p id="admin-pwd-error" class="hidden">Incorrect password!</p>
-    <div class="admin-actions">
-      <button class="btn-save" onclick="verifyAdminAccess()">Enter</button>
-      <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
+<main id="home-view" class="view">
+  <div class="home-inner">
+    <p class="eyebrow">2026 Sports Day</p>
+    <h1>House Leaderboard</h1>
+    <p class="lede">Live standings for Acrobats, Quicksilver, Druids and Bravehearts.</p>
+    <div class="portal-menu">
+      <button class="portal-card" onclick="navigateTo('leaderboard')">
+        <span class="mascot-stack" aria-hidden="true">
+          <img src="project/acrobats.jpeg" alt="">
+          <img src="project/quicksilver.jpeg" alt="">
+          <img src="project/druids.jpeg" alt="">
+          <img src="project/bravehearts.jpeg" alt="">
+        </span>
+        <span class="card-title">Leaderboard</span>
+        <span class="card-desc">See who's leading</span>
+        <span class="chevron" aria-hidden="true"></span>
+      </button>
+      <button class="portal-card" onclick="navigateTo('admin-gate')">
+        <span class="admin-glyph" aria-hidden="true"></span>
+        <span class="card-title">Admin</span>
+        <span class="card-desc">Update points and notes</span>
+        <span class="chevron" aria-hidden="true"></span>
+      </button>
     </div>
   </div>
-</div>
+</main>
 
 
-<div id="admin-view" class="view-container hidden">
-  <div class="admin-container">
-    <h2>Admin Score Control</h2>
-    <div class="admin-subtitle">Type values like +50 or -15 to calculate dynamically</div>
+<main id="leaderboard" class="view hidden">
+  <div class="view-header">
+    <h1>Standings</h1>
+    <p id="updated" class="lede" aria-live="polite"></p>
+  </div>
+  <ol id="standings"></ol>
+</main>
 
-    <div class="admin-table-header">
-      <div>House</div>
-      <div class="col-score">Points Change</div>
-      <div class="col-note">Optional Note (Match info, bonus pts)</div>
-    </div>
 
-    <div class="admin-row">
-      <label class="lbl-acrobats">Acrobats:</label>
-      <input type="text" id="admin-acrobats" class="score-input score-input-modifier" inputmode="decimal">
-      <input type="text" id="admin-acrobats-note" class="note-input" placeholder="e.g., +100 Football match">
-    </div>
-    <div class="admin-row">
-      <label class="lbl-quicksilver">Quicksilver:</label>
-      <input type="text" id="admin-quicksilver" class="score-input score-input-modifier" inputmode="decimal">
-      <input type="text" id="admin-quicksilver-note" class="note-input" placeholder="e.g., Won Basketball cup">
-    </div>
-    <div class="admin-row">
-      <label class="lbl-druids">Druids:</label>
-      <input type="text" id="admin-druids" class="score-input score-input-modifier" inputmode="decimal">
-      <input type="text" id="admin-druids-note" class="note-input" placeholder="e.g., +50 Trivia clean sweep">
-    </div>
-    <div class="admin-row">
-      <label class="lbl-bravehearts">Bravehearts:</label>
-      <input type="text" id="admin-bravehearts" class="score-input score-input-modifier" inputmode="decimal">
-      <input type="text" id="admin-bravehearts-note" class="note-input" placeholder="e.g., 3-2 victory in Rugby">
-    </div>
-
-    <div class="admin-actions">
-      <button class="btn-save" onclick="saveScores()">Save & Publish</button>
-      <button class="btn-cancel" onclick="navigateTo('home')">Cancel</button>
+<main id="admin-gate" class="view hidden">
+  <div class="panel gate">
+    <h1>Admin</h1>
+    <p class="lede">Enter the admin password to update points.</p>
+    <label for="admin-pwd-input" class="field-label">Password</label>
+    <input type="password" id="admin-pwd-input" class="field" autocomplete="current-password">
+    <p id="admin-pwd-error" class="hidden" role="alert">Incorrect password. Try again.</p>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="navigateTo('home')">Cancel</button>
+      <button class="btn btn-primary" onclick="verifyAdminAccess()">Continue</button>
     </div>
   </div>
-</div>
+</main>
+
+
+<main id="admin-view" class="view hidden">
+  <div class="panel">
+    <h1>Update Points</h1>
+    <p class="lede">Enter a change like +50 or -15. Notes show under the house on the leaderboard.</p>
+
+    <div class="admin-head" aria-hidden="true">
+      <span>House</span>
+      <span>Change</span>
+      <span>Note</span>
+    </div>
+
+    <div class="admin-row" style="--house: #59b300">
+      <div class="house">
+        <img src="project/acrobats.jpeg" alt="">
+        <div>
+          <span class="house-name">Acrobats</span>
+          <span class="house-current" id="admin-acrobats-current"></span>
+        </div>
+      </div>
+      <input type="text" id="admin-acrobats" class="field score-input" placeholder="+0" aria-label="Acrobats points change">
+      <input type="text" id="admin-acrobats-note" class="field note-input" maxlength="200" placeholder="Note, e.g. Won the relay" aria-label="Acrobats note">
+    </div>
+    <div class="admin-row" style="--house: #ff4d4d">
+      <div class="house">
+        <img src="project/quicksilver.jpeg" alt="">
+        <div>
+          <span class="house-name">Quicksilver</span>
+          <span class="house-current" id="admin-quicksilver-current"></span>
+        </div>
+      </div>
+      <input type="text" id="admin-quicksilver" class="field score-input" placeholder="+0" aria-label="Quicksilver points change">
+      <input type="text" id="admin-quicksilver-note" class="field note-input" maxlength="200" placeholder="Note, e.g. Basketball cup" aria-label="Quicksilver note">
+    </div>
+    <div class="admin-row" style="--house: #0073e6">
+      <div class="house">
+        <img src="project/druids.jpeg" alt="">
+        <div>
+          <span class="house-name">Druids</span>
+          <span class="house-current" id="admin-druids-current"></span>
+        </div>
+      </div>
+      <input type="text" id="admin-druids" class="field score-input" placeholder="+0" aria-label="Druids points change">
+      <input type="text" id="admin-druids-note" class="field note-input" maxlength="200" placeholder="Note, e.g. Trivia sweep" aria-label="Druids note">
+    </div>
+    <div class="admin-row" style="--house: #ffcc00">
+      <div class="house">
+        <img src="project/bravehearts.jpeg" alt="">
+        <div>
+          <span class="house-name">Bravehearts</span>
+          <span class="house-current" id="admin-bravehearts-current"></span>
+        </div>
+      </div>
+      <input type="text" id="admin-bravehearts" class="field score-input" placeholder="+0" aria-label="Bravehearts points change">
+      <input type="text" id="admin-bravehearts-note" class="field note-input" maxlength="200" placeholder="Note, e.g. Rugby win 3-2" aria-label="Bravehearts note">
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="navigateTo('home')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveScores()">Publish Scores</button>
+    </div>
+  </div>
+</main>
 
 
 <footer>
   <div class="footer-left">
-    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo">
+    <img src="project/smiling-int-school-logo-1-removebg-preview.png" class="footer-logo" alt="Smiling International School">
     <span class="footer-text">2026 SPORTS DAY</span>
   </div>
   <div class="footer-right">
-    <button id="refresh-button" class="hidden" onclick="manualRefresh()">🔄 Refresh</button>
-    <button id="home-button" class="hidden" onclick="navigateTo('home')">🏠 Home</button>
+    <button id="refresh-button" class="glass hidden" onclick="manualRefresh()">Refresh</button>
+    <button id="home-button" class="glass hidden" onclick="navigateTo('home')">Home</button>
   </div>
 </footer>
+
+<div id="toast" class="hidden" role="status" aria-live="polite"></div>
 
 
 <script>
@@ -842,59 +917,75 @@ const teamImages = {
 };
 
 let currentMode = "light";
+let lastUpdated = null;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+// notes are typed by whoever has the password, so don't let them inject html
+function escapeHTML(text) {
+  return String(text).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+function rankLabel(rank) {
+  if (currentMode === "arcade") return `Rank ${rank}`;
+  if (currentMode === "hype") return rank === 1 ? "Champ" : `#${rank}`;
+  return ["1st", "2nd", "3rd", "4th"][rank - 1];
+}
 
 function renderLeaderboard() {
-  const container = document.getElementById("leaderboard");
-  container.innerHTML = "";
+  const list = document.getElementById("standings");
+  list.innerHTML = "";
   teams.sort((a, b) => b.score - a.score);
+  const top = teams[0].score;
+  const leaders = teams.filter(t => t.score === top).length;
 
-  teams.forEach((team, index) => {
-    const card = document.createElement("div");
-    card.className = "team-card";
+  teams.forEach(team => {
+    // tied houses share a rank
+    const rank = 1 + teams.filter(t => t.score > team.score).length;
+    let gap = `${top - team.score} pts behind`;
+    if (rank === 1) gap = leaders > 1 ? "Tied for 1st" : "Leading";
 
-    if (currentMode === "arcade") {
-      card.style.border = "4px solid " + team.color;
-    } else if (currentMode === "hype") {
-      card.style.border = "none";
-    } else {
-      card.style.border = "3px solid " + team.color;
-    }
-
-    let rankText = `#${index + 1}`;
-    if (currentMode === "arcade") rankText = `RANK ${index + 1}`;
-    if (currentMode === "hype") rankText = index === 0 ? "🏆 CHAMP" : `#${index + 1}`;
-
-    const noteHTML = team.note ? `<div class="team-note">${team.note}</div>` : "";
-
+    const card = document.createElement("li");
+    card.className = rank === 1 ? "team-card leader" : "team-card";
+    card.style.setProperty("--house", team.color);
     card.innerHTML = `
-      <div class="rank-label">${rankText}</div>
-      <img src="${teamImages[team.id]}">
+      <div class="rank-label">${rankLabel(rank)}</div>
+      <img src="${teamImages[team.id]}" alt="">
       <h3>${team.name}</h3>
-      <p class="score">${team.score} PTS</p>
-      ${noteHTML}
+      <p class="score">${team.score}<span class="unit"> pts</span></p>
+      <p class="gap">${gap}</p>
+      ${team.note ? `<p class="team-note">${escapeHTML(team.note)}</p>` : ""}
     `;
-    container.appendChild(card);
+    list.appendChild(card);
   });
+
+  document.getElementById("updated").textContent = lastUpdated
+    ? `Updated ${lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+    : "Connecting...";
+}
+
+function applySnapshot(snapshot) {
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    teams.forEach(t => {
+      if (data[t.id] === undefined) return;
+      if (typeof data[t.id] === "object") {
+        t.score = data[t.id].score || 0;
+        t.note = data[t.id].note || "";
+      } else {
+        // older entries were saved as just a number
+        t.score = data[t.id];
+        t.note = "";
+      }
+    });
+  }
+  lastUpdated = new Date();
 }
 
 // Gets the latest scores and notes. With no callback it redraws the
 // leaderboard, otherwise it runs the callback (used by the admin panel).
 function loadFromFirebase(onComplete) {
   db.ref("houseScores").once("value").then(snapshot => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      teams.forEach(t => {
-        if (data[t.id] === undefined) return;
-        if (typeof data[t.id] === "object") {
-          t.score = data[t.id].score || 0;
-          t.note = data[t.id].note || "";
-        } else {
-          // older entries were saved as just a number
-          t.score = data[t.id];
-          t.note = "";
-        }
-      });
-    }
+    applySnapshot(snapshot);
     onComplete ? onComplete() : renderLeaderboard();
   }).catch(err => {
     console.error("Could not read scores from Firebase:", err);
@@ -902,12 +993,38 @@ function loadFromFirebase(onComplete) {
   });
 }
 
+// keeps the leaderboard live while it's open, Refresh is just a backup
+db.ref("houseScores").on("value", snapshot => {
+  applySnapshot(snapshot);
+  if (!document.getElementById("leaderboard").classList.contains("hidden")) renderLeaderboard();
+}, err => console.error("Live updates stopped:", err));
+
+// goes through app.py, which only writes to Firebase for a signed-in admin
 function saveToFirebase() {
   const data = {};
   teams.forEach(t => {
     data[t.id] = { score: t.score, note: t.note };
   });
-  db.ref("houseScores").set(data);
+  return fetch("/api/scores", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  }).then(res => {
+    if (!res.ok) {
+      const err = new Error(`Save failed with status ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+  });
+}
+
+let toastTimer = null;
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add("hidden"), 4000);
 }
 
 function manualRefresh() {
@@ -917,6 +1034,17 @@ function manualRefresh() {
   setTimeout(() => {
     refreshBtn.classList.remove("spin-animation");
   }, 600);
+}
+
+// shows the current total under the house name, and what it'll become
+function showCurrent(t) {
+  const out = document.getElementById(`admin-${t.id}-current`);
+  const raw = document.getElementById(`admin-${t.id}`).value.trim();
+  const change = parseFloat(raw);
+  out.classList.toggle("invalid", raw !== "" && isNaN(change));
+  if (raw === "") out.textContent = `${t.score} pts now`;
+  else if (isNaN(change)) out.textContent = "Enter a number like +50";
+  else out.textContent = `${t.score} → ${t.score + change} pts`;
 }
 
 function navigateTo(targetView) {
@@ -950,30 +1078,50 @@ function navigateTo(targetView) {
     document.getElementById("home-button").classList.remove("hidden");
 
     teams.forEach(t => {
-      const scoreInput = document.getElementById(`admin-${t.id}`);
-      scoreInput.value = "";
-      scoreInput.placeholder = `Current: ${t.score}`;
+      document.getElementById(`admin-${t.id}`).value = "";
       document.getElementById(`admin-${t.id}-note`).value = t.note || "";
+      showCurrent(t);
     });
   }
+  window.scrollTo(0, 0);
 }
 
-// The password is checked in the browser, so anyone reading the page
-// source can see it. OK for this school event, not for anything sensitive.
+// app.py checks the password, so it never has to be in this page
 function verifyAdminAccess() {
-  const pwd = document.getElementById("admin-pwd-input").value;
-  if (pwd !== "Smiling-1092") {
-    document.getElementById("admin-pwd-error").classList.remove("hidden");
-    return;
-  }
-  navigateTo("admin");
-  loadFromFirebase(() => {
-    teams.forEach(t => {
-      document.getElementById(`admin-${t.id}`).placeholder = `Current: ${t.score}`;
-      document.getElementById(`admin-${t.id}-note`).value = t.note || "";
-    });
+  const error = document.getElementById("admin-pwd-error");
+  fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: document.getElementById("admin-pwd-input").value })
+  }).then(res => {
+    if (res.ok) {
+      navigateTo("admin");
+      loadFromFirebase(() => {
+        teams.forEach(t => {
+          document.getElementById(`admin-${t.id}-note`).value = t.note || "";
+          showCurrent(t);
+        });
+      });
+      return;
+    }
+    error.textContent = res.status === 429
+      ? "Too many tries. Wait a minute and try again."
+      : "Incorrect password. Try again.";
+    error.classList.remove("hidden");
+  }).catch(err => {
+    console.error("Could not reach the server:", err);
+    error.textContent = "Can't reach the server. Check the connection and try again.";
+    error.classList.remove("hidden");
   });
 }
+
+document.getElementById("admin-pwd-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") verifyAdminAccess();
+});
+
+teams.forEach(t => {
+  document.getElementById(`admin-${t.id}`).addEventListener("input", () => showCurrent(t));
+});
 
 function saveScores() {
   teams.forEach(t => {
@@ -985,33 +1133,52 @@ function saveScores() {
     t.note = document.getElementById(`admin-${t.id}-note`).value.trim();
   });
 
-  saveToFirebase();
-  navigateTo("home");
+  saveToFirebase()
+    .then(() => showToast("Scores published"))
+    .catch(err => {
+      console.error("Could not save scores:", err);
+      showToast(err.status === 401
+        ? "Your admin sign-in expired. Sign in again and republish."
+        : "Couldn't publish scores. Check the connection and try again.");
+      // the totals above were changed locally, so put back what's really saved
+      loadFromFirebase();
+    });
+  navigateTo("leaderboard");
 }
 
 const modeSelect = document.getElementById("mode-toggle");
 
 function applyMode(mode) {
   currentMode = mode;
-  document.body.classList.remove("dark", "christmas", "arcade", "hype");
-  stopParticleMatrix();
+  document.body.classList.remove("dark", "christmas", "arcade", "hype", "halloween", "pumpkin");
+  stopParticles();
 
   if (mode !== "light") document.body.classList.add(mode);
   modeSelect.value = mode;
 
-  if (mode === "christmas" || mode === "arcade" || mode === "hype") {
-    startParticleMatrix();
+  if (mode !== "light" && mode !== "dark" && !reduceMotion.matches) {
+    startParticles();
   }
 
   renderLeaderboard();
 }
 
+// starts on light or dark to match the device, and keeps following it
+// until someone picks a theme themselves
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+let themePicked = false;
+
 modeSelect.addEventListener("change", () => {
+  themePicked = true;
   applyMode(modeSelect.value);
 });
+systemDark.addEventListener("change", () => {
+  if (!themePicked) applyMode(systemDark.matches ? "dark" : "light");
+});
+reduceMotion.addEventListener("change", () => applyMode(currentMode));
 
 // Background particles: snow (christmas), rising pixels (arcade),
-// gold confetti (hype)
+// gold confetti (hype), bats (both halloween themes)
 const canvas = document.getElementById("snow-canvas");
 const ctx = canvas.getContext("2d");
 let cw = 0, ch = 0;
@@ -1027,7 +1194,7 @@ resize();
 
 function createParticle() {
   if (currentMode === "hype") {
-    const goldColors = ["#ffaa00", "#ffd700", "#ff5500", "#ffe680", "#ffffff"];
+    const colors = ["#ffaa00", "#ffd700", "#ff5500", "#ffe680", "#ffffff"];
     return {
       x: Math.random() * cw,
       y: Math.random() * -ch,
@@ -1037,7 +1204,18 @@ function createParticle() {
       drift: (Math.random() - 0.5) * 1.5,
       rotation: Math.random() * 360,
       rotSpeed: Math.random() * 4 - 2,
-      color: goldColors[Math.floor(Math.random() * goldColors.length)]
+      color: colors[Math.floor(Math.random() * colors.length)]
+    };
+  } else if (currentMode === "halloween" || currentMode === "pumpkin") {
+    return {
+      x: Math.random() * cw,
+      y: Math.random() * ch,
+      size: Math.random() * 10 + 8,
+      speed: Math.random() * 1.2 + 0.6,
+      flap: Math.random() * Math.PI * 2,
+      bob: Math.random() * Math.PI * 2,
+      // all black on the orange theme, some purple on the dark one
+      color: currentMode === "pumpkin" || Math.random() > 0.25 ? "#06030a" : "#4a2a6b"
     };
   } else if (currentMode === "arcade") {
     return {
@@ -1079,6 +1257,16 @@ function updateParticles() {
       continue;
     }
 
+    if (currentMode === "halloween" || currentMode === "pumpkin") {
+      p.x += p.speed;
+      p.flap += 0.3;
+      p.bob += 0.02;
+      p.y += Math.sin(p.bob) * 0.5;
+      if (p.x > cw + 30) { p.x = -30; p.y = Math.random() * ch; }
+      drawBat(p);
+      continue;
+    }
+
     p.x += p.drift;
     p.y += p.speed;
 
@@ -1098,21 +1286,36 @@ function updateParticles() {
   animFrame = requestAnimationFrame(updateParticles);
 }
 
-function startParticleMatrix() {
+// a body and two curved wings, wing tips go up and down with p.flap
+function drawBat(p) {
+  const s = p.size;
+  const tip = Math.sin(p.flap) * s * 0.6;
+  ctx.fillStyle = p.color;
+  ctx.beginPath();
+  ctx.moveTo(p.x, p.y - s * 0.2);
+  ctx.quadraticCurveTo(p.x - s * 0.6, p.y - s * 0.5 - tip, p.x - s * 1.3, p.y - tip);
+  ctx.quadraticCurveTo(p.x - s * 0.7, p.y + s * 0.05, p.x, p.y + s * 0.35);
+  ctx.quadraticCurveTo(p.x + s * 0.7, p.y + s * 0.05, p.x + s * 1.3, p.y - tip);
+  ctx.quadraticCurveTo(p.x + s * 0.6, p.y - s * 0.5 - tip, p.x, p.y - s * 0.2);
+  ctx.fill();
+}
+
+function startParticles() {
   particles = [];
-  const maxCount = (currentMode === "arcade" || currentMode === "hype") ? 150 : 400;
-  for (let i = 0; i < maxCount; i++) particles.push(createParticle());
+  const counts = { christmas: 400, arcade: 150, hype: 150, halloween: 35, pumpkin: 35 };
+  const count = counts[currentMode];
+  for (let i = 0; i < count; i++) particles.push(createParticle());
   if (!animFrame) animFrame = requestAnimationFrame(updateParticles);
 }
 
-function stopParticleMatrix() {
+function stopParticles() {
   if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
   particles = [];
   ctx.clearRect(0, 0, cw, ch);
 }
 
 loadFromFirebase();
-applyMode("light");
+applyMode(systemDark.matches ? "dark" : "light");
 navigateTo("home");
 </script>
 
